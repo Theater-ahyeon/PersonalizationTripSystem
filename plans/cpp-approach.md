@@ -1,50 +1,107 @@
-# C++ 实现核心算法的落地方案（与 Web 系统集成）
+# C++ 实施说明
 
-> 目标：满足“核心算法必须自己设计数据结构并编程实现”的考核点，同时响应“最好用 C++”的建议；并保持系统可演示、可迭代。
+## 1. 当前实施结论
 
-## 方案 A（推荐）：C++ 算法服务 + Java 网关（松耦合）
+项目当前只有一种实现形态：纯 C++ 单体程序。
 
-### 架构
+这意味着：
 
-- `alg-cpp`：C++ 实现核心算法（TopK、Dijkstra/多目标、倒排索引、压缩等），提供 HTTP API
-- `backend`：Spring Boot 作为网关与业务编排层
-  - 负责鉴权/用户偏好/任务编排/调用高德代理/AIGC 任务
-  - **核心算法计算通过调用 C++ 服务完成**
-- `frontend`：Vue + 高德地图展示
+- 不再保留 Java 版本
+- 不再维护并行实现
+- 不再将其他语言版本作为当前仓库的一部分
 
-### 优点
+## 2. 当前工程结构
 
-- C++ 算法独立可测、可对比、可压测
-- 不需要 JNI/本地库加载，Windows 环境更稳
-- 后续要对比 Java 版本算法也方便（“多种算法性能比较”）
+```text
+cpp/
+├── CMakeLists.txt
+├── README.md
+├── include/
+│   └── tripsystem/
+│       ├── app/
+│       ├── core/
+│       └── models/
+├── src/
+│   ├── app/
+│   ├── core/
+│   └── main.cpp
+├── data/
+├── scripts/
+└── .gitignore
+```
 
-### API 示例
+## 3. 当前模块分工
 
-- `POST /alg/graph/load`：导入道路图 JSON
-- `GET /alg/graph/shortest?start=..&goal=..&metric=distance|time&mode=...`
-- `GET /alg/recommend/topk?entity=poi|food|diary&k=10&userId=...`
-- `GET /alg/search/diary?q=...`（倒排索引）
+### `include/tripsystem/models`
 
-## 方案 B：JNI/本地动态库（强耦合，不推荐起步）
+- 存放领域模型
+- 当前包括景点、道路、餐厅、搜索结果、推荐结果、路径结果等结构
 
-- C++ 编译成 DLL，通过 JNI 被 Spring Boot 调用。
-- 优点：调用开销低；缺点：Windows 下编译/ABI/路径/权限问题多，调试成本高。
+### `include/tripsystem/core`
 
-## 数据要求如何在 C++ 侧落地
+- 存放底层数据结构和核心能力
+- 当前包括 `HashMap`、`MinHeap`、`Trie`、`Graph`、`DataManager`
 
-- 目的地数量 >= 200：可以用脚本生成/爬取后导入 JSON
-- 每个目的地内部节点 >= 20、设施 >= 50、边 >= 200：C++ 图结构按目的地分片存储（`destinationId -> Graph`）
+### `include/tripsystem/app`
 
-## 对验收“不要用数据库完成核心功能”的对应
+- 存放 CLI 应用层接口
 
-- C++/Java 都以 JSON 作为输入来源，算法只依赖内存结构。
-- 持久化可采用：
-  - JSON（可读性好）
-  - 自定义二进制（更快）
-  - 压缩文件（无损压缩模块即考核点之一）
+### `src/app`
 
-## 里程碑建议
+- 主菜单和交互逻辑
 
-1. 先在 Java `backend` 里把算法跑通（已完成 Dijkstra/TopK 雏形）
-2. 再把算法模块逐个迁移/复刻到 C++（并输出性能对比数据）
-3. 最终演示时可切换“Java 算法 / C++ 算法”作为创新点
+### `src/core`
+
+- 数据加载与业务能力实现
+
+## 4. 当前已经落地的能力
+
+### 数据层
+
+- 程序启动时自动加载或生成样例数据
+- 程序退出时自动写回数据文件
+
+### 算法与结构层
+
+- 手写 `HashMap`
+- 手写 `MinHeap`
+- 手写 `Trie`
+- 图结构和单目标最短路径
+
+### 业务层
+
+- 景点推荐
+- 场所搜索
+- 最短路径规划
+- 美食推荐
+
+## 5. 当前构建方式
+
+由于当前环境已确认有 `g++`，但未确认有 `cmake`，因此优先提供脚本构建：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\cpp\scripts\build.ps1
+```
+
+输出产物：
+
+```text
+cpp/build/tripsystem.exe
+```
+
+## 6. 当前运行方式
+
+```powershell
+.\cpp\build\tripsystem.exe .\cpp\data
+```
+
+如果 `cpp/data/` 下不存在数据文件，系统会自动生成一份演示数据。
+
+## 7. 下一步实施顺序
+
+1. 完成旅游日记模块
+2. 接入 Huffman 压缩与解压
+3. 补充更完整的数据导入
+4. 增加多目标路径规划
+5. 增加测试和性能统计
+

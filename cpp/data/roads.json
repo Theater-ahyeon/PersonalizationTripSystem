@@ -1,0 +1,9 @@
+[
+  {"from":1,"to":2,"dist_walk":130.00,"dist_bike":55.00},
+  {"from":2,"to":3,"dist_walk":90.00,"dist_bike":35.00},
+  {"from":3,"to":4,"dist_walk":140.00,"dist_bike":60.00},
+  {"from":2,"to":4,"dist_walk":160.00,"dist_bike":70.00},
+  {"from":4,"to":5,"dist_walk":110.00,"dist_bike":45.00},
+  {"from":5,"to":6,"dist_walk":120.00,"dist_bike":50.00},
+  {"from":2,"to":6,"dist_walk":200.00,"dist_bike":80.00}
+]

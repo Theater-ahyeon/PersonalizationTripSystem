@@ -1,0 +1,7 @@
+[
+  {"id":101,"name":"lake-cafe","near_spot_id":2,"cuisine":"coffee","rating":4.70,"heat":220.00},
+  {"id":102,"name":"book-bistro","near_spot_id":3,"cuisine":"western","rating":4.40,"heat":170.00},
+  {"id":103,"name":"museum-noodle","near_spot_id":4,"cuisine":"chinese","rating":4.50,"heat":200.00},
+  {"id":104,"name":"arena-burger","near_spot_id":5,"cuisine":"fastfood","rating":4.10,"heat":150.00},
+  {"id":105,"name":"garden-tea","near_spot_id":6,"cuisine":"tea","rating":4.60,"heat":190.00}
+]

@@ -1,0 +1,8 @@
+[
+  {"id":1,"name":"north-gate","category":"gate","rating":4.40,"heat":120.00,"tags":"entry,gate"},
+  {"id":2,"name":"lake-square","category":"scenery","rating":4.80,"heat":340.00,"tags":"lake,photo,relax"},
+  {"id":3,"name":"library","category":"building","rating":4.60,"heat":210.00,"tags":"study,quiet"},
+  {"id":4,"name":"museum","category":"scenery","rating":4.70,"heat":260.00,"tags":"history,culture"},
+  {"id":5,"name":"sports-center","category":"facility","rating":4.30,"heat":180.00,"tags":"sport,active"},
+  {"id":6,"name":"south-garden","category":"scenery","rating":4.50,"heat":240.00,"tags":"garden,relax"}
+]
