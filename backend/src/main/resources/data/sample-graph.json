@@ -1,0 +1,51 @@
+{
+  "nodes": [
+    {
+      "id": 1,
+      "name": "东门",
+      "category": "GATE",
+      "lng": 116.397,
+      "lat": 39.908
+    },
+    {
+      "id": 2,
+      "name": "图书馆",
+      "category": "BUILDING",
+      "lng": 116.398,
+      "lat": 39.9085
+    },
+    {
+      "id": 3,
+      "name": "食堂",
+      "category": "FOOD",
+      "lng": 116.399,
+      "lat": 39.909
+    }
+  ],
+  "edges": [
+    {
+      "from": 1,
+      "to": 2,
+      "distanceMeters": 120.0,
+      "idealSpeedMps": 1.4,
+      "congestion": 0.9,
+      "allowed": ["WALK", "BIKE"]
+    },
+    {
+      "from": 2,
+      "to": 3,
+      "distanceMeters": 160.0,
+      "idealSpeedMps": 1.4,
+      "congestion": 0.8,
+      "allowed": ["WALK", "BIKE"]
+    },
+    {
+      "from": 1,
+      "to": 3,
+      "distanceMeters": 400.0,
+      "idealSpeedMps": 1.4,
+      "congestion": 1.0,
+      "allowed": ["WALK"]
+    }
+  ]
+}

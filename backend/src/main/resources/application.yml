@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: trip-backend
+
+# 解决 Windows/PowerShell 调用时中文乱码：强制 UTF-8。
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
