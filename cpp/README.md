@@ -47,6 +47,13 @@ powershell -ExecutionPolicy Bypass -File .\cpp\scripts\build.ps1
 - `app.hpp`：主菜单编排
 - `src/main.cpp`：程序入口
 
+## 第二版模块优化
+
+- 景点推荐：使用 `rating 0.4 + heat 0.4 + tagMatch 0.2` 的固定权重，仍通过手写 `MinHeap` 做 Top-K。
+- 场所搜索：使用 Trie 自动补全、KMP 匹配、HashMap 去重，并按匹配类型、评分、热度、名称排序。
+- 美食推荐：按当前景点筛选附近餐厅，使用 `rating 0.5 + heat 0.3 + cuisineMatch 0.2` 的权重做 Top-5。
+- 旅游日记：保留 Huffman 压缩存储，增加样例日记，并对缺文件、空内容、解码失败做可读提示。
+
 ## 已实现算法与数据结构
 
 - 手写 `HashMap`：ID 索引、搜索去重、Huffman 频率统计

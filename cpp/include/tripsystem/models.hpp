@@ -52,6 +52,8 @@ struct Diary {
     int heat = 0;
     std::string createdAt;
     std::string content;
+    bool decodeOk = true;
+    std::string loadMessage;
 };
 
 } // namespace tripsystem

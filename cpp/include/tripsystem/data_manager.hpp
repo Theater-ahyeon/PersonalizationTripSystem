@@ -78,6 +78,10 @@ public:
         loadOsm();
         loadRestaurants();
         loadDiaries();
+        if (diaries.empty()) {
+            generateSampleDiaries();
+            loadDiaries();
+        }
         if (spots.empty() || roads.empty() || restaurants.empty()) {
             generateSampleData();
             save();
@@ -181,16 +185,16 @@ private:
 
     void generateSampleData() {
         spots = {
-            {1, "????", "??", 4.8, 1200, "??,??,??"},
-            {2, "????", "??", 4.7, 980, "??,??,??"},
-            {3, "?????", "??", 4.6, 860, "??,??,??"},
-            {4, "???", "??", 4.9, 1100, "??,??,??"},
-            {5, "????", "??", 4.5, 740, "??,??,??"},
-            {6, "????", "??", 4.4, 690, "??,??"},
-            {7, "????", "??", 4.6, 820, "??,??,??"},
-            {8, "???", "??", 4.3, 760, "??,??,??"},
-            {9, "????", "??", 4.7, 930, "??,??,??"},
-            {10, "????", "??", 4.2, 500, "??,??,??"}
+            {1, "太湖广场", "自然", 4.8, 1200, "湖泊,广场,拍照"},
+            {2, "樱花大道", "自然", 4.7, 980, "花海,步行,拍照"},
+            {3, "历史博物馆", "文化", 4.6, 860, "历史,展览,室内"},
+            {4, "观景塔", "观景", 4.9, 1100, "登高,夜景,地标"},
+            {5, "水上码头", "休闲", 4.5, 740, "游船,亲水,休闲"},
+            {6, "儿童乐园", "亲子", 4.4, 690, "亲子,娱乐"},
+            {7, "竹林步道", "自然", 4.6, 820, "徒步,清静,森林"},
+            {8, "民俗街", "文化", 4.3, 760, "非遗,购物,小吃"},
+            {9, "音乐喷泉", "休闲", 4.7, 930, "夜景,表演,广场"},
+            {10, "游客中心", "服务", 4.2, 500, "咨询,入口,服务"}
         };
         roads = {
             {1, 2, 300, 120}, {2, 3, 420, 180}, {3, 4, 380, 150}, {4, 5, 500, 220},
@@ -199,16 +203,35 @@ private:
             {4, 9, 470, 200}, {1, 5, 900, 380}
         };
         restaurants = {
-            {1, "????", 1, "???", 4.7, 600},
-            {2, "????", 2, "??", 4.5, 480},
-            {3, "?????", 3, "??", 4.2, 360},
-            {4, "????", 4, "??", 4.6, 520},
-            {5, "????", 5, "??", 4.8, 710},
-            {6, "????", 6, "???", 4.3, 390},
-            {7, "????", 7, "??", 4.6, 450},
-            {8, "?????", 8, "??", 4.4, 680},
-            {9, "????", 9, "??", 4.5, 570}
+            {1, "湖畔小馆", 1, "本帮菜", 4.7, 600},
+            {2, "樱花茶屋", 2, "甜品", 4.5, 480},
+            {3, "博物馆简餐", 3, "简餐", 4.2, 360},
+            {4, "塔下咖啡", 4, "咖啡", 4.6, 520},
+            {5, "码头鱼鲜", 5, "江鲜", 4.8, 710},
+            {6, "亲子餐厅", 6, "儿童餐", 4.3, 390},
+            {7, "竹林素食", 7, "素食", 4.6, 450},
+            {8, "民俗小吃铺", 8, "小吃", 4.4, 680},
+            {9, "喷泉夜宵", 9, "夜宵", 4.5, 570}
         };
+    }
+
+    void generateSampleDiaries() {
+        fs::create_directories(dataDir_ / "diaries");
+        std::vector<Diary> samples = {
+            {1, "湖边散步记录", 4.8, 12, "2026-04-30 09:00:00",
+             "今天从游客中心出发，沿着太湖广场慢慢走到湖边，风很舒服，适合拍照和休息。"},
+            {2, "樱花大道游记", 4.6, 8, "2026-04-30 10:30:00",
+             "樱花大道人不算多，花海和步道都很适合散步，后面可以和历史博物馆安排在同一条路线。"},
+            {3, "夜晚音乐喷泉", 4.9, 18, "2026-04-30 19:40:00",
+             "晚上看了音乐喷泉，灯光和水幕效果很好，附近的夜宵也方便，适合放在一天行程的最后。"}
+        };
+        for (const auto& d : samples) {
+            fs::path jsonPath = dataDir_ / "diaries" / (std::to_string(d.id) + ".json");
+            fs::path binPath = dataDir_ / "diaries" / (std::to_string(d.id) + ".bin");
+            if (!fs::exists(jsonPath) || !fs::exists(binPath)) {
+                writeDiary(d);
+            }
+        }
     }
 
     void loadSpots() {
@@ -268,7 +291,27 @@ private:
             }
             fs::path binPath = entry.path();
             binPath.replace_extension(".bin");
-            d.content = decodeHuffman(binPath, codes, bitLength);
+            bool ok = true;
+            if (d.id <= 0 || d.title.empty()) {
+                ok = false;
+                d.loadMessage = "日记元数据缺失";
+            } else if (!fs::exists(binPath)) {
+                ok = false;
+                d.loadMessage = "压缩正文文件缺失";
+            } else if (codes.empty() || bitLength <= 0) {
+                ok = false;
+                d.loadMessage = "编码表为空或 bit_length 无效";
+            }
+            if (ok) {
+                d.content = decodeHuffman(binPath, codes, bitLength, ok);
+                if (!ok) d.loadMessage = "Huffman 解码失败";
+            }
+            if (ok && d.content.empty()) {
+                d.decodeOk = false;
+                d.loadMessage = "正文为空";
+            } else {
+                d.decodeOk = ok;
+            }
             diaries.push_back(d);
         }
     }
@@ -354,12 +397,14 @@ private:
         return packed;
     }
 
-    static std::string decodeHuffman(const fs::path& binPath, const std::vector<std::pair<int, std::string>>& codes, int bitLength) {
+    static std::string decodeHuffman(const fs::path& binPath, const std::vector<std::pair<int, std::string>>& codes, int bitLength, bool& ok) {
+        ok = false;
         std::ifstream in(binPath, std::ios::binary);
         if (!in || codes.empty()) return "";
         std::vector<unsigned char> bytes;
         char ch;
         while (in.get(ch)) bytes.push_back(static_cast<unsigned char>(ch));
+        if (bitLength < 0 || static_cast<size_t>((bitLength + 7) / 8) > bytes.size()) return "";
 
         HashMap<std::string, int> byteByCode;
         for (const auto& p : codes) byteByCode.insert(p.second, p.first);
@@ -375,6 +420,8 @@ private:
                 cur.clear();
             }
         }
+        if (!cur.empty()) return "";
+        ok = true;
         return out;
     }
 };
