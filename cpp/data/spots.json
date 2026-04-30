@@ -1,0 +1,12 @@
+[
+  {"id": 1, "name": "太湖广场", "category": "自然", "rating": 4.8, "heat": 1200, "tags": "湖泊,广场,拍照"},
+  {"id": 2, "name": "樱花大道", "category": "自然", "rating": 4.7, "heat": 980, "tags": "花海,步行,拍照"},
+  {"id": 3, "name": "历史博物馆", "category": "文化", "rating": 4.6, "heat": 860, "tags": "历史,展览,室内"},
+  {"id": 4, "name": "观景塔", "category": "观景", "rating": 4.9, "heat": 1100, "tags": "登高,夜景,地标"},
+  {"id": 5, "name": "水上码头", "category": "休闲", "rating": 4.5, "heat": 740, "tags": "游船,亲水,休闲"},
+  {"id": 6, "name": "儿童乐园", "category": "亲子", "rating": 4.4, "heat": 690, "tags": "亲子,娱乐"},
+  {"id": 7, "name": "竹林步道", "category": "自然", "rating": 4.6, "heat": 820, "tags": "徒步,清静,森林"},
+  {"id": 8, "name": "民俗街", "category": "文化", "rating": 4.3, "heat": 760, "tags": "非遗,购物,小吃"},
+  {"id": 9, "name": "音乐喷泉", "category": "休闲", "rating": 4.7, "heat": 930, "tags": "夜景,表演,广场"},
+  {"id": 10, "name": "游客中心", "category": "服务", "rating": 4.2, "heat": 500, "tags": "咨询,入口,服务"}
+]

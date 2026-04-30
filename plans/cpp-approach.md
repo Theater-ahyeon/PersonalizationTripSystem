@@ -1,50 +1,33 @@
-# C++ 实现核心算法的落地方案（与 Web 系统集成）
+# C++ 纯数据结构实现方案
 
-> 目标：满足“核心算法必须自己设计数据结构并编程实现”的考核点，同时响应“最好用 C++”的建议；并保持系统可演示、可迭代。
+## 目标
 
-## 方案 A（推荐）：C++ 算法服务 + Java 网关（松耦合）
+本仓库只保留 C++17 CLI 实现，不再使用 Web 后端、数据库或接口服务。系统启动时从文件加载数据到内存，运行期全部操作手写数据结构，退出时写回 JSON；旅游日记正文使用 Huffman 压缩写入二进制文件。
 
-### 架构
+## 架构
 
-- `alg-cpp`：C++ 实现核心算法（TopK、Dijkstra/多目标、倒排索引、压缩等），提供 HTTP API
-- `backend`：Spring Boot 作为网关与业务编排层
-  - 负责鉴权/用户偏好/任务编排/调用高德代理/AIGC 任务
-  - **核心算法计算通过调用 C++ 服务完成**
-- `frontend`：Vue + 高德地图展示
+- CLI 表示层：固定菜单入口，负责输入输出。
+- Service 业务层：推荐、路径、搜索、日记、美食等业务流程。
+- DataManager 数据层：加载和保存 `cpp/data/` 下的数据文件，并初始化图、Trie、HashMap 等内存结构。
 
-### 优点
+## 核心数据结构
 
-- C++ 算法独立可测、可对比、可压测
-- 不需要 JNI/本地库加载，Windows 环境更稳
-- 后续要对比 Java 版本算法也方便（“多种算法性能比较”）
+- `HashMap`：链地址法，支持自动 rehash，用于 ID 索引、去重和频率统计。
+- `MinHeap`：数组二叉堆，用于 Top-K、路径搜索和 Huffman 构树。
+- `Trie`：`vector<pair<unsigned char, Node*>>` 子节点结构，用于名称补全。
+- `Graph`：邻接表道路图，边包含步行和骑行两种权重。
 
-### API 示例
+## 核心算法
 
-- `POST /alg/graph/load`：导入道路图 JSON
-- `GET /alg/graph/shortest?start=..&goal=..&metric=distance|time&mode=...`
-- `GET /alg/recommend/topk?entity=poi|food|diary&k=10&userId=...`
-- `GET /alg/search/diary?q=...`（倒排索引）
+- 景点推荐：Top-K 小顶堆，`O(N log K)`。
+- 路径规划：第一版基于景点道路图；第二版基于离线 OpenStreetMap 风格节点和道路边，使用 A* + Haversine 启发函数，支持步行/骑行过滤。
+- 场所搜索：Trie 前缀补全 + KMP 关键词匹配 + HashMap 去重。
+- 日记管理：第一版完成 Huffman 编码压缩和启动解压读取，后续再扩展完整管理能力。
+- 美食推荐：按当前景点筛选餐厅后进行 Top-K 推荐。
 
-## 方案 B：JNI/本地动态库（强耦合，不推荐起步）
+## 构建运行
 
-- C++ 编译成 DLL，通过 JNI 被 Spring Boot 调用。
-- 优点：调用开销低；缺点：Windows 下编译/ABI/路径/权限问题多，调试成本高。
-
-## 数据要求如何在 C++ 侧落地
-
-- 目的地数量 >= 200：可以用脚本生成/爬取后导入 JSON
-- 每个目的地内部节点 >= 20、设施 >= 50、边 >= 200：C++ 图结构按目的地分片存储（`destinationId -> Graph`）
-
-## 对验收“不要用数据库完成核心功能”的对应
-
-- C++/Java 都以 JSON 作为输入来源，算法只依赖内存结构。
-- 持久化可采用：
-  - JSON（可读性好）
-  - 自定义二进制（更快）
-  - 压缩文件（无损压缩模块即考核点之一）
-
-## 里程碑建议
-
-1. 先在 Java `backend` 里把算法跑通（已完成 Dijkstra/TopK 雏形）
-2. 再把算法模块逐个迁移/复刻到 C++（并输出性能对比数据）
-3. 最终演示时可切换“Java 算法 / C++ 算法”作为创新点
+```powershell
+powershell -ExecutionPolicy Bypass -File .\cpp\scripts\build.ps1
+.\cpp\build\tripsystem.exe .\cpp\data
+```

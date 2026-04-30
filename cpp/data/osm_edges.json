@@ -1,0 +1,18 @@
+[
+  {"from": 101, "to": 102, "distance": 240, "mode": "both", "road_name": "游客中心联络路"},
+  {"from": 102, "to": 101, "distance": 240, "mode": "both", "road_name": "游客中心联络路"},
+  {"from": 102, "to": 103, "distance": 260, "mode": "both", "road_name": "湖滨步道"},
+  {"from": 103, "to": 102, "distance": 260, "mode": "both", "road_name": "湖滨步道"},
+  {"from": 103, "to": 104, "distance": 210, "mode": "walk", "road_name": "樱花步行街"},
+  {"from": 104, "to": 103, "distance": 210, "mode": "walk", "road_name": "樱花步行街"},
+  {"from": 104, "to": 105, "distance": 280, "mode": "both", "road_name": "文化景观道"},
+  {"from": 105, "to": 104, "distance": 280, "mode": "both", "road_name": "文化景观道"},
+  {"from": 105, "to": 106, "distance": 230, "mode": "bike", "road_name": "骑行环线"},
+  {"from": 106, "to": 105, "distance": 230, "mode": "bike", "road_name": "骑行环线"},
+  {"from": 106, "to": 107, "distance": 310, "mode": "walk", "road_name": "亲水栈道"},
+  {"from": 107, "to": 106, "distance": 310, "mode": "walk", "road_name": "亲水栈道"},
+  {"from": 107, "to": 108, "distance": 270, "mode": "both", "road_name": "竹林小径"},
+  {"from": 108, "to": 107, "distance": 270, "mode": "both", "road_name": "竹林小径"},
+  {"from": 103, "to": 108, "distance": 420, "mode": "bike", "road_name": "骑行支线"},
+  {"from": 108, "to": 103, "distance": 420, "mode": "bike", "road_name": "骑行支线"}
+]

@@ -1,4 +1,8 @@
 {
-  "java.configuration.updateBuildConfiguration": "interactive",
-  "java.compile.nullAnalysis.mode": "automatic"
+  "files.associations": {
+    "*.h": "cpp",
+    "*.hpp": "cpp",
+    "*.cpp": "cpp"
+  },
+  "C_Cpp.default.cppStandard": "c++17"
 }

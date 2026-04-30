@@ -1,0 +1,11 @@
+[
+  {"id": 1, "name": "湖畔小馆", "near_spot_id": 1, "cuisine": "本帮菜", "rating": 4.7, "heat": 600},
+  {"id": 2, "name": "樱花茶屋", "near_spot_id": 2, "cuisine": "甜品", "rating": 4.5, "heat": 480},
+  {"id": 3, "name": "博物馆简餐", "near_spot_id": 3, "cuisine": "简餐", "rating": 4.2, "heat": 360},
+  {"id": 4, "name": "塔下咖啡", "near_spot_id": 4, "cuisine": "咖啡", "rating": 4.6, "heat": 520},
+  {"id": 5, "name": "码头鱼鲜", "near_spot_id": 5, "cuisine": "江鲜", "rating": 4.8, "heat": 710},
+  {"id": 6, "name": "亲子餐厅", "near_spot_id": 6, "cuisine": "儿童餐", "rating": 4.3, "heat": 390},
+  {"id": 7, "name": "竹林素食", "near_spot_id": 7, "cuisine": "素食", "rating": 4.6, "heat": 450},
+  {"id": 8, "name": "民俗小吃铺", "near_spot_id": 8, "cuisine": "小吃", "rating": 4.4, "heat": 680},
+  {"id": 9, "name": "喷泉夜宵", "near_spot_id": 9, "cuisine": "夜宵", "rating": 4.5, "heat": 570}
+]
