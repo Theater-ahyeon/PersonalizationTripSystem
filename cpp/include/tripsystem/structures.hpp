@@ -200,6 +200,15 @@ public:
         if (!list) return {};
         return *list;
     }
+
+    const Road* edgeBetween(int from, int to) const {
+        const auto* list = adj_.get(from);
+        if (!list) return nullptr;
+        for (const auto& road : *list) {
+            if (road.to == to) return &road;
+        }
+        return nullptr;
+    }
 };
 
 } // namespace tripsystem

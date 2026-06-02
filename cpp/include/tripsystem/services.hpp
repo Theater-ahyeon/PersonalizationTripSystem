@@ -11,6 +11,7 @@
 #include <functional>
 #include <iomanip>
 #include <iostream>
+#include <limits>
 #include <map>
 #include <sstream>
 #include <string>
@@ -65,6 +66,12 @@ struct PathCmp {
     bool operator()(const PathState& a, const PathState& b) const {
         return a.priority < b.priority;
     }
+};
+
+struct SpotPathResult {
+    bool found = false;
+    double total = 0;
+    std::vector<int> nodes;
 };
 
 class RecommendService {
@@ -124,11 +131,15 @@ private:
 class PathPlanner {
 public:
     void run(DataManager& data) {
-        std::cout << "1 第一版景点路径\n2 第二版 OSM 路径规划\n请选择: ";
+        std::cout << "1 景点最短路径 / Spot shortest path\n"
+                  << "2 OSM 路径规划 / OSM route\n"
+                  << "3 多点游览 / TSP multi-stop\n请选择: ";
         std::string c;
         std::getline(std::cin, c);
-        if (c == "2") planOsmPath(data);
-        else planSpotPath(data);
+        if (c == "1") planSpotPath(data);
+        else if (c == "2") planOsmPath(data);
+        else if (c == "3") planMultiStopPath(data);
+        else std::cout << "无效路径规划选项。\n";
     }
 
 private:
@@ -136,11 +147,144 @@ private:
         listSpots(data);
         int start = readInt("起点 id: ");
         int goal = readInt("终点 id: ");
-        std::cout << "交通方式 walk/bike: ";
-        std::string mode;
-        std::getline(std::cin, mode);
-        bool bike = trim(mode) == "bike";
+        if (!data.findSpot(start) || !data.findSpot(goal)) {
+            std::cout << "起点或终点不存在。\n";
+            return;
+        }
+        bool bike = readBikeMode();
 
+        SpotPathResult path = shortestSpotPath(data, start, goal, bike);
+        if (!path.found) {
+            std::cout << "未找到路径。\n";
+            return;
+        }
+        printSpotPath(data, path, bike, "Spot shortest path");
+        touchSpotHeat(data, path.nodes);
+    }
+
+    void planMultiStopPath(DataManager& data) {
+        listSpots(data);
+        int start = readInt("起点 id: ");
+        if (!data.findSpot(start)) {
+            std::cout << "起点不存在。\n";
+            return;
+        }
+
+        std::cout << "目标景点 id 列表（空格分隔，最多 12 个）: ";
+        std::string line;
+        std::getline(std::cin, line);
+        std::vector<int> targets = parseTargetIds(line, start);
+        if (targets.empty()) {
+            std::cout << "目标景点为空。\n";
+            return;
+        }
+        if (targets.size() > 12) {
+            std::cout << "目标景点数量超过 12，TSP 状态压缩 DP 不再计算。\n";
+            return;
+        }
+        for (int id : targets) {
+            if (!data.findSpot(id)) {
+                std::cout << "目标景点不存在: " << id << "\n";
+                return;
+            }
+        }
+        bool bike = readBikeMode();
+
+        std::vector<int> points;
+        points.push_back(start);
+        points.insert(points.end(), targets.begin(), targets.end());
+
+        const double inf = std::numeric_limits<double>::infinity();
+        size_t m = points.size();
+        std::vector<std::vector<double>> dist(m, std::vector<double>(m, inf));
+        std::vector<std::vector<SpotPathResult>> paths(m, std::vector<SpotPathResult>(m));
+
+        for (size_t i = 0; i < m; ++i) {
+            for (size_t j = 0; j < m; ++j) {
+                if (i == j) {
+                    dist[i][j] = 0;
+                    paths[i][j] = {true, 0, {points[i]}};
+                    continue;
+                }
+                paths[i][j] = shortestSpotPath(data, points[i], points[j], bike);
+                if (!paths[i][j].found) {
+                    std::cout << "存在不可达点对: " << spotName(data, points[i])
+                              << " -> " << spotName(data, points[j]) << "\n";
+                    return;
+                }
+                dist[i][j] = paths[i][j].total;
+            }
+        }
+
+        int n = static_cast<int>(targets.size());
+        int fullMask = (1 << n) - 1;
+        std::vector<std::vector<double>> dp(1 << n, std::vector<double>(n, inf));
+        std::vector<std::vector<int>> parent(1 << n, std::vector<int>(n, -1));
+
+        for (int i = 0; i < n; ++i) dp[1 << i][i] = dist[0][i + 1];
+        for (int mask = 1; mask <= fullMask; ++mask) {
+            for (int last = 0; last < n; ++last) {
+                if (!(mask & (1 << last)) || dp[mask][last] == inf) continue;
+                for (int next = 0; next < n; ++next) {
+                    if (mask & (1 << next)) continue;
+                    int nextMask = mask | (1 << next);
+                    double nd = dp[mask][last] + dist[last + 1][next + 1];
+                    if (nd < dp[nextMask][next]) {
+                        dp[nextMask][next] = nd;
+                        parent[nextMask][next] = last;
+                    }
+                }
+            }
+        }
+
+        int bestEnd = -1;
+        double best = inf;
+        for (int i = 0; i < n; ++i) {
+            if (dp[fullMask][i] < best) {
+                best = dp[fullMask][i];
+                bestEnd = i;
+            }
+        }
+        if (bestEnd < 0) {
+            std::cout << "多点游览计算失败。\n";
+            return;
+        }
+
+        std::vector<int> order;
+        for (int mask = fullMask, cur = bestEnd; cur >= 0;) {
+            order.push_back(cur);
+            int prev = parent[mask][cur];
+            mask ^= (1 << cur);
+            cur = prev;
+        }
+        std::reverse(order.begin(), order.end());
+
+        std::cout << "TSP multi-stop route (" << modeName(bike) << ")\n";
+        std::cout << "Visit order: " << spotName(data, start);
+        for (int idx : order) std::cout << " -> " << spotName(data, targets[idx]);
+        std::cout << "\n";
+
+        double total = 0;
+        int fromIndex = 0;
+        int segment = 1;
+        for (int targetIndex : order) {
+            int toIndex = targetIndex + 1;
+            const SpotPathResult& leg = paths[fromIndex][toIndex];
+            total += leg.total;
+            std::cout << "Segment " << segment++ << ": "
+                      << spotName(data, points[fromIndex]) << " -> "
+                      << spotName(data, points[toIndex])
+                      << ", distance=" << std::fixed << std::setprecision(1)
+                      << leg.total << " meters, cumulative=" << total << " meters\n";
+            printSpotPath(data, leg, bike, "Spot shortest path segment");
+            touchSpotHeat(data, leg.nodes);
+            fromIndex = toIndex;
+        }
+        std::cout << "TSP multi-stop total=" << std::fixed << std::setprecision(1)
+                  << total << " meters\n";
+    }
+
+    static SpotPathResult shortestSpotPath(DataManager& data, int start, int goal, bool bike) {
         HashMap<int, double> dist;
         HashMap<int, int> prev;
         MinHeap<PathState, PathCmp> heap;
@@ -164,32 +308,17 @@ private:
         }
 
         double* total = dist.get(goal);
-        if (!total) {
-            std::cout << "未找到路径。\n";
-            return;
-        }
+        if (!total) return {};
         std::vector<int> path;
         for (int x = goal; x != start;) {
             path.push_back(x);
             int* p = prev.get(x);
-            if (!p) break;
+            if (!p) return {};
             x = *p;
         }
         path.push_back(start);
         std::reverse(path.begin(), path.end());
-
-        std::cout << "最优路径，总权重=" << *total << ": ";
-        for (size_t i = 0; i < path.size(); ++i) {
-            Spot* s = data.findSpot(path[i]);
-            if (s) {
-                ++s->heat;
-                std::cout << s->name;
-            } else {
-                std::cout << path[i];
-            }
-            if (i + 1 < path.size()) std::cout << " -> ";
-        }
-        std::cout << "\n";
+        return {true, *total, path};
     }
 
     void planOsmPath(DataManager& data) {
@@ -204,11 +333,8 @@ private:
         }
         int start = readInt("起点 OSM node id: ");
         int goal = readInt("终点 OSM node id: ");
-        std::cout << "交通方式 walk/bike: ";
-        std::string mode;
-        std::getline(std::cin, mode);
-        mode = trim(mode);
-        if (mode != "bike") mode = "walk";
+        bool bike = readBikeMode();
+        std::string mode = modeName(bike);
 
         OsmNode* startNode = data.findOsmNode(start);
         OsmNode* goalNode = data.findOsmNode(goal);
@@ -219,7 +345,6 @@ private:
 
         HashMap<int, double> dist;
         HashMap<int, int> prev;
-        HashMap<int, std::string> prevRoad;
         MinHeap<PathState, PathCmp> heap;
         dist.insert(start, 0);
         heap.push({start, 0, haversine(*startNode, *goalNode)});
@@ -241,7 +366,6 @@ private:
                 if (!old || nd < *old) {
                     dist.insert(e.to, nd);
                     prev.insert(e.to, cur.node);
-                    prevRoad.insert(e.to, e.roadName);
                     heap.push({e.to, nd, nd + haversine(*next, *goalNode)});
                 }
             }
@@ -257,22 +381,107 @@ private:
         for (int x = goal; x != start;) {
             path.push_back(x);
             int* p = prev.get(x);
-            if (!p) break;
+            if (!p) {
+                std::cout << "OSM 路径回溯失败。\n";
+                return;
+            }
             x = *p;
         }
         path.push_back(start);
         std::reverse(path.begin(), path.end());
+        printOsmPath(data, path, *total, mode);
+    }
 
-        std::cout << "OSM A* 路径，总距离=" << std::fixed << std::setprecision(1) << *total << " 米:\n";
+    static void printSpotPath(DataManager& data, const SpotPathResult& path, bool bike, const std::string& title) {
+        std::cout << title << " (" << modeName(bike) << "), total="
+                  << std::fixed << std::setprecision(1) << path.total << " meters:\n";
+        if (path.nodes.empty()) return;
+        std::cout << "  0. " << spotName(data, path.nodes.front()) << " cumulative=0.0 meters\n";
+        double cumulative = 0;
+        for (size_t i = 1; i < path.nodes.size(); ++i) {
+            int from = path.nodes[i - 1];
+            int to = path.nodes[i];
+            const Road* road = data.graph.edgeBetween(from, to);
+            double segment = road ? (bike ? road->distBike : road->distWalk) : 0;
+            cumulative += segment;
+            std::cout << "  " << i << ". " << spotName(data, from)
+                      << " -> " << spotName(data, to)
+                      << " via road#" << from << "-" << to
+                      << " mode=" << modeName(bike)
+                      << " segment=" << segment
+                      << " cumulative=" << cumulative << " meters\n";
+        }
+    }
+
+    static void touchSpotHeat(DataManager& data, const std::vector<int>& path) {
+        for (int id : path) {
+            Spot* s = data.findSpot(id);
+            if (s) ++s->heat;
+        }
+    }
+
+    static std::vector<int> parseTargetIds(const std::string& line, int start) {
+        std::vector<int> targets;
+        std::stringstream ss(line);
+        int id = 0;
+        while (ss >> id) {
+            if (id == start) continue;
+            if (std::find(targets.begin(), targets.end(), id) == targets.end()) {
+                targets.push_back(id);
+            }
+        }
+        return targets;
+    }
+
+    static bool readBikeMode() {
+        std::cout << "交通方式 walk/bike: ";
+        std::string mode;
+        std::getline(std::cin, mode);
+        mode = trim(mode);
+        return mode == "bike";
+    }
+
+    static std::string modeName(bool bike) {
+        return bike ? "bike" : "walk";
+    }
+
+    static std::string spotName(DataManager& data, int id) {
+        Spot* s = data.findSpot(id);
+        return s ? s->name : std::to_string(id);
+    }
+
+    static const OsmEdge* findOsmEdge(DataManager& data, int from, int to, const std::string& mode) {
+        const auto* edges = data.osmNeighbors(from);
+        if (!edges) return nullptr;
+        for (const auto& e : *edges) {
+            if (e.to == to && edgeSupportsMode(e, mode)) return &e;
+        }
+        return nullptr;
+    }
+
+    static void printOsmPath(DataManager& data, const std::vector<int>& path, double total, const std::string& mode) {
+        std::cout << "OSM A* path (" << mode << "), total="
+                  << std::fixed << std::setprecision(1) << total << " meters:\n";
+        double cumulative = 0;
         for (size_t i = 0; i < path.size(); ++i) {
             OsmNode* n = data.findOsmNode(path[i]);
-            if (n) std::cout << "  " << n->id << " " << n->name;
-            else std::cout << "  " << path[i];
-            if (i > 0) {
-                std::string* road = prevRoad.get(path[i]);
-                if (road) std::cout << " via " << *road;
+            std::cout << "  " << i << ". ";
+            if (i == 0) {
+                if (n) std::cout << n->id << " " << n->name;
+                else std::cout << path[i];
+                std::cout << " cumulative=0.0 meters\n";
+                continue;
             }
-            std::cout << "\n";
+            const OsmEdge* edge = findOsmEdge(data, path[i - 1], path[i], mode);
+            double segment = edge ? edge->distance : 0;
+            cumulative += segment;
+            OsmNode* prevNode = data.findOsmNode(path[i - 1]);
+            std::cout << (prevNode ? prevNode->name : std::to_string(path[i - 1]))
+                      << " -> " << (n ? n->name : std::to_string(path[i]))
+                      << " via " << (edge ? edge->roadName : "unknown road")
+                      << " mode=" << mode
+                      << " segment=" << segment
+                      << " cumulative=" << cumulative << " meters\n";
         }
     }
 

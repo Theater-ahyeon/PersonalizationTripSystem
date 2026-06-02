@@ -20,10 +20,18 @@
 ## 核心算法
 
 - 景点推荐：Top-K 小顶堆，`O(N log K)`。
-- 路径规划：第一版基于景点道路图；第二版基于离线 OpenStreetMap 风格节点和道路边，使用 A* + Haversine 启发函数，支持步行/骑行过滤。
+- 路径规划：景点道路图使用 Dijkstra 输出最短路径、单段距离和累计距离；离线 OpenStreetMap 风格节点和道路边使用 A* + Haversine 启发函数，支持步行/骑行过滤；多点游览使用 TSP 状态压缩 DP。
 - 场所搜索：Trie 前缀补全 + KMP 关键词匹配 + HashMap 去重。
 - 日记管理：第一版完成 Huffman 编码压缩和启动解压读取，后续再扩展完整管理能力。
 - 美食推荐：按当前景点筛选餐厅后进行 Top-K 推荐。
+
+## 脚本化验证
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\cpp\scripts\smoke.ps1
+```
+
+脚本会使用临时数据目录验证推荐、路径、搜索、日记和美食入口。
 
 ## 构建运行
 

@@ -8,6 +8,8 @@
 powershell -ExecutionPolicy Bypass -File .\cpp\scripts\build.ps1
 ```
 
+如果 `g++` 不在 PATH 中，构建脚本会尝试常见 MSYS2 路径，并使用静态链接减少运行时 PATH 依赖。
+
 ## 运行
 
 ```powershell
@@ -53,6 +55,7 @@ powershell -ExecutionPolicy Bypass -File .\cpp\scripts\build.ps1
 - 场所搜索：使用 Trie 自动补全、KMP 匹配、HashMap 去重，并按匹配类型、评分、热度、名称排序。
 - 美食推荐：按当前景点筛选附近餐厅，使用 `rating 0.5 + heat 0.3 + cuisineMatch 0.2` 的权重做 Top-5。
 - 旅游日记：保留 Huffman 压缩存储，增加样例日记，并对缺文件、空内容、解码失败做可读提示。
+- 路径规划：景点道路图使用 Dijkstra 输出单段距离和累计距离；OSM 路径使用 A* 输出道路名；多点游览使用 TSP 状态压缩 DP。
 
 ## 已实现算法与数据结构
 
@@ -61,18 +64,27 @@ powershell -ExecutionPolicy Bypass -File .\cpp\scripts\build.ps1
 - 手写 `Trie`：名称前缀补全
 - 邻接表 `Graph`：步行/骑行双权重道路图
 - `Top-K`：景点与美食推荐
+- `Dijkstra`：景点道路图最短路径和多点游览点对距离
 - `A*`：基于离线 OpenStreetMap 样例节点和道路边进行路径规划
+- `TSP-DP`：多点游览访问顺序规划，目标点数量限制为 12
 - `KMP`：场所与日记关键词匹配
 - `Huffman`：日记正文压缩为 `.bin`，编码表写入 `.json`
 
-## 路径规划第二版（OSM）
+## 路径规划
 
-`2 路径规划` 下包含两个入口：
+`2 路径规划` 下包含三个入口：
 
-- `1 第一版景点路径`：使用 `roads.json` 中的景点道路图。
-- `2 第二版 OSM 路径规划`：使用 `osm_nodes.json` 和 `osm_edges.json`，通过 A* 搜索输出节点、道路名和总距离。
+- `1 景点最短路径`：使用 `roads.json` 中的景点道路图，输出单段距离、累计距离和总距离。
+- `2 OSM 路径规划`：使用 `osm_nodes.json` 和 `osm_edges.json`，通过 A* 搜索输出节点、道路名、交通方式和总距离。
+- `3 多点游览`：输入起点和多个目标景点，使用 TSP 状态压缩 DP 输出推荐游览顺序和分段路径。
 
-OSM 样例数据采用离线 JSON，不依赖网络接口，便于课程演示。
+OSM 样例数据采用离线 JSON，不依赖网络接口，便于普通课程设计运行。
+
+## 脚本化验证
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\cpp\scripts\smoke.ps1
+```
 
 ## 旅游日记第一版（Huffman）
 

@@ -12,5 +12,13 @@
   {"from": 2, "to": 7, "dist_walk": 620, "dist_bike": 260},
   {"from": 3, "to": 8, "dist_walk": 560, "dist_bike": 240},
   {"from": 4, "to": 9, "dist_walk": 470, "dist_bike": 200},
-  {"from": 1, "to": 5, "dist_walk": 900, "dist_bike": 380}
+  {"from": 1, "to": 5, "dist_walk": 900, "dist_bike": 380},
+  {"from": 10, "to": 11, "dist_walk": 340, "dist_bike": 140},
+  {"from": 11, "to": 12, "dist_walk": 410, "dist_bike": 180},
+  {"from": 12, "to": 13, "dist_walk": 360, "dist_bike": 150},
+  {"from": 13, "to": 14, "dist_walk": 290, "dist_bike": 120},
+  {"from": 14, "to": 7, "dist_walk": 520, "dist_bike": 210},
+  {"from": 5, "to": 11, "dist_walk": 430, "dist_bike": 170},
+  {"from": 6, "to": 13, "dist_walk": 480, "dist_bike": 200},
+  {"from": 8, "to": 12, "dist_walk": 300, "dist_bike": 130}
 ]

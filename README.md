@@ -7,7 +7,7 @@
 ## 项目定位
 
 - 手写 `HashMap`、`MinHeap`、`Trie`、邻接表图等核心数据结构
-- 使用 Top-K、A*/最短路、KMP、Huffman 等算法完成推荐、路径、搜索和日记压缩
+- 使用 Top-K、Dijkstra、A*、TSP 状态压缩 DP、KMP、Huffman 等算法完成推荐、路径、搜索和日记压缩
 - 使用 JSON 文件保存景点、道路、餐厅数据
 - 使用二进制文件保存 Huffman 压缩后的日记正文
 - 通过 CLI 菜单形成课程设计演示闭环
@@ -71,6 +71,14 @@ powershell -ExecutionPolicy Bypass -File .\cpp\scripts\build.ps1
 - `cpp/data/restaurants.json`：餐厅数据
 - `cpp/data/diaries/{id}.json`：日记元数据和 Huffman 编码表
 - `cpp/data/diaries/{id}.bin`：Huffman 压缩后的日记正文
+
+## 脚本化验证
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\cpp\scripts\smoke.ps1
+```
+
+该脚本会使用临时数据目录依次验证景点最短路径、OSM A* 路径、多点游览、景点推荐、场所搜索、美食推荐和旅游日记浏览。
 
 ## 文档入口
 

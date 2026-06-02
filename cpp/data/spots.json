@@ -8,5 +8,9 @@
   {"id": 7, "name": "竹林步道", "category": "自然", "rating": 4.6, "heat": 820, "tags": "徒步,清静,森林"},
   {"id": 8, "name": "民俗街", "category": "文化", "rating": 4.3, "heat": 760, "tags": "非遗,购物,小吃"},
   {"id": 9, "name": "音乐喷泉", "category": "休闲", "rating": 4.7, "heat": 930, "tags": "夜景,表演,广场"},
-  {"id": 10, "name": "游客中心", "category": "服务", "rating": 4.2, "heat": 500, "tags": "咨询,入口,服务"}
+  {"id": 10, "name": "游客中心", "category": "服务", "rating": 4.2, "heat": 500, "tags": "咨询,入口,服务"},
+  {"id": 11, "name": "湿地花园", "category": "自然", "rating": 4.5, "heat": 650, "tags": "湿地,观鸟,生态"},
+  {"id": 12, "name": "文创书店", "category": "文化", "rating": 4.4, "heat": 580, "tags": "阅读,文创,室内"},
+  {"id": 13, "name": "露营草坪", "category": "休闲", "rating": 4.6, "heat": 720, "tags": "露营,草坪,亲子"},
+  {"id": 14, "name": "运动驿站", "category": "服务", "rating": 4.1, "heat": 430, "tags": "骑行,补给,服务"}
 ]
