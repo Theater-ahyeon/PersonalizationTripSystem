@@ -153,7 +153,13 @@ class HashMap:
         Returns:
             True if the key is present, False otherwise.
         """
-        return self.get(key) is not None
+        idx = self._hash(key)
+        node = self._buckets[idx]
+        while node is not None:
+            if node.key == key:
+                return True
+            node = node.next
+        return False
 
     # ------------------------------------------------------------------
     # Size
