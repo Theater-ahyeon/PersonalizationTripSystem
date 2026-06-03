@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" role="img" aria-label="cherry road">
+  <rect width="640" height="400" fill="#f8e8ee"/>
+  <path d="M245 400c8-108 38-186 75-248 37 62 67 140 75 248z" fill="#8a8f7a"/>
+  <path d="M272 400c5-78 23-130 48-178 25 48 43 100 48 178z" fill="#656c5e"/>
+  <path d="M0 290c86-30 174-38 320-38s234 8 320 38v110H0z" fill="#cfd4c0"/>
+  <circle cx="168" cy="128" r="44" fill="#f29ab7"/>
+  <circle cx="214" cy="92" r="38" fill="#f5b1c7"/>
+  <circle cx="474" cy="120" r="48" fill="#f29ab7"/>
+  <circle cx="426" cy="86" r="36" fill="#f5b1c7"/>
+</svg>

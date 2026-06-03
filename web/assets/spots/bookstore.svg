@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" role="img" aria-label="bookstore">
+  <rect width="640" height="400" fill="#efe8d6"/>
+  <rect y="300" width="640" height="100" fill="#b99b70"/>
+  <rect x="122" y="118" width="396" height="190" rx="10" fill="#fffaf0"/>
+  <rect x="150" y="154" width="70" height="110" fill="#167a65"/>
+  <rect x="236" y="154" width="70" height="110" fill="#e35d3f"/>
+  <rect x="322" y="154" width="70" height="110" fill="#5b8db8"/>
+  <rect x="408" y="154" width="70" height="110" fill="#d2a84f"/>
+  <path d="M122 118h396l-60-58H182z" fill="#7f5b3e"/>
+  <path d="M178 286h284" stroke="#7f5b3e" stroke-width="15" stroke-linecap="round"/>
+</svg>

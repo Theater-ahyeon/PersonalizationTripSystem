@@ -1,0 +1,12 @@
+# IDE / editor
+.vs/
+
+# Local agent / tooling
+.claude/
+
+# Server logs
+.server-err.log
+.server-out.log
+
+# C++ build output
+cpp/build/

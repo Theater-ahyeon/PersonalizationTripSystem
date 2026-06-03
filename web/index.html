@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>颐和园个性化旅游系统</title>
+  <link rel="stylesheet" href="./vendor/leaflet.css">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <aside class="control-panel" aria-label="系统导航">
+      <div class="brand-block">
+        <p class="eyebrow">TripSystem · Beijing</p>
+        <h1>颐和园个性化旅游系统</h1>
+        <p>真实 OSM 路网 + 可控演示评分、热度、日记和美食数据。</p>
+      </div>
+
+      <nav id="tourTabs" class="tour-tabs" aria-label="功能切换">
+        <button type="button" class="tab-button active" data-view="recommendView">推荐</button>
+        <button type="button" class="tab-button" data-view="routeView">路线</button>
+        <button type="button" class="tab-button" data-view="queryView">查询</button>
+        <button type="button" class="tab-button" data-view="diaryView">日记</button>
+        <button type="button" class="tab-button" data-view="foodView">美食</button>
+        <button type="button" class="tab-button" data-view="dataView">数据</button>
+      </nav>
+
+      <section class="tool-section">
+        <label for="nodeSearchInput">地图节点搜索</label>
+        <input id="nodeSearchInput" type="search" placeholder="输入东宫门、长廊、苏州街..." autocomplete="off">
+        <div id="nodeList" class="node-list" aria-live="polite"></div>
+      </section>
+    </aside>
+
+    <section class="workspace-panel" aria-label="功能演示区">
+      <section id="recommendView" class="view-panel active" aria-label="旅游推荐">
+        <div class="view-heading">
+          <p class="eyebrow">旅游前 · Top-10 排序推荐</p>
+          <h2>按兴趣、评分和热度推荐颐和园目的地</h2>
+        </div>
+        <div class="control-grid">
+          <label>用户画像<select id="userSelect"></select></label>
+          <label>分类筛选<select id="recommendCategory"></select></label>
+          <label class="wide">兴趣关键词<input id="preferenceInput" type="search" placeholder="例如：建筑 湖景 摄影"></label>
+          <button id="recommendButton" class="primary-button" type="button">生成推荐</button>
+        </div>
+        <div id="recommendResults" class="result-list"></div>
+      </section>
+
+      <section id="routeView" class="view-panel" aria-label="旅游路线规划">
+        <div class="view-heading">
+          <p class="eyebrow">旅游中 · 最短路径与多点游览</p>
+          <h2>从当前位置规划到目标景点的最优路线</h2>
+        </div>
+        <div class="control-grid">
+          <label>起点<select id="startSelect"></select></label>
+          <label>终点<select id="goalSelect"></select></label>
+          <div class="mode-toggle" role="group" aria-label="交通方式">
+            <button type="button" class="mode-button active" data-mode="walk">步行</button>
+            <button type="button" class="mode-button" data-mode="bike">骑行</button>
+          </div>
+          <button id="routeButton" type="button" class="primary-button">高亮最短路径</button>
+          <button id="clearRouteButton" type="button" class="secondary-button">清除路线</button>
+        </div>
+        <div class="section-row">
+          <h3>多点游览目标</h3>
+          <button id="runMultiButton" type="button" class="small-button">生成顺序</button>
+        </div>
+        <div id="multiStopList" class="multi-stop-list"></div>
+        <section id="route-summary" class="result-card" aria-live="polite">
+          <p class="eyebrow">演示提示</p>
+          <h3>默认路线：颐和园东宫门 → 苏州街入口</h3>
+          <p>点击“高亮最短路径”后，地图会显示醒目的路线描边和路径节点。</p>
+        </section>
+      </section>
+
+      <section id="queryView" class="view-panel" aria-label="场所查询">
+        <div class="view-heading">
+          <p class="eyebrow">场所查询 · 服务设施排序</p>
+          <h2>查询附近卫生间、商店、地铁站等服务设施</h2>
+        </div>
+        <div class="control-grid">
+          <label>当前位置<select id="facilityOriginSelect"></select></label>
+          <label>设施类型<select id="facilityTypeSelect"></select></label>
+          <label class="wide">关键词<input id="facilityKeyword" type="search" placeholder="例如：卫生间、游客服务、商店"></label>
+          <button id="facilitySearchButton" class="primary-button" type="button">查询设施</button>
+        </div>
+        <div id="facilityResults" class="result-list"></div>
+      </section>
+
+      <section id="diaryView" class="view-panel" aria-label="旅游日记">
+        <div class="view-heading">
+          <p class="eyebrow">旅游后 · 日记管理与交流</p>
+          <h2>浏览、检索并按热度/评分/兴趣推荐旅游日记</h2>
+        </div>
+        <div class="control-grid">
+          <label>排序策略<select id="diarySort">
+            <option value="heat">热度优先</option>
+            <option value="rating">评分优先</option>
+            <option value="interest">兴趣匹配</option>
+          </select></label>
+          <label class="wide">全文关键词<input id="diaryKeyword" type="search" placeholder="例如：长廊、夕阳、苏州街"></label>
+          <button id="diarySearchButton" class="primary-button" type="button">检索日记</button>
+        </div>
+        <div id="diaryResults" class="result-list"></div>
+      </section>
+
+      <section id="foodView" class="view-panel" aria-label="美食推荐">
+        <div class="view-heading">
+          <p class="eyebrow">美食推荐 · 菜系、评分、热度、距离</p>
+          <h2>围绕当前景点推荐周边餐饮</h2>
+        </div>
+        <div class="control-grid">
+          <label>当前景点<select id="foodSpotSelect"></select></label>
+          <label>菜系<select id="cuisineSelect"></select></label>
+          <label class="wide">模糊搜索<input id="foodKeyword" type="search" placeholder="例如：北京菜、咖啡、烤鸭"></label>
+          <button id="foodRecommendButton" class="primary-button" type="button">推荐美食</button>
+        </div>
+        <div id="foodResults" class="result-list"></div>
+      </section>
+
+      <section id="dataView" class="view-panel" aria-label="数据概览">
+        <div class="view-heading">
+          <p class="eyebrow">数据要求 · 验收概览</p>
+          <h2>展示节点、边、建筑、服务设施、用户和日记规模</h2>
+        </div>
+        <div id="dataOverview"></div>
+      </section>
+    </section>
+
+    <aside class="map-detail-panel" aria-label="地图与详情">
+      <section class="map-panel" aria-label="地图区域">
+        <div id="map" class="map-canvas"></div>
+        <div id="mapFallback" class="fallback-map" hidden>
+          <p>地图底图暂未加载，仍可查看节点、路线和推荐结果。</p>
+        </div>
+        <div id="loadingState" class="loading-state">正在加载颐和园 OSM 节点和道路...</div>
+      </section>
+      <section id="detail-panel" class="detail-panel" aria-label="地点详情">
+        <div class="empty-detail">
+          <p class="eyebrow">地点详情</p>
+          <h2>选择地图或结果中的地点</h2>
+          <p>这里会显示图片、简介、评分、热度、坐标和路线操作。</p>
+        </div>
+      </section>
+    </aside>
+  </main>
+
+  <script src="./vendor/leaflet.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

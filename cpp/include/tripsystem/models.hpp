@@ -26,6 +26,9 @@ struct OsmNode {
     double lat = 0;
     double lon = 0;
     std::string type;
+    int spotId = 0;
+    std::string description;
+    std::string image;
 };
 
 struct OsmEdge {

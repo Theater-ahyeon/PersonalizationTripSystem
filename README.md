@@ -1,88 +1,73 @@
 # PersonalizationTripSystem
 
-个性化旅游系统（数据结构课程设计），当前仓库已经统一为纯 C++17 CLI 版本。
+个性化旅游系统课程设计，当前场景固定为 **北京颐和园 + 周边服务区**。
 
-本项目已经切换为单一 C++ 实现，核心能力围绕手写数据结构、经典算法和文件持久化展开，符合“无数据库、全内存运行、JSON + 二进制持久化”的需求文档。
+项目采用 C++17 CLI 作为算法主体，前端使用纯 HTML/CSS/JavaScript + Leaflet 做验收演示。数据不依赖数据库，运行时从 `cpp/data/*.json` 和日记二进制压缩文件加载。
 
-## 项目定位
+## 已覆盖功能
 
-- 手写 `HashMap`、`MinHeap`、`Trie`、邻接表图等核心数据结构
-- 使用 Top-K、Dijkstra、A*、TSP 状态压缩 DP、KMP、Huffman 等算法完成推荐、路径、搜索和日记压缩
-- 使用 JSON 文件保存景点、道路、餐厅数据
-- 使用二进制文件保存 Huffman 压缩后的日记正文
-- 通过 CLI 菜单形成课程设计演示闭环
+- 旅游推荐：按兴趣、评分、热度计算 Top-10 推荐。
+- 旅游路线规划：景点图 Dijkstra、OSM 路网 A*、多点游览 TSP-DP。
+- 场所查询：服务设施按类型/关键词查询，并按路径距离排序。
+- 旅游日记：日记浏览、关键词检索、评分/热度排序和 Huffman 压缩展示。
+- 美食推荐：按景点、菜系、评分、热度和距离推荐餐饮。
+- 前端演示：推荐、路线、查询、日记、美食、数据概览六个视图。
 
-## 快速开始
+## 数据规模
 
-### 构建
+- `cpp/data/osm_nodes.json`：228 个颐和园 OSM 节点，含 20 个具名景区锚点和 208 个 Overpass 真实道路节点。
+- `cpp/data/osm_edges.json`：526 条有向道路边，支持步行/骑行模式。
+- `cpp/data/spots.json`：24 个景点、建筑、入口和观景点。
+- `cpp/data/facilities.json`：60 个服务设施，12 种设施类型。
+- `cpp/data/restaurants.json`：50 条餐饮推荐数据，10 种菜系。
+- `cpp/data/users.json`：10 个用户画像。
+- `cpp/data/diaries/index.json`：12 条前端日记交流展示数据。
+
+真实图片不联网抓取，后续可把节点 `image` 字段改成仓库内图片路径，例如 `web/assets/spots/real/summer-palace-east-gate.jpg`。前端会完整显示图片，加载失败时回退到本地占位图。
+
+## 构建与运行
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\cpp\scripts\build.ps1
-```
-
-### 运行
-
-```powershell
 .\cpp\build\tripsystem.exe .\cpp\data
 ```
 
-## 目录结构
+## 前端演示
 
-```text
-.
-├── cpp/
-│   ├── include/
-│   │   └── tripsystem/
-│   │       ├── app.hpp
-│   │       ├── data_manager.hpp
-│   │       ├── models.hpp
-│   │       ├── services.hpp
-│   │       ├── structures.hpp
-│   │       └── utils.hpp
-│   ├── src/
-│   │   └── main.cpp
-│   ├── data/
-│   │   └── diaries/
-│   ├── scripts/
-│   │   └── build.ps1
-│   └── README.md
-├── docs/
-├── plans/
-└── reports/
-```
-
-## 功能菜单
-
-```text
-1 景点推荐
-2 路径规划
-3 场所搜索
-4 旅游日记
-5 美食推荐
-0 保存并退出
-```
-
-## 数据文件
-
-- `cpp/data/spots.json`：景点数据
-- `cpp/data/roads.json`：道路边，包含 `dist_walk` 和 `dist_bike`
-- `cpp/data/osm_nodes.json`：离线 OpenStreetMap 风格路径节点
-- `cpp/data/osm_edges.json`：离线 OpenStreetMap 风格道路边，包含交通方式和道路名
-- `cpp/data/restaurants.json`：餐厅数据
-- `cpp/data/diaries/{id}.json`：日记元数据和 Huffman 编码表
-- `cpp/data/diaries/{id}.bin`：Huffman 压缩后的日记正文
-
-## 脚本化验证
+在仓库根目录启动静态服务器，让页面能同时访问 `web/` 和 `cpp/data/`：
 
 ```powershell
+python -m http.server 5173
+```
+
+打开：
+
+```text
+http://localhost:5173/web/index.html
+```
+
+建议答辩演示顺序：
+
+1. 打开“数据”视图，展示 200+ 节点、200+ 道路边、服务设施、用户和日记规模。
+2. 打开“推荐”视图，展示兴趣、评分、热度排序。
+3. 打开“路线”视图，默认运行“颐和园东宫门 → 苏州街入口”最短路径并高亮地图。
+4. 打开“查询”“日记”“美食”视图，分别说明场所查询、日记交流和美食推荐。
+
+## 重新拉取 OSM 路网
+
+默认场景为 `summer-palace`，bbox 为 `39.9850,116.2550,40.0120,116.3050`：
+
+```powershell
+node .\web\scripts\generate-osm-data.mjs summer-palace
+```
+
+脚本只在生成数据时访问 Overpass。生成后的 JSON 已落盘，普通运行和答辩演示不需要联网。
+
+## 验证
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\web\scripts\smoke.ps1
 powershell -ExecutionPolicy Bypass -File .\cpp\scripts\smoke.ps1
 ```
 
-该脚本会使用临时数据目录依次验证景点最短路径、OSM A* 路径、多点游览、景点推荐、场所搜索、美食推荐和旅游日记浏览。
-
-## 文档入口
-
-- [C++ 工程说明](cpp/README.md)
-- [核心功能点](docs/个性化旅游系统核心功能点(1).md)
-- [软件开发文档](docs/软件开发文档.md)
-- [C++ 实施说明](plans/cpp-approach.md)
+前端 smoke 会校验北京颐和园 bbox、节点/边/设施/餐饮/用户/日记数量、关键功能视图、图片路径和默认路径可达性。
