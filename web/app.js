@@ -764,9 +764,12 @@ function showNodeDetail(node) {
 function recommendSpots() {
   const user = selectedUser();
   const category = byId("recommendCategory").value;
-  const keyword = byId("recommendKeyword").value.trim().toLowerCase();
   const sortMode = byId("recommendSort").value;
-  const preference = `${byId("preferenceInput").value} ${(user?.preference_tags || []).join(" ")}`.trim();
+  const preferenceInput = byId("preferenceInput").value.trim().toLowerCase();
+  const keywordInput = byId("recommendKeyword").value.trim().toLowerCase();
+  // Merge both inputs: preference tokens also act as name/category/tag filters
+  const keyword = [preferenceInput, keywordInput].filter(Boolean).join(" ");
+  const preference = `${preferenceInput} ${(user?.preference_tags || []).join(" ")}`.trim();
   const categoryPreference = (user?.preferred_categories || []).join(" ");
   const maxHeat = Math.max(...state.spots.map((spot) => Number(spot.heat) || 0), 1);
   const lshCandidates = getLshCandidates(state.spotLshIndex, preference || keyword || categoryPreference, state.spots, 36);
