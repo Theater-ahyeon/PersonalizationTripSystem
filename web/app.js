@@ -485,6 +485,9 @@ function fillUserSelect() {
     option.textContent = `${user.name} · ${user.preference_tags.join("/")}`;
     select.appendChild(option);
   });
+  // Default to first non-admin user to avoid admin's restrictive preference tags
+  const firstUser = state.users.find((u) => !u.is_admin);
+  if (firstUser) select.value = firstUser.id;
 }
 
 function fillCategorySelect() {
