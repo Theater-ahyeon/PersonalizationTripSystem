@@ -1,0 +1,20 @@
+[
+  {"from": 1, "to": 2, "dist_walk": 320, "dist_bike": 260},
+  {"from": 2, "to": 3, "dist_walk": 260, "dist_bike": 210},
+  {"from": 3, "to": 5, "dist_walk": 330, "dist_bike": 9999},
+  {"from": 5, "to": 6, "dist_walk": 280, "dist_bike": 9999},
+  {"from": 6, "to": 7, "dist_walk": 180, "dist_bike": 9999},
+  {"from": 7, "to": 2, "dist_walk": 350, "dist_bike": 290},
+  {"from": 2, "to": 13, "dist_walk": 470, "dist_bike": 360},
+  {"from": 13, "to": 4, "dist_walk": 180, "dist_bike": 140},
+  {"from": 4, "to": 9, "dist_walk": 230, "dist_bike": 180},
+  {"from": 9, "to": 11, "dist_walk": 550, "dist_bike": 410},
+  {"from": 11, "to": 10, "dist_walk": 520, "dist_bike": 390},
+  {"from": 10, "to": 14, "dist_walk": 430, "dist_bike": 330},
+  {"from": 14, "to": 12, "dist_walk": 360, "dist_bike": 280},
+  {"from": 12, "to": 3, "dist_walk": 280, "dist_bike": 220},
+  {"from": 4, "to": 8, "dist_walk": 670, "dist_bike": 500},
+  {"from": 8, "to": 10, "dist_walk": 9999, "dist_bike": 930},
+  {"from": 11, "to": 12, "dist_walk": 410, "dist_bike": 310},
+  {"from": 1, "to": 13, "dist_walk": 520, "dist_bike": 390}
+]

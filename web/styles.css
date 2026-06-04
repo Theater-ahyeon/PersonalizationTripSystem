@@ -516,6 +516,11 @@ button:hover {
   font-weight: 900;
 }
 
+.pack-message {
+  color: var(--primary);
+  font-weight: 800;
+}
+
 .chip {
   min-height: 38px;
   border: 1px solid var(--outline);
@@ -637,6 +642,21 @@ button:hover {
   display: block;
   color: var(--muted);
   line-height: 1.5;
+}
+
+.route-node-note {
+  align-self: center;
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.4;
+}
+
+#recommendResults:focus,
+#facilityResults:focus,
+#diaryResults:focus,
+#foodResults:focus {
+  outline: 3px solid rgba(0, 88, 188, 0.32);
+  outline-offset: 6px;
 }
 
 .score-row {
@@ -834,6 +854,13 @@ button:hover {
   font-size: 0.85em;
   opacity: 0.7;
   margin-top: 8px;
+}
+
+.diary-export-note {
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.45;
+  margin: -0.2rem 0 0;
 }
 
 .storyboard-output .frame-card {

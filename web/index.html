@@ -235,14 +235,16 @@
               </div>
               <label>图片/视频<input id="diaryMediaFileInput" type="file" accept="image/*,video/*" multiple></label>
               <button id="diaryCreateButton" class="primary-button" type="button">保存日记</button>
+              <button id="diaryExportButton" class="secondary-button" type="button">导出日记 JSON</button>
+              <p class="diary-export-note">导出后可替换 web/data/diaries/index.json，或交给 C++ 数据目录同步。</p>
             </div>
-            <button id="aigcDraftButton" class="primary-button" type="button">生成日记草稿</button>
-            <button id="aigcAnimationButton" class="secondary-button" type="button">生成动画分镜</button>
+            <button id="aigcDraftButton" class="primary-button" type="button">生成模拟日记草稿</button>
+            <button id="aigcAnimationButton" class="secondary-button" type="button">生成模拟分镜</button>
             <div id="aigcStoryboard" class="storyboard-output">
               <div class="storyboard-placeholder">
                 <div class="storyboard-icon">🎬</div>
-                <p>上传照片或输入描述文字，点击上方按钮生成旅游动画分镜。</p>
-                <p class="storyboard-hint">当前为演示入口：基于规则脚本生成分镜草稿，可扩展接入 AIGC 模型。</p>
+                <p>模拟分镜 / 待接入模型</p>
+                <p class="storyboard-hint">当前为规则脚本模拟，未接入真实 AIGC 模型；可扩展为文生图或图生视频服务。</p>
               </div>
             </div>
           </div>
@@ -301,7 +303,9 @@
     <nav class="mobile-nav" aria-label="移动端功能切换">
       <button type="button" class="mobile-tab active" data-view="recommendView">探索</button>
       <button type="button" class="mobile-tab" data-view="routeView">路线</button>
+      <button type="button" class="mobile-tab" data-view="queryView">查询</button>
       <button type="button" class="mobile-tab" data-view="diaryView">日记</button>
+      <button type="button" class="mobile-tab" data-view="foodView">美食</button>
     </nav>
   </div>
 

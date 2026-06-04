@@ -1,0 +1,8 @@
+[
+  {"id": 1, "name": "清芬园家常菜窗口", "near_spot_id": 11, "cuisine": "校园食堂", "rating": 4.5, "heat": 720},
+  {"id": 2, "name": "清芬园面食窗口", "near_spot_id": 11, "cuisine": "面食", "rating": 4.4, "heat": 680},
+  {"id": 3, "name": "主楼咖啡轻食", "near_spot_id": 4, "cuisine": "咖啡", "rating": 4.3, "heat": 520},
+  {"id": 4, "name": "紫荆园简餐", "near_spot_id": 10, "cuisine": "简餐", "rating": 4.2, "heat": 610},
+  {"id": 5, "name": "体育馆能量补给站", "near_spot_id": 12, "cuisine": "轻食", "rating": 4.1, "heat": 430},
+  {"id": 6, "name": "艺术博物馆咖啡角", "near_spot_id": 8, "cuisine": "咖啡", "rating": 4.4, "heat": 390}
+]

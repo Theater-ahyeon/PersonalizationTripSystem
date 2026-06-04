@@ -87,7 +87,8 @@ const state = {
   routeStrategy: "distance",
   mapBounds: null,
   mapFitted: false,
-  mapRegion: "dataset"
+  mapRegion: "dataset",
+  currentRegionPackId: "summer_palace"
 };
 
 const byId = (id) => document.getElementById(id);
@@ -113,20 +114,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     state.users = users;
     state.diaries = diaries;
     state.regionPacks = regionPacks;
+    state.currentRegionPackId = state.regionPacks.find((pack) => pack.id === "summer_palace")?.id
+      || state.regionPacks.find((pack) => pack.status === "active")?.id
+      || "summer_palace";
 
     initializeMap();
-    populateControls();
-    renderNodeList(state.nodes);
-    buildFacilityGeoIndex();
-    buildSimilarityIndexes();
-    renderNodeMarkers();
-    renderRoadNetwork();
-    renderFacilityMapMarkers();
-    showNodeDetail(state.nodes[0]);
-    recommendSpots();
-    searchFacilities();
-    renderDiaryList();
-    recommendFood();
+    reloadCurrentDataset({ fit: true });
     byId("loadingState").classList.add("hidden");
   } catch (error) {
     const errMsg = error && error.message ? error.message : String(error || "未知错误");
@@ -191,7 +184,7 @@ function bindStaticControls() {
     });
   });
 
-  byId("recommendButton").addEventListener("click", recommendSpots);
+  byId("recommendButton").addEventListener("click", handleRecommendClick);
   byId("userSelect").addEventListener("change", () => {
     const user = selectedUser();
     byId("preferenceInput").value = user ? user.preference_tags.join(" ") : "";
@@ -226,26 +219,55 @@ function bindStaticControls() {
     });
   });
 
-  byId("facilitySearchButton").addEventListener("click", searchFacilities);
+  byId("facilitySearchButton").addEventListener("click", handleFacilitySearchClick);
   byId("facilityKeyword").addEventListener("input", debounce(searchFacilities, 180));
   byId("facilityTypeSelect").addEventListener("change", searchFacilities);
   byId("facilityOriginSelect").addEventListener("change", searchFacilities);
   byId("facilityRangeSelect").addEventListener("change", searchFacilities);
 
-  byId("diarySearchButton").addEventListener("click", renderDiaryList);
+  byId("diarySearchButton").addEventListener("click", handleDiarySearchClick);
   byId("diaryKeyword").addEventListener("input", debounce(renderDiaryList, 180));
   byId("diarySort").addEventListener("change", renderDiaryList);
   byId("diarySearchMode").addEventListener("change", renderDiaryList);
   byId("diaryCreateButton").addEventListener("click", createDiaryEntry);
+  byId("diaryExportButton").addEventListener("click", exportDiariesJson);
   byId("indoorRouteButton").addEventListener("click", runIndoorRoute);
   byId("aigcDraftButton").addEventListener("click", generateDiaryDraft);
   byId("aigcAnimationButton").addEventListener("click", generateAigcStoryboard);
 
-  byId("foodRecommendButton").addEventListener("click", recommendFood);
+  byId("foodRecommendButton").addEventListener("click", handleFoodRecommendClick);
   byId("foodSpotSelect").addEventListener("change", recommendFood);
   byId("cuisineSelect").addEventListener("change", recommendFood);
   byId("foodSortSelect").addEventListener("change", recommendFood);
   byId("foodKeyword").addEventListener("input", debounce(recommendFood, 180));
+}
+
+function handleRecommendClick() {
+  recommendSpots();
+  focusResultRegion("recommendResults");
+}
+
+function handleFacilitySearchClick() {
+  searchFacilities();
+  focusResultRegion("facilityResults");
+}
+
+function handleDiarySearchClick() {
+  renderDiaryList();
+  focusResultRegion("diaryResults");
+}
+
+function handleFoodRecommendClick() {
+  recommendFood();
+  focusResultRegion("foodResults");
+}
+
+function focusResultRegion(id) {
+  const target = byId(id);
+  if (!target) return;
+  target.setAttribute("tabindex", "-1");
+  target.scrollIntoView({ behavior: "smooth", block: "start" });
+  target.focus({ preventScroll: true });
 }
 
 function switchView(viewId) {
@@ -343,9 +365,11 @@ function updateLocalOverlayVisibility() {
 function updateMapDataNotice() {
   const notice = byId("mapDataNotice");
   if (!notice) return;
+  const pack = findRegionPack(state.currentRegionPackId);
+  const packName = pack?.name || "当前数据包";
   notice.textContent = state.mapRegion === "dataset"
-    ? `当前数据包：颐和园内部 ${state.nodes.length} 个节点、${state.edges.length} 条有向边，支持路线/设施图上距离计算。`
-    : "全国底图可浏览；路线、设施和多点游览算法会在切回“颐和园数据集”后使用本地道路图。";
+    ? `当前数据包：${packName}，${routableNodes().length} 个可路由节点、${state.edges.length} 条有向边；路线、设施和美食推荐使用本包数据。`
+    : "全国底图可浏览；路线、设施和多点游览算法会在切回可运行数据包后使用本地道路图。";
 }
 
 function addMapResetControl() {
@@ -369,10 +393,32 @@ function addMapResetControl() {
   state.map.addControl(new ResetControl());
 }
 
+function reloadCurrentDataset({ fit = false } = {}) {
+  if (state.map && window.L && state.nodes.length) {
+    state.mapBounds = L.latLngBounds(state.nodes.map((node) => [node.lat, node.lon]));
+    state.mapFitted = false;
+  }
+  clearRouteLayers(false);
+  populateControls();
+  renderNodeList(state.nodes);
+  buildFacilityGeoIndex();
+  buildSimilarityIndexes();
+  renderNodeMarkers();
+  renderRoadNetwork();
+  renderFacilityMapMarkers();
+  showNodeDetail(state.nodes[0]);
+  recommendSpots();
+  searchFacilities();
+  renderDiaryList();
+  recommendFood();
+  updateMapDataNotice();
+  if (fit) fitMapToData(true);
+}
+
 function populateControls() {
-  fillNodeSelect(byId("startSelect"), state.nodes);
-  fillNodeSelect(byId("goalSelect"), state.nodes);
-  fillNodeSelect(byId("facilityOriginSelect"), state.nodes);
+  fillNodeSelect(byId("startSelect"), routableNodes());
+  fillNodeSelect(byId("goalSelect"), routableNodes());
+  fillNodeSelect(byId("facilityOriginSelect"), routableNodes());
   fillSpotSelect(byId("foodSpotSelect"), state.spots);
   fillUserSelect();
   fillCategorySelect();
@@ -410,21 +456,63 @@ function fillRegionPackSelect() {
     option.textContent = `${pack.name} · ${regionPackStatusLabel(pack.status)}`;
     select.appendChild(option);
   });
-  select.value = packs.find((pack) => pack.status === "active")?.id || packs[0]?.id || "";
+  const current = packs.find((pack) => pack.id === state.currentRegionPackId);
+  select.value = current?.id || packs.find((pack) => pack.status === "active")?.id || packs[0]?.id || "";
+  state.currentRegionPackId = select.value;
   renderRegionPackStatus(select.value);
 }
 
-function selectRegionPack(packId) {
+async function selectRegionPack(packId) {
   const pack = findRegionPack(packId);
   if (!pack) return;
-  if (pack.map_region && byId("mapRegionSelect")) {
-    byId("mapRegionSelect").value = pack.map_region;
-    focusMapRegion(pack.map_region, true);
+  if (pack.status !== "active" || !pack.nodes_path || !pack.edges_path || !pack.spots_path) {
+    if (pack.map_region && byId("mapRegionSelect")) {
+      byId("mapRegionSelect").value = pack.map_region;
+      focusMapRegion(pack.map_region, true);
+    }
+    renderRegionPackStatus(pack.id);
+    return;
   }
-  renderRegionPackStatus(pack.id);
+  if (pack.id === state.currentRegionPackId) {
+    renderRegionPackStatus(pack.id);
+    fitMapToData(true);
+    return;
+  }
+  const select = byId("regionPackSelect");
+  const previousPackId = state.currentRegionPackId;
+  renderRegionPackStatus(pack.id, "正在加载区域数据包...");
+  try {
+    await loadRegionPack(pack.id);
+    if (pack.map_region && byId("mapRegionSelect")) byId("mapRegionSelect").value = pack.map_region;
+    summarize(`已切换到 ${pack.name}，当前可规划 ${routableNodes().length} 个节点。`);
+  } catch (error) {
+    state.currentRegionPackId = previousPackId;
+    if (select) select.value = previousPackId;
+    renderRegionPackStatus(previousPackId, `切换失败：${error.message || error}`);
+  }
 }
 
-function renderRegionPackStatus(packId) {
+async function loadRegionPack(packId) {
+  const pack = findRegionPack(packId);
+  if (!pack) throw new Error(`未找到区域数据包：${packId}`);
+  const [nodes, edges, spots, facilities, restaurants] = await Promise.all([
+    loadJson(pack.nodes_path),
+    loadJson(pack.edges_path),
+    loadJson(pack.spots_path),
+    loadJson(pack.facilities_path),
+    loadJson(pack.restaurants_path)
+  ]);
+  state.nodes = nodes;
+  state.edges = edges;
+  state.spots = spots;
+  state.facilities = facilities;
+  state.restaurants = restaurants;
+  state.currentRegionPackId = pack.id;
+  state.mapRegion = pack.map_region || "dataset";
+  reloadCurrentDataset({ fit: true });
+}
+
+function renderRegionPackStatus(packId, transientMessage = "") {
   const container = byId("regionPackStatus");
   if (!container) return;
   const pack = findRegionPack(packId);
@@ -439,6 +527,7 @@ function renderRegionPackStatus(packId) {
       <span>${escapeHtml(pack.city || "区域")}</span>
     </div>
     <p>${escapeHtml(pack.description || "")}</p>
+    ${transientMessage ? `<p class="pack-message">${escapeHtml(transientMessage)}</p>` : ""}
     <small>${active ? `${state.nodes.length} 节点 · ${state.edges.length} 有向边 · ${state.facilities.length} 设施` : "已预留数据包接口，接入路网 JSON 后即可复用现有算法。"}</small>
   `;
 }
@@ -451,6 +540,25 @@ function regionPackStatusLabel(status) {
   if (status === "active") return "已激活";
   if (status === "template") return "模板";
   return "待接入";
+}
+
+function routableNodeIds() {
+  const ids = new Set();
+  state.edges.forEach((edge) => {
+    ids.add(Number(edge.from));
+    ids.add(Number(edge.to));
+  });
+  return ids;
+}
+
+function isRoutableNode(nodeOrId) {
+  const id = typeof nodeOrId === "object" ? Number(nodeOrId?.id) : Number(nodeOrId);
+  return routableNodeIds().has(id);
+}
+
+function routableNodes() {
+  const ids = routableNodeIds();
+  return state.nodes.filter((node) => ids.has(Number(node.id)));
 }
 
 function fillNodeSelect(select, nodes) {
@@ -624,7 +732,7 @@ function renderNodeList(nodes) {
 function renderMultiStopList() {
   const container = byId("multiStopList");
   container.innerHTML = "";
-  state.nodes.filter((node) => Number(node.spot_id) > 0).forEach((node) => {
+  routableNodes().filter((node) => Number(node.spot_id) > 0).forEach((node) => {
     const label = document.createElement("label");
     label.className = "stop-item";
     label.innerHTML = `
@@ -722,6 +830,7 @@ function showNodeDetail(node) {
   state.selectedNodeId = node.id;
   const spot = findSpot(node.spot_id);
   const image = resolveAssetPath(node.image);
+  const canRoute = isRoutableNode(node.id);
   const detail = byId("detail-panel");
   detail.innerHTML = `
     <img class="detail-image" src="${image}" alt="${escapeHtml(node.name)}">
@@ -734,10 +843,11 @@ function showNodeDetail(node) {
       <div class="meta-pill"><span>热度</span><strong>${spot ? spot.heat : "-"}</strong></div>
       <div class="meta-pill"><span>坐标</span><strong>${formatCoordinate(node.lat)}, ${formatCoordinate(node.lon)}</strong></div>
     </div>
+    ${canRoute ? "" : '<p class="route-node-note">该节点用于地图展示和推荐，暂未接入内部道路图。</p>'}
     <div class="detail-actions">
-      <button class="node-action" type="button" data-action="start">设为起点</button>
-      <button class="node-action" type="button" data-action="goal">设为终点</button>
-      <button class="node-action full" type="button" data-action="multi">加入多点游览</button>
+      <button class="node-action" type="button" data-action="start" ${canRoute ? "" : "disabled"}>设为起点</button>
+      <button class="node-action" type="button" data-action="goal" ${canRoute ? "" : "disabled"}>设为终点</button>
+      <button class="node-action full" type="button" data-action="multi" ${canRoute ? "" : "disabled"}>加入多点游览</button>
     </div>
   `;
   const img = detail.querySelector("img");
@@ -767,12 +877,11 @@ function recommendSpots() {
   const sortMode = byId("recommendSort").value;
   const preferenceInput = byId("preferenceInput").value.trim().toLowerCase();
   const keywordInput = byId("recommendKeyword").value.trim().toLowerCase();
-  // Merge both inputs: preference tokens also act as name/category/tag filters
-  const keyword = [preferenceInput, keywordInput].filter(Boolean).join(" ");
+  const keyword = keywordInput;
   const preference = `${preferenceInput} ${(user?.preference_tags || []).join(" ")}`.trim();
   const categoryPreference = (user?.preferred_categories || []).join(" ");
   const maxHeat = Math.max(...state.spots.map((spot) => Number(spot.heat) || 0), 1);
-  const lshCandidates = getLshCandidates(state.spotLshIndex, preference || keyword || categoryPreference, state.spots, 36);
+  const lshCandidates = getLshCandidates(state.spotLshIndex, keyword || preference || categoryPreference, state.spots, 36);
   let scopedCandidates = lshCandidates
     .filter((spot) => (!category || spot.category === category) && matchesSpotSearch(spot, keyword));
   if (scopedCandidates.length < 10) {
@@ -827,7 +936,7 @@ function renderRecommendationCards(results, meta = {}) {
         <span class="pill">综合 ${(item.score * 100).toFixed(1)}</span>
       </div>
       <div class="card-actions">
-        ${node ? `<button class="link-button" data-focus-node="${node.id}">地图定位</button><button class="link-button" data-route-goal="${node.id}">设为终点</button>` : ""}
+        ${node ? `<button class="link-button" data-focus-node="${node.id}">地图定位</button>${isRoutableNode(node.id) ? `<button class="link-button" data-route-goal="${node.id}">设为终点</button>` : '<span class="route-node-note">展示节点，暂未接入路线</span>'}` : ""}
       </div>
     `;
     container.appendChild(card);
@@ -1352,6 +1461,46 @@ function createDiaryEntry() {
   renderDiaryList();
 }
 
+function exportDiariesJson() {
+  const exportPayload = state.diaries.map((diary) => ({
+    id: diary.id,
+    title: diary.title,
+    user_id: diary.user_id,
+    destination: diary.destination,
+    rating: diary.rating,
+    heat: diary.heat,
+    created_at: diary.created_at,
+    tags: diary.tags || [],
+    content: diary.content,
+    media: diary.media || "",
+    original_bytes: diary.original_bytes,
+    compressed_bytes: diary.compressed_bytes
+  }));
+  const filename = `diaries-index-export-${formatTimestampForFilename(new Date())}.json`;
+  downloadJson(filename, exportPayload);
+  byId("aigcStoryboard").innerHTML = `
+    <strong>日记 JSON 已导出</strong>
+    <p>已导出 ${exportPayload.length} 条日记。导出文件可替换 web/data/diaries/index.json，或交给 C++ 数据目录同步。</p>
+  `;
+}
+
+function downloadJson(filename, payload) {
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+function formatTimestampForFilename(date) {
+  const pad = (value) => String(value).padStart(2, "0");
+  return `${date.getFullYear()}${pad(date.getMonth() + 1)}${pad(date.getDate())}-${pad(date.getHours())}${pad(date.getMinutes())}${pad(date.getSeconds())}`;
+}
+
 function bindDiaryButtons(container) {
   container.querySelectorAll("[data-diary-view]").forEach((button) => {
     button.addEventListener("click", () => {
@@ -1406,8 +1555,9 @@ function generateDiaryDraft() {
   const user = selectedUser();
   const preference = (user?.preference_tags || ["文化", "路线"]).join("、");
   byId("aigcStoryboard").innerHTML = `
-    <strong>日记草稿</strong>
-    <p>今天的路线围绕 ${escapeHtml(preference)} 展开，从入口进入后依次记录建筑、湖景和服务设施体验。系统可将照片描述、景点名称和用户偏好合成为旅游日记初稿。</p>
+    <strong>生成模拟日记草稿</strong>
+    <p class="storyboard-hint">当前为规则脚本模拟，未接入真实 AIGC 模型。</p>
+    <p>今天的路线围绕 ${escapeHtml(preference)} 展开，从入口进入后依次记录建筑、湖景和服务设施体验。后续接入模型后，可将照片描述、景点名称和用户偏好合成为旅游日记初稿。</p>
   `;
 }
 
@@ -1415,13 +1565,14 @@ function generateAigcStoryboard() {
   const user = selectedUser();
   const preference = (user?.preference_tags || ["文化", "路线"]).slice(0, 3);
   const frames = [
-    `开场：从用户上传的入口照片识别旅行地点，叠加偏好标签 ${preference.join("、")}。`,
+    `开场：模拟从用户上传的入口照片识别旅行地点，叠加偏好标签 ${preference.join("、")}。`,
     "转场：沿最短路径展示游览轨迹，突出道路节点和停留点。",
     "中景：把评分、热度和日记关键词生成字幕，说明推荐原因。",
-    "结尾：生成 8 秒旅行动画脚本，可继续接入真实 AIGC 视频模型。"
+    "结尾：输出 8 秒旅行动画脚本草稿，后续可接入真实 AIGC 视频模型。"
   ];
   byId("aigcStoryboard").innerHTML = `
-    <strong>AIGC 动画分镜</strong>
+    <strong>生成模拟分镜</strong>
+    <p class="storyboard-hint">当前为规则脚本模拟，未接入真实 AIGC 模型。</p>
     <ol>${frames.map((frame) => `<li>${escapeHtml(frame)}</li>`).join("")}</ol>
   `;
 }
@@ -1611,7 +1762,22 @@ function selectedUser() {
 
 function matchesSpotSearch(spot, keyword) {
   if (!keyword) return true;
-  return kmpContains(`${spot.name} ${spot.category} ${spot.tags}`.toLowerCase(), keyword);
+  return keyword
+    .split(/\s+/)
+    .filter(Boolean)
+    .every((token) => kmpContains(spotSearchText(spot), token));
+}
+
+function spotSearchText(spot) {
+  const node = findNodeBySpot(spot.id);
+  return [
+    spot.name,
+    spot.category,
+    spot.tags,
+    node?.name,
+    node?.type,
+    node?.description
+  ].filter(Boolean).join(" ").toLowerCase();
 }
 
 function spotSortScore(sortMode, compositeScore, ratingScore, heatScore, interestScore) {

@@ -1,0 +1,16 @@
+[
+  {"id": 1, "name": "清华大学二校门", "lat": 39.999369, "lon": 116.318283, "type": "campus_gate", "spot_id": 1, "description": "清华二校门是清华园最具辨识度的历史地标之一，常作为校园参观和拍照路线的起点。", "image": "web/assets/spots/real/tsinghua-gate.jpg"},
+  {"id": 2, "name": "清华大学大礼堂", "lat": 40.002000, "lon": 116.318214, "type": "campus_building", "spot_id": 2, "description": "清华大礼堂位于校园核心区，是早期校园建筑群的重要组成部分，适合展示校园文化与建筑路线。", "image": "web/assets/spots/real/tsinghua-auditorium.jpg"},
+  {"id": 3, "name": "清华大学图书馆老馆", "lat": 40.004000, "lon": 116.318000, "type": "library", "spot_id": 3, "description": "清华大学图书馆老馆见证了学校百余年学术传统，是校园学习空间和历史建筑结合的代表节点。", "image": "web/assets/spots/real/tsinghua-library.jpg"},
+  {"id": 4, "name": "清华大学主楼", "lat": 39.999169, "lon": 116.326439, "type": "teaching_building", "spot_id": 4, "description": "清华主楼位于校园东部教学科研区，是工科教学、科研和校园通勤路线中的重要锚点。", "image": "web/assets/spots/real/tsinghua-main-building.jpg"},
+  {"id": 5, "name": "清华荷塘", "lat": 40.004650, "lon": 116.316900, "type": "campus_landscape", "spot_id": 5, "description": "荷塘区域因朱自清散文《荷塘月色》而广为人知，适合散步、摄影和校园文化讲解。", "image": "web/assets/spots/real/tsinghua-former-gate.jpg"},
+  {"id": 6, "name": "近春园", "lat": 40.005500, "lon": 116.314800, "type": "campus_landscape", "spot_id": 6, "description": "近春园保留了清华园林空间的水系与绿地景观，是校园慢游和湖畔休息的典型区域。", "image": "web/assets/spots/real/tsinghua-former-gate.jpg"},
+  {"id": 7, "name": "水木清华", "lat": 40.003800, "lon": 116.314200, "type": "campus_landmark", "spot_id": 7, "description": "水木清华是清华园古典景观代表之一，常与荷塘、近春园组成校园文化步行路线。", "image": "web/assets/spots/real/tsinghua-library.jpg"},
+  {"id": 8, "name": "清华大学艺术博物馆", "lat": 40.001200, "lon": 116.334300, "type": "museum", "spot_id": 8, "description": "清华大学艺术博物馆面向校园和公众开放，适合在雨天或室内路线中展示文化展览节点。", "image": "web/assets/spots/museum.svg"},
+  {"id": 9, "name": "学生服务中心", "lat": 40.000800, "lon": 116.323000, "type": "service", "spot_id": 9, "description": "学生服务中心承担咨询、事务办理和校园生活服务，可用于展示校园设施查询与附近服务推荐。", "image": "web/assets/spots/visitor-center.svg"},
+  {"id": 10, "name": "紫荆公寓区", "lat": 40.010800, "lon": 116.333800, "type": "dormitory", "spot_id": 10, "description": "紫荆公寓区是清华重要学生生活片区，连接食堂、体育馆、教学区等高频校园通勤节点。", "image": "web/assets/spots/camp-lawn.svg"},
+  {"id": 11, "name": "清芬园食堂", "lat": 40.006700, "lon": 116.330500, "type": "restaurant_area", "spot_id": 11, "description": "清芬园食堂是校园餐饮节点，可用于演示从景点或宿舍区到美食推荐点的路径距离计算。", "image": "web/assets/spots/bookstore.svg"},
+  {"id": 12, "name": "综合体育馆", "lat": 40.006200, "lon": 116.322700, "type": "sports", "spot_id": 12, "description": "综合体育馆承载运动、比赛和大型校园活动，是教学区与生活区之间的公共活动节点。", "image": "web/assets/spots/sports-station.svg"},
+  {"id": 13, "name": "教学楼区", "lat": 40.000200, "lon": 116.324900, "type": "teaching_area", "spot_id": 13, "description": "教学楼区覆盖日常上课和科研通勤场景，适合作为校园路线规划中的高频目的地。", "image": "web/assets/spots/real/tsinghua-main-building.jpg"},
+  {"id": 14, "name": "清华大学校医院", "lat": 40.007900, "lon": 116.325600, "type": "medical", "spot_id": 14, "description": "清华大学校医院提供基础医疗和应急服务，可与宿舍、体育馆等节点组成服务设施检索示例。", "image": "web/assets/spots/visitor-center.svg"}
+]
