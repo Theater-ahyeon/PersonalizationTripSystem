@@ -1,7 +1,21 @@
 [
   {
+    "id": 0,
+    "name": "admin",
+    "password": "admin123",
+    "is_admin": true,
+    "role": "admin",
+    "preference_tags": ["管理"],
+    "preferred_categories": [],
+    "route_mode": "walk",
+    "history_spot_ids": []
+  },
+  {
     "id": 1,
     "name": "游客01",
+    "password": "1234",
+    "is_admin": false,
+    "role": "user",
     "preference_tags": [
       "历史",
       "建筑",

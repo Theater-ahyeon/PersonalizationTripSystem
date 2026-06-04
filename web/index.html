@@ -23,9 +23,9 @@
         <button type="button" class="tab-button" data-view="foodView">美食</button>
       </nav>
       <div class="nav-tools" aria-label="用户与状态">
-        <button class="icon-button" type="button" title="数据状态">i</button>
-        <button class="icon-button" type="button" title="设置">⚙</button>
-        <div class="avatar" aria-label="当前用户">游</div>
+        <button id="dataStatusBtn" class="icon-button" type="button" title="数据状态">📊</button>
+        <button id="loginToggleBtn" class="icon-button" type="button" title="用户登录">👤</button>
+        <div id="currentUserBadge" class="avatar" aria-label="当前用户">游</div>
       </div>
     </header>
 
@@ -307,5 +307,74 @@
 
   <script src="./vendor/leaflet.js"></script>
   <script src="./app.js"></script>
+  <!-- ── Login / Register Modal ────────────────────────────────────── -->
+  <div id="loginModal" class="modal-overlay hidden">
+    <div class="modal-panel glass-panel">
+      <button id="closeLoginModal" class="icon-button modal-close" type="button">✕</button>
+      <h2 id="loginModalTitle">用户登录</h2>
+      <div class="modal-body">
+        <div id="loginForm">
+          <label>用户名<input id="loginUsername" type="text" placeholder="请输入用户名"></label>
+          <label>密码<input id="loginPassword" type="password" placeholder="请输入密码"></label>
+          <div class="modal-actions">
+            <button id="loginSubmitBtn" class="primary-button" type="button">登录</button>
+            <button id="switchToRegisterBtn" class="link-button" type="button">没有账号？去注册</button>
+          </div>
+        </div>
+        <div id="registerForm" class="hidden">
+          <label>用户名<input id="registerUsername" type="text" placeholder="3-16个字符"></label>
+          <label>密码<input id="registerPassword" type="password" placeholder="至少4个字符"></label>
+          <label>兴趣标签<input id="registerTags" type="text" placeholder="建筑 湖景 摄影 美食"></label>
+          <div class="modal-actions">
+            <button id="registerSubmitBtn" class="primary-button" type="button">注册</button>
+            <button id="switchToLoginBtn" class="link-button" type="button">已有账号？去登录</button>
+          </div>
+        </div>
+        <div id="loginStatus" class="login-status"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Data Status Panel ─────────────────────────────────────────── -->
+  <div id="dataStatusPanel" class="modal-overlay hidden">
+    <div class="modal-panel glass-panel">
+      <button id="closeDataPanel" class="icon-button modal-close" type="button">✕</button>
+      <h2>系统数据状态</h2>
+      <div class="modal-body" id="dataStatusContent"></div>
+    </div>
+  </div>
+
+  <!-- ── Admin Panel ───────────────────────────────────────────────── -->
+  <div id="adminPanel" class="modal-overlay hidden">
+    <div class="modal-panel glass-panel admin-panel-wide">
+      <button id="closeAdminPanel" class="icon-button modal-close" type="button">✕</button>
+      <h2>管理员控制台</h2>
+      <div class="modal-body">
+        <div class="admin-tabs">
+          <button class="tab-button active" data-admin-tab="users">用户管理</button>
+          <button class="tab-button" data-admin-tab="spots">景点管理</button>
+          <button class="tab-button" data-admin-tab="data">数据导出</button>
+        </div>
+        <div id="adminUsersTab" class="admin-tab-content">
+          <div id="adminUserList"></div>
+          <div class="admin-actions">
+            <button id="adminAddUserBtn" class="primary-button" type="button">添加用户</button>
+            <button id="adminExportUsersBtn" class="secondary-button" type="button">导出用户 JSON</button>
+          </div>
+        </div>
+        <div id="adminSpotsTab" class="admin-tab-content hidden">
+          <p>景点总数：<strong id="adminSpotCount">0</strong></p>
+          <label>搜索景点<input id="adminSpotSearch" type="search" placeholder="名称或分类"></label>
+          <div id="adminSpotList" class="admin-scroll-list"></div>
+        </div>
+        <div id="adminDataTab" class="admin-tab-content hidden">
+          <p>点击下方按钮导出当前系统数据：</p>
+          <button id="adminExportAllBtn" class="primary-button" type="button">导出全部数据</button>
+          <button id="adminResetDataBtn" class="secondary-button danger" type="button">重置为初始数据</button>
+          <div id="adminExportStatus"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

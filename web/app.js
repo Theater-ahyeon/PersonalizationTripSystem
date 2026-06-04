@@ -94,6 +94,8 @@ const byId = (id) => document.getElementById(id);
 
 document.addEventListener("DOMContentLoaded", async () => {
   bindStaticControls();
+  bindAuthEvents();
+  bindAdminEvents();
   try {
     const [nodes, edges, spots, restaurants, facilities, users, diaries, regionPacks] = await Promise.all([
       loadJson(DATA_PATHS.nodes),
@@ -767,16 +769,18 @@ function recommendSpots() {
   const sortMode = byId("recommendSort").value;
   const preferenceInput = byId("preferenceInput").value.trim().toLowerCase();
   const keywordInput = byId("recommendKeyword").value.trim().toLowerCase();
-  // Merge both inputs: preference tokens also act as name/category/tag filters
-  const keyword = [preferenceInput, keywordInput].filter(Boolean).join(" ");
+  // Tokenize preference tokens for OR-match filtering (each token filters independently)
+  const preferenceTokens = preferenceInput.split(/\s+/).filter(Boolean);
+  // keywordInput is a single search phrase (substring match), preference tokens are OR-matched
+  const effectiveKeyword = keywordInput || preferenceTokens.join(" ");
   const preference = `${preferenceInput} ${(user?.preference_tags || []).join(" ")}`.trim();
   const categoryPreference = (user?.preferred_categories || []).join(" ");
   const maxHeat = Math.max(...state.spots.map((spot) => Number(spot.heat) || 0), 1);
-  const lshCandidates = getLshCandidates(state.spotLshIndex, preference || keyword || categoryPreference, state.spots, 36);
+  const lshCandidates = getLshCandidates(state.spotLshIndex, preference || effectiveKeyword || categoryPreference, state.spots, 36);
   let scopedCandidates = lshCandidates
-    .filter((spot) => (!category || spot.category === category) && matchesSpotSearch(spot, keyword));
+    .filter((spot) => (!category || spot.category === category) && matchesSpotSearch(spot, effectiveKeyword, preferenceTokens));
   if (scopedCandidates.length < 10) {
-    scopedCandidates = state.spots.filter((spot) => (!category || spot.category === category) && matchesSpotSearch(spot, keyword));
+    scopedCandidates = state.spots.filter((spot) => (!category || spot.category === category) && matchesSpotSearch(spot, effectiveKeyword, preferenceTokens));
   }
   const scored = scopedCandidates
     .map((spot) => {
@@ -1609,9 +1613,17 @@ function selectedUser() {
   return state.users.find((user) => Number(user.id) === id);
 }
 
-function matchesSpotSearch(spot, keyword) {
-  if (!keyword) return true;
-  return kmpContains(`${spot.name} ${spot.category} ${spot.tags}`.toLowerCase(), keyword);
+function matchesSpotSearch(spot, keyword, preferenceTokens) {
+  const text = `${spot.name} ${spot.category} ${spot.tags}`.toLowerCase();
+  // First check exact keyword (substring match)
+  if (keyword && kmpContains(text, keyword)) return true;
+  // Then check preference tokens (OR match: any token matches)
+  if (preferenceTokens && preferenceTokens.length) {
+    return preferenceTokens.some((token) => kmpContains(text, token));
+  }
+  // No filter → match all
+  if (!keyword && (!preferenceTokens || !preferenceTokens.length)) return true;
+  return false;
 }
 
 function spotSortScore(sortMode, compositeScore, ratingScore, heatScore, interestScore) {
@@ -1955,6 +1967,299 @@ function debounce(fn, delay) {
   };
 }
 
+// ── Auth / User State ──────────────────────────────────────────────
+const AUTH_KEY = "tripsystem_current_user";
+let currentUser = null; // { id, name, isAdmin, preference_tags, preferred_categories }
+
+function loadAuthState() {
+  try {
+    const saved = localStorage.getItem(AUTH_KEY);
+    if (saved) currentUser = JSON.parse(saved);
+  } catch { currentUser = null; }
+  if (!currentUser) {
+    // Default guest: first user in the list (non-admin)
+    currentUser = { id: 1, name: "游客", isAdmin: false, preference_tags: ["文化", "建筑"], preferred_categories: [] };
+  }
+  updateUserBadge();
+}
+
+function saveAuthState() {
+  if (currentUser) localStorage.setItem(AUTH_KEY, JSON.stringify(currentUser));
+}
+
+function updateUserBadge() {
+  const badge = byId("currentUserBadge");
+  if (!badge) return;
+  badge.textContent = currentUser ? currentUser.name.charAt(0) : "游";
+  if (currentUser?.isAdmin) {
+    badge.classList.add("admin-badge");
+  } else {
+    badge.classList.remove("admin-badge");
+  }
+}
+
+// ── Login / Register Modal ──────────────────────────────────────────
+function showLoginModal(mode) {
+  const modal = byId("loginModal");
+  const loginForm = byId("loginForm");
+  const registerForm = byId("registerForm");
+  const title = byId("loginModalTitle");
+  const status = byId("loginStatus");
+  modal.classList.remove("hidden");
+  status.textContent = "";
+  status.className = "login-status";
+
+  if (mode === "register") {
+    loginForm.classList.add("hidden");
+    registerForm.classList.remove("hidden");
+    title.textContent = "用户注册";
+  } else {
+    loginForm.classList.remove("hidden");
+    registerForm.classList.add("hidden");
+    title.textContent = "用户登录";
+  }
+}
+
+function hideLoginModal() {
+  byId("loginModal").classList.add("hidden");
+}
+
+function doLogin() {
+  const username = byId("loginUsername").value.trim();
+  const password = byId("loginPassword").value.trim();
+  const status = byId("loginStatus");
+  if (!username) { status.textContent = "请输入用户名"; status.className = "login-status error"; return; }
+  if (!password) { status.textContent = "请输入密码"; status.className = "login-status error"; return; }
+
+  const user = state.users.find((u) => u.name === username);
+  if (!user) { status.textContent = "用户不存在"; status.className = "login-status error"; return; }
+  if (user.password && user.password !== password) {
+    status.textContent = "密码错误"; status.className = "login-status error"; return;
+  }
+
+  currentUser = {
+    id: Number(user.id), name: user.name,
+    isAdmin: user.is_admin === true || user.role === "admin",
+    preference_tags: user.preference_tags || [],
+    preferred_categories: user.preferred_categories || []
+  };
+  saveAuthState();
+  updateUserBadge();
+  hideLoginModal();
+  // Refresh recommendations with new user preferences
+  byId("userSelect").value = String(user.id);
+  byId("preferenceInput").value = currentUser.preference_tags.join(" ");
+  recommendSpots();
+  renderDiaryList();
+  status.textContent = `欢迎，${currentUser.name}！`;
+  status.className = "login-status";
+  setTimeout(() => { status.textContent = ""; }, 2000);
+}
+
+function doRegister() {
+  const username = byId("registerUsername").value.trim();
+  const password = byId("registerPassword").value.trim();
+  const tags = byId("registerTags").value.trim();
+  const status = byId("loginStatus");
+
+  if (!username || username.length < 2) { status.textContent = "用户名至少2个字符"; status.className = "login-status error"; return; }
+  if (username.length > 16) { status.textContent = "用户名不超过16个字符"; status.className = "login-status error"; return; }
+  if (!password || password.length < 4) { status.textContent = "密码至少4个字符"; status.className = "login-status error"; return; }
+  if (state.users.find((u) => u.name === username)) {
+    status.textContent = "用户名已存在"; status.className = "login-status error"; return;
+  }
+
+  const newId = Math.max(...state.users.map((u) => Number(u.id)), 0) + 1;
+  const newUser = {
+    id: newId, name: username, password: password,
+    preference_tags: tags ? tags.split(/\s+/) : ["文化", "摄影"],
+    preferred_categories: [], is_admin: false, role: "user"
+  };
+  state.users.push(newUser);
+
+  // Add to DOM select
+  const select = byId("userSelect");
+  const opt = document.createElement("option");
+  opt.value = String(newId);
+  opt.textContent = `${username} · ${newUser.preference_tags.join("/")}`;
+  select.appendChild(opt);
+  select.value = String(newId);
+
+  currentUser = {
+    id: newId, name: username, isAdmin: false,
+    preference_tags: newUser.preference_tags,
+    preferred_categories: []
+  };
+  saveAuthState();
+  updateUserBadge();
+  hideLoginModal();
+  byId("preferenceInput").value = currentUser.preference_tags.join(" ");
+  recommendSpots();
+  status.textContent = `注册成功，欢迎 ${username}！`;
+  status.className = "login-status";
+}
+
+function bindAuthEvents() {
+  byId("loginToggleBtn").addEventListener("click", () => showLoginModal("login"));
+  byId("currentUserBadge").addEventListener("click", () => {
+    if (currentUser?.isAdmin) showAdminPanel();
+    else showLoginModal("login");
+  });
+  byId("closeLoginModal").addEventListener("click", hideLoginModal);
+  byId("loginSubmitBtn").addEventListener("click", doLogin);
+  byId("registerSubmitBtn").addEventListener("click", doRegister);
+  byId("switchToRegisterBtn").addEventListener("click", () => showLoginModal("register"));
+  byId("switchToLoginBtn").addEventListener("click", () => showLoginModal("login"));
+  // Allow Enter key to submit
+  byId("loginPassword").addEventListener("keydown", (e) => { if (e.key === "Enter") doLogin(); });
+  byId("registerPassword").addEventListener("keydown", (e) => { if (e.key === "Enter") doRegister(); });
+}
+
+// ── Data Status Panel ──────────────────────────────────────────────
+function showDataStatus() {
+  const panel = byId("dataStatusPanel");
+  const content = byId("dataStatusContent");
+  panel.classList.remove("hidden");
+  content.innerHTML = `
+    <table class="data-table">
+      <tbody>
+        <tr><td>OSM 路网节点</td><td><strong>${state.nodes.length}</strong></td></tr>
+        <tr><td>有向道路边</td><td><strong>${state.edges.length}</strong></td></tr>
+        <tr><td>景点/目的地</td><td><strong>${state.spots.length}</strong></td></tr>
+        <tr><td>校园类目</td><td><strong>${state.spots.filter((s) => s.category === "校园").length}</strong></td></tr>
+        <tr><td>服务设施</td><td><strong>${state.facilities.length}</strong> · ${new Set(state.facilities.map((f) => f.type)).size} 类</td></tr>
+        <tr><td>餐饮数据</td><td><strong>${state.restaurants.length}</strong></td></tr>
+        <tr><td>注册用户</td><td><strong>${state.users.length}</strong></td></tr>
+        <tr><td>旅游日记</td><td><strong>${state.diaries.length}</strong></td></tr>
+        <tr><td>区域数据包</td><td><strong>${state.regionPacks.length}</strong></td></tr>
+        <tr><td>前端算法</td><td>Top-K · GeoHash · LSH · KMP · Dijkstra · TSP-DP · Huffman</td></tr>
+      </tbody>
+    </table>
+    <p class="data-note">C++ CLI 侧额外提供 A*、Trie 前缀补全和真实 Huffman .bin 文件压缩。</p>
+  `;
+}
+
+function hideDataStatus() { byId("dataStatusPanel").classList.add("hidden"); }
+
+// ── Admin Panel ────────────────────────────────────────────────────
+function showAdminPanel() {
+  if (!currentUser?.isAdmin) { showLoginModal("login"); return; }
+  byId("adminPanel").classList.remove("hidden");
+  renderAdminUsers();
+  renderAdminSpots();
+  byId("adminSpotCount").textContent = state.spots.length;
+}
+
+function hideAdminPanel() { byId("adminPanel").classList.add("hidden"); }
+
+function renderAdminUsers() {
+  const container = byId("adminUserList");
+  container.innerHTML = "";
+  state.users.forEach((user) => {
+    const row = document.createElement("div");
+    row.className = "admin-row";
+    row.innerHTML = `
+      <span>${escapeHtml(user.name)} <small>ID:${user.id} ${user.is_admin ? "[管理员]" : ""}</small></span>
+      <span>
+        <button data-delete-user="${user.id}" class="secondary-button">删除</button>
+        <button data-toggle-admin="${user.id}" class="secondary-button">${user.is_admin ? "取消管理" : "设为管理"}</button>
+      </span>
+    `;
+    container.appendChild(row);
+  });
+  // Bind delete handlers
+  container.querySelectorAll("[data-delete-user]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const uid = Number(btn.dataset.deleteUser);
+      if (uid === currentUser.id) { alert("不能删除自己"); return; }
+      state.users = state.users.filter((u) => Number(u.id) !== uid);
+      renderAdminUsers();
+    });
+  });
+  container.querySelectorAll("[data-toggle-admin]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const uid = Number(btn.dataset.toggleAdmin);
+      const user = state.users.find((u) => Number(u.id) === uid);
+      if (user) { user.is_admin = !user.is_admin; user.role = user.is_admin ? "admin" : "user"; }
+      renderAdminUsers();
+    });
+  });
+}
+
+function renderAdminSpots(filterKeyword) {
+  const container = byId("adminSpotList");
+  container.innerHTML = "";
+  const spots = filterKeyword
+    ? state.spots.filter((s) => kmpContains(`${s.name} ${s.category} ${s.tags}`.toLowerCase(), filterKeyword.toLowerCase()))
+    : state.spots.slice(0, 100);
+  spots.forEach((spot) => {
+    const row = document.createElement("div");
+    row.className = "admin-row";
+    row.innerHTML = `<span>${escapeHtml(spot.name)} <small>[${escapeHtml(spot.category)}] ★${spot.rating} 🔥${spot.heat}</small></span>`;
+    container.appendChild(row);
+  });
+}
+
+function exportAllData() {
+  const data = {
+    spots: state.spots,
+    osm_nodes: state.nodes,
+    osm_edges: state.edges,
+    restaurants: state.restaurants,
+    facilities: state.facilities,
+    users: state.users,
+    diaries: state.diaries,
+    exported_at: new Date().toISOString()
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = "tripsystem_export.json";
+  a.click();
+  URL.revokeObjectURL(url);
+  byId("adminExportStatus").textContent = "数据已导出！";
+}
+
+function exportUsers() {
+  const blob = new Blob([JSON.stringify(state.users, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = "users_export.json";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function bindAdminEvents() {
+  byId("dataStatusBtn").addEventListener("click", showDataStatus);
+  byId("closeDataPanel").addEventListener("click", hideDataStatus);
+  byId("closeAdminPanel").addEventListener("click", hideAdminPanel);
+  byId("adminExportAllBtn").addEventListener("click", exportAllData);
+  byId("adminExportUsersBtn").addEventListener("click", exportUsers);
+  byId("adminSpotSearch").addEventListener("input", (e) => renderAdminSpots(e.target.value));
+  byId("adminAddUserBtn").addEventListener("click", () => { hideAdminPanel(); showLoginModal("register"); });
+
+  // Admin tab switching
+  document.querySelectorAll("[data-admin-tab]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll("[data-admin-tab]").forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      document.querySelectorAll(".admin-tab-content").forEach((tab) => tab.classList.add("hidden"));
+      const targetId = "admin" + btn.dataset.adminTab.charAt(0).toUpperCase() + btn.dataset.adminTab.slice(1) + "Tab";
+      const target = document.getElementById(targetId);
+      if (target) target.classList.remove("hidden");
+    });
+  });
+
+  // Click outside modal to close
+  [byId("loginModal"), byId("dataStatusPanel"), byId("adminPanel")].forEach((modal) => {
+    modal.addEventListener("click", (e) => { if (e.target === modal) modal.classList.add("hidden"); });
+  });
+}
+
+// Initialize auth on page load
+loadAuthState();
+
+// ── Utility ────────────────────────────────────────────────────────
 function escapeHtml(value) {
   return String(value ?? "")
     .replaceAll("&", "&amp;")
