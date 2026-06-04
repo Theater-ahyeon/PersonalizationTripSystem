@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Route Planning - Vagabond</title>
+<!-- Google Fonts: Inter & Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-dim": "#cfdaf2",
+                      "primary-container": "#0070eb",
+                      "tertiary-fixed": "#72fe88",
+                      "on-surface-variant": "#414755",
+                      "surface": "#f9f9ff",
+                      "surface-container-high": "#dee8ff",
+                      "secondary": "#904d00",
+                      "on-error-container": "#93000a",
+                      "on-tertiary-fixed-variant": "#00531c",
+                      "tertiary-fixed-dim": "#53e16f",
+                      "error": "#ba1a1a",
+                      "tertiary-container": "#008733",
+                      "on-secondary-fixed-variant": "#6e3900",
+                      "surface-container": "#e7eeff",
+                      "secondary-container": "#fd8b00",
+                      "on-surface": "#111c2d",
+                      "on-tertiary-fixed": "#002107",
+                      "on-secondary": "#ffffff",
+                      "error-container": "#ffdad6",
+                      "on-primary-container": "#fefcff",
+                      "surface-bright": "#f9f9ff",
+                      "surface-container-low": "#f0f3ff",
+                      "primary-fixed": "#d8e2ff",
+                      "outline-variant": "#c1c6d7",
+                      "primary": "#0058bc",
+                      "outline": "#717786",
+                      "inverse-on-surface": "#ecf1ff",
+                      "secondary-fixed": "#ffdcc3",
+                      "surface-tint": "#005bc1",
+                      "inverse-surface": "#263143",
+                      "inverse-primary": "#adc6ff",
+                      "on-primary": "#ffffff",
+                      "on-secondary-container": "#603100",
+                      "on-secondary-fixed": "#2f1500",
+                      "surface-container-lowest": "#ffffff",
+                      "tertiary": "#006b27",
+                      "background": "#f9f9ff",
+                      "secondary-fixed-dim": "#ffb77d",
+                      "on-primary-fixed-variant": "#004493",
+                      "surface-container-highest": "#d8e3fb",
+                      "on-primary-fixed": "#001a41",
+                      "surface-variant": "#d8e3fb",
+                      "on-tertiary-container": "#f7fff2",
+                      "on-background": "#111c2d",
+                      "on-error": "#ffffff",
+                      "primary-fixed-dim": "#adc6ff",
+                      "on-tertiary": "#ffffff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "xl": "64px",
+                      "container-max": "1280px",
+                      "sm": "16px",
+                      "md": "24px",
+                      "gutter": "24px",
+                      "xs": "8px",
+                      "base": "4px",
+                      "lg": "40px"
+              },
+              "fontFamily": {
+                      "label-md": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "headline-lg": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "label-sm": [
+                              "Inter"
+                      ],
+                      "display-lg": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "display-lg-mobile": [
+                              "Plus Jakarta Sans"
+                      ]
+              },
+              "fontSize": {
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "800"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-lg-mobile": [
+                              "36px",
+                              {
+                                      "lineHeight": "44px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "800"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+          .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+          }
+          .glass-panel {
+              background: rgba(255, 255, 255, 0.7);
+              backdrop-filter: blur(12px);
+              -webkit-backdrop-filter: blur(12px);
+              border: 1px solid rgba(255, 255, 255, 0.5);
+          }
+          .hide-scrollbar::-webkit-scrollbar {
+              display: none;
+          }
+          .hide-scrollbar {
+              -ms-overflow-style: none;
+              scrollbar-width: none;
+          }
+          .route-dash {
+              stroke-dasharray: 6 6;
+              animation: dash 20s linear infinite;
+          }
+          @keyframes dash {
+              to {
+                  stroke-dashoffset: -100;
+              }
+          }
+      </style>
+</head>
+<body class="bg-background text-on-background font-body-md h-screen flex flex-col overflow-hidden">
+<!-- TopNavBar Component -->
+<nav class="bg-surface/70 dark:bg-inverse-surface/70 backdrop-blur-md border-b border-white/20 shadow-sm fixed top-0 w-full z-50 flex justify-between items-center px-gutter py-base max-w-container-max mx-auto h-[64px] flex-shrink-0">
+<div class="flex items-center gap-md">
+<a class="text-headline-md font-headline-md font-bold text-primary dark:text-primary-fixed" href="#">
+                Vagabond
+            </a>
+<div class="hidden md:flex gap-sm ml-lg">
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary transition-colors hover:bg-surface-container-high/50 dark:hover:bg-surface-container-highest/50 rounded-lg px-3 py-2 text-label-md font-label-md" href="#">Explore</a>
+<a class="text-primary dark:text-inverse-primary border-b-2 border-primary dark:border-inverse-primary pb-1 font-bold hover:bg-surface-container-high/50 dark:hover:bg-surface-container-highest/50 rounded-t-lg px-3 py-2 text-label-md font-label-md scale-95 transition-transform duration-150" href="#">Plan</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary transition-colors hover:bg-surface-container-high/50 dark:hover:bg-surface-container-highest/50 rounded-lg px-3 py-2 text-label-md font-label-md" href="#">Community</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary transition-colors hover:bg-surface-container-high/50 dark:hover:bg-surface-container-highest/50 rounded-lg px-3 py-2 text-label-md font-label-md" href="#">My Trips</a>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<button class="p-2 rounded-full text-on-surface-variant hover:bg-surface-container-high/50 transition-colors">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+<button class="p-2 rounded-full text-on-surface-variant hover:bg-surface-container-high/50 transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 rounded-full text-on-surface-variant hover:bg-surface-container-high/50 transition-colors">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden ml-2 border border-outline-variant cursor-pointer">
+<img alt="User profile avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCsk4g9wD52nhmYOaQd78vWNGygFqtXCPmEGEkVIcdM1A0jeprOlFuTIqkSQem-Nq3QjW2OqFMSdUlonVj0wCbPQnySPNOyfKXd4Abz5xBHXWqlDowxwfzBYNL2D6JnTb95H_oLFPCHLXF_lpImJyyHLs72rPunhi8xXSuSoAtVSQdCgX5rGozHd57kdxUQtzbLvjF3X66PYZ7mpbxUOrd_FKjwdpSV_UpHQTCbqWK8mDeZ95maw95iYN1PaAMhGNWyKDNUkDgjbo"/>
+</div>
+</div>
+</nav>
+<!-- Main Split View Container -->
+<main class="flex-1 flex flex-col md:flex-row mt-[64px] overflow-hidden">
+<!-- Interactive Map Area (Left on Desktop, Top on Mobile) -->
+<section class="relative flex-1 bg-surface-dim order-2 md:order-1 h-full overflow-hidden">
+<!-- Map Background Image Placeholder -->
+<div class="absolute inset-0 bg-cover bg-center" data-alt="A top-down, stylized digital map interface of a large, lush historical park in Kyoto. The map features smooth, light gray pathways winding through areas of dense, vibrant green foliage and serene blue water features. The overall aesthetic is clean, modern, and high-contrast, designed to be clearly legible as a navigation background within a bright, light-mode UI." data-location="Kyoto Botanical Gardens Map View" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBHShqHpo_Z90UN7JaIPjL5XWl90nJIV495CN7SqxrwgFefLFp3qZPmU67wtj7CuLYatxPKZsRKrioTViA9ucB8UQtb3I3WqLgISfH7KDTkV81GbexCgXFCM9RC4nVd7VbS0z2ysl8pn9DhWThAEMn4wgxIEXKrb2ifOyw61s12QbHlLVAwIdiVN0hfGREEBBKC2dQHp7wdJ0fc0gYmbfc5n3btsn0d17hWSO_-muxDyappTkLeZ1bJBjU2MI7C9xDpsMakdLkPuCU');">
+<!-- Overlay to lighten the image for map feel -->
+<div class="absolute inset-0 bg-surface/40 backdrop-blur-[2px]"></div>
+</div>
+<!-- Route Overlay SVG -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none" preserveaspectratio="xMidYMid slice" viewbox="0 0 1000 800">
+<path class="text-primary-container route-dash opacity-80" d="M 300 200 Q 450 150 500 350 T 700 500" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="6"></path>
+<path class="text-primary-container opacity-20" d="M 300 200 Q 450 150 500 350 T 700 500" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="12"></path>
+</svg>
+<!-- Map Markers -->
+<!-- Marker 1: Completed -->
+<div class="absolute top-[20%] left-[28%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center group cursor-pointer">
+<div class="glass-panel w-8 h-8 rounded-full flex items-center justify-center text-outline shadow-sm transition-transform group-hover:scale-110">
+<span class="material-symbols-outlined text-[18px]" data-icon="check_circle">check_circle</span>
+</div>
+</div>
+<!-- Marker 2: Active Spot -->
+<div class="absolute top-[45%] left-[50%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center group cursor-pointer z-10">
+<div class="bg-primary text-on-primary w-10 h-10 rounded-full flex items-center justify-center shadow-[0_10px_20px_rgba(0,88,188,0.3)] ring-4 ring-primary/20 transition-transform group-hover:scale-110">
+<span class="material-symbols-outlined text-[24px]" data-icon="location_on" style="font-variation-settings: 'FILL' 1;">location_on</span>
+</div>
+<div class="mt-2 glass-panel px-3 py-1 rounded-full text-label-sm font-label-sm text-on-surface whitespace-nowrap shadow-sm">
+                    Bamboo Grove
+                </div>
+</div>
+<!-- Marker 3: Upcoming -->
+<div class="absolute top-[63%] left-[70%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center group cursor-pointer">
+<div class="glass-panel w-8 h-8 rounded-full flex items-center justify-center text-primary-container border-primary-container shadow-sm transition-transform group-hover:scale-110">
+<span class="material-symbols-outlined text-[18px]" data-icon="trip_origin">trip_origin</span>
+</div>
+<div class="mt-2 bg-surface/80 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] font-label-sm text-on-surface-variant whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+                    Tenryu-ji Temple
+                </div>
+</div>
+<!-- Map Controls (Floating) -->
+<div class="absolute right-md bottom-md flex flex-col gap-sm">
+<button class="glass-panel w-10 h-10 rounded-lg flex items-center justify-center text-on-surface hover:bg-surface-container-high transition-colors shadow-sm">
+<span class="material-symbols-outlined" data-icon="my_location">my_location</span>
+</button>
+<div class="glass-panel rounded-lg flex flex-col shadow-sm overflow-hidden">
+<button class="w-10 h-10 flex items-center justify-center text-on-surface hover:bg-surface-container-high transition-colors border-b border-outline-variant/20">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center text-on-surface hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined" data-icon="remove">remove</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Planning Sidebar (Right on Desktop, Bottom Sheet on Mobile) -->
+<aside class="w-full md:w-[420px] h-1/2 md:h-full bg-surface-container-lowest flex flex-col z-20 order-1 md:order-2 border-l border-outline-variant/20 shadow-[-10px_0_30px_rgba(0,0,0,0.03)] overflow-hidden flex-shrink-0">
+<!-- Sidebar Header -->
+<div class="p-md pb-sm border-b border-outline-variant/10 bg-surface">
+<div class="flex justify-between items-start mb-sm">
+<div>
+<h1 class="text-headline-md font-headline-md text-on-surface">Arashiyama Trail</h1>
+<p class="text-body-md font-body-md text-on-surface-variant flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="schedule">schedule</span>
+                            Est. 3h 45m total
+                        </p>
+</div>
+<button class="p-2 rounded-full hover:bg-surface-container-high text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+<!-- Nearby Search Pills -->
+<div class="flex gap-sm overflow-x-auto hide-scrollbar py-2">
+<button class="flex-shrink-0 bg-surface-container hover:bg-primary-container hover:text-on-primary-container text-on-surface border border-outline-variant/30 px-3 py-1.5 rounded-full flex items-center gap-1.5 text-label-sm font-label-sm transition-colors">
+<span class="material-symbols-outlined text-[16px]" data-icon="wc">wc</span>
+                        Restrooms
+                    </button>
+<button class="flex-shrink-0 bg-surface-container hover:bg-primary-container hover:text-on-primary-container text-on-surface border border-outline-variant/30 px-3 py-1.5 rounded-full flex items-center gap-1.5 text-label-sm font-label-sm transition-colors">
+<span class="material-symbols-outlined text-[16px]" data-icon="local_cafe">local_cafe</span>
+                        Cafes
+                    </button>
+<button class="flex-shrink-0 bg-surface-container hover:bg-primary-container hover:text-on-primary-container text-on-surface border border-outline-variant/30 px-3 py-1.5 rounded-full flex items-center gap-1.5 text-label-sm font-label-sm transition-colors">
+<span class="material-symbols-outlined text-[16px]" data-icon="photo_camera">photo_camera</span>
+                        Photo Spots
+                    </button>
+</div>
+</div>
+<!-- Route Sequence List -->
+<div class="flex-1 overflow-y-auto p-md pb-xl">
+<h2 class="text-label-md font-label-md text-on-surface-variant uppercase tracking-wider mb-lg">Optimal Route</h2>
+<div class="relative pl-6">
+<!-- Vertical Line Connector -->
+<div class="absolute left-1.5 top-2 bottom-8 w-0.5 bg-outline-variant/30 rounded-full"></div>
+<!-- Step 1: Completed -->
+<div class="relative pb-xl group">
+<div class="absolute left-[-22px] top-1 w-4 h-4 rounded-full bg-surface border-2 border-outline-variant z-10 flex items-center justify-center group-hover:border-primary transition-colors">
+<div class="w-1.5 h-1.5 rounded-full bg-outline-variant group-hover:bg-primary"></div>
+</div>
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-body-md font-body-md text-on-surface-variant line-through opacity-70">Togetsukyo Bridge</h3>
+<p class="text-label-sm font-label-sm text-outline mt-1">Visited • 9:00 AM</p>
+</div>
+</div>
+<!-- Walking Indicator -->
+<div class="absolute left-[-15px] top-10 flex items-center gap-2 bg-surface py-1 pr-2 z-10 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-outline-variant" data-icon="directions_walk">directions_walk</span>
+<span class="text-label-sm font-label-sm text-outline">12 min</span>
+</div>
+</div>
+<!-- Step 2: Active / Expanded (Spot Introduction) -->
+<div class="relative pb-xl">
+<!-- Active Indicator -->
+<div class="absolute left-[-25px] top-1 w-6 h-6 rounded-full bg-primary-container flex items-center justify-center z-10 shadow-sm ring-4 ring-surface">
+<span class="material-symbols-outlined text-[14px] text-on-primary-container" data-icon="location_on" style="font-variation-settings: 'FILL' 1;">location_on</span>
+</div>
+<!-- Active Card Content -->
+<div class="bg-surface border border-primary/20 rounded-xl p-4 shadow-[0_4px_20px_rgba(0,88,188,0.08)] -mt-2">
+<div class="flex justify-between items-start mb-3">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="bg-error-container text-on-error-container text-[10px] font-label-sm px-2 py-0.5 rounded uppercase tracking-wide">Next Stop</span>
+<h3 class="text-headline-md font-headline-md text-on-surface text-lg">Bamboo Grove</h3>
+</div>
+<div class="flex items-center gap-1 text-secondary-container">
+<span class="material-symbols-outlined text-[14px]" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-label-sm font-label-sm font-bold text-on-surface">4.9</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant font-normal">(2.4k reviews)</span>
+</div>
+</div>
+</div>
+<!-- Spot Image -->
+<div class="w-full h-32 rounded-lg overflow-hidden mb-3 bg-surface-container-high relative">
+<img alt="Towering green bamboo stalks creating a dense, shaded path in Kyoto. Sunlight filters softly through the canopy, creating a serene and mystical atmosphere. The path is empty, enhancing the tranquil mood of this iconic travel destination." class="w-full h-full object-cover" data-alt="Towering green bamboo stalks creating a dense, shaded path in Kyoto. Sunlight filters softly through the canopy, creating a serene and mystical atmosphere. The path is empty, enhancing the tranquil mood of this iconic travel destination." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCaOVXMqHd875mhmWfCSBZgibJi8kNGcnktF2wYbNT0Tf6z1EPRs9pkgB-4VX8JLo0WoM2P6rx_EC_axmcbKwpwv7yyako7STKXu6Supp1stXozwTIl3grzvt1eHsFYx7vysLLf-RinnkxQ951xEZvRs8fSUj-aA_ozgOPM3y6hk2JT5zZfGrjMFb6kF8Sou8BVFj_dnnmcL7zCFduIWFL8TxYzNaJRrlbaNdTh-BQLgZGHUzhX3vJXq8iCGqM4kskKytnFUtZARvY"/>
+<button class="absolute top-2 right-2 p-1.5 rounded-full glass-panel text-on-surface hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="bookmark_border">bookmark_border</span>
+</button>
+</div>
+<p class="text-label-md font-label-md text-on-surface-variant font-normal leading-relaxed mb-4 line-clamp-2">
+                                A mesmerizing path cutting through dense, soaring bamboo stalks. The sound of the wind rustling through the wood is a recognized Japanese soundscape.
+                            </p>
+<!-- Audio Guide Action -->
+<button class="w-full bg-secondary text-on-secondary hover:bg-secondary/90 transition-colors py-2.5 px-4 rounded-lg flex items-center justify-center gap-2 shadow-sm">
+<span class="material-symbols-outlined" data-icon="headphones" style="font-variation-settings: 'FILL' 1;">headphones</span>
+<span class="text-label-md font-label-md font-bold">Listen to Audio Guide</span>
+<span class="text-label-sm font-label-sm opacity-80 font-normal ml-1">(4:20)</span>
+</button>
+</div>
+<!-- Walking Indicator -->
+<div class="absolute left-[-15px] bottom-6 flex items-center gap-2 bg-surface py-1 pr-2 z-10 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-primary" data-icon="directions_walk">directions_walk</span>
+<span class="text-label-sm font-label-sm text-primary font-medium">8 min walk</span>
+</div>
+</div>
+<!-- Step 3: Upcoming -->
+<div class="relative group cursor-pointer">
+<div class="absolute left-[-22px] top-1 w-4 h-4 rounded-full bg-surface border-2 border-outline-variant z-10 flex items-center justify-center group-hover:border-primary transition-colors">
+</div>
+<div class="flex justify-between items-start pl-2">
+<div>
+<h3 class="text-body-md font-body-md text-on-surface group-hover:text-primary transition-colors">Tenryu-ji Temple</h3>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-1 line-clamp-1">World Heritage site with stunning zen gardens.</p>
+</div>
+<span class="text-label-sm font-label-sm text-outline-variant bg-surface-container px-2 py-1 rounded">Est 1h</span>
+</div>
+</div>
+</div>
+</div>
+</aside>
+</main>
+</body></html>

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Vagabond - Personalized Travel System</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-dim": "#cfdaf2",
+                        "primary-container": "#0070eb",
+                        "tertiary-fixed": "#72fe88",
+                        "on-surface-variant": "#414755",
+                        "surface": "#f9f9ff",
+                        "surface-container-high": "#dee8ff",
+                        "secondary": "#904d00",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-fixed-variant": "#00531c",
+                        "tertiary-fixed-dim": "#53e16f",
+                        "error": "#ba1a1a",
+                        "tertiary-container": "#008733",
+                        "on-secondary-fixed-variant": "#6e3900",
+                        "surface-container": "#e7eeff",
+                        "secondary-container": "#fd8b00",
+                        "on-surface": "#111c2d",
+                        "on-tertiary-fixed": "#002107",
+                        "on-secondary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#fefcff",
+                        "surface-bright": "#f9f9ff",
+                        "surface-container-low": "#f0f3ff",
+                        "primary-fixed": "#d8e2ff",
+                        "outline-variant": "#c1c6d7",
+                        "primary": "#0058bc",
+                        "outline": "#717786",
+                        "inverse-on-surface": "#ecf1ff",
+                        "secondary-fixed": "#ffdcc3",
+                        "surface-tint": "#005bc1",
+                        "inverse-surface": "#263143",
+                        "inverse-primary": "#adc6ff",
+                        "on-primary": "#ffffff",
+                        "on-secondary-container": "#603100",
+                        "on-secondary-fixed": "#2f1500",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary": "#006b27",
+                        "background": "#f9f9ff",
+                        "secondary-fixed-dim": "#ffb77d",
+                        "on-primary-fixed-variant": "#004493",
+                        "surface-container-highest": "#d8e3fb",
+                        "on-primary-fixed": "#001a41",
+                        "surface-variant": "#d8e3fb",
+                        "on-tertiary-container": "#f7fff2",
+                        "on-background": "#111c2d",
+                        "on-error": "#ffffff",
+                        "primary-fixed-dim": "#adc6ff",
+                        "on-tertiary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "64px",
+                        "container-max": "1280px",
+                        "sm": "16px",
+                        "md": "24px",
+                        "gutter": "24px",
+                        "xs": "8px",
+                        "base": "4px",
+                        "lg": "40px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "label-sm": ["Inter"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "body-lg": ["Inter"],
+                        "display-lg-mobile": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "display-lg-mobile": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 10px 20px rgba(0, 88, 188, 0.15);
+        }
+        .hero-gradient {
+            background: linear-gradient(to bottom, transparent 40%, rgba(17, 28, 45, 0.8) 100%);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md text-body-md antialiased min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-gutter py-base max-w-container-max mx-auto bg-surface/70 backdrop-blur-xl border-b border-white/20 shadow-sm transition-transform duration-150">
+<div class="flex items-center gap-md">
+<span class="text-headline-md font-headline-md font-bold text-primary">Vagabond</span>
+</div>
+<nav class="hidden md:flex gap-md">
+<a class="text-primary border-b-2 border-primary pb-1 font-bold text-label-md font-label-md hover:bg-surface-container-high/50 rounded-lg px-2 py-1 transition-colors" href="#">Explore</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors text-label-md font-label-md hover:bg-surface-container-high/50 rounded-lg px-2 py-1" href="#">Plan</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors text-label-md font-label-md hover:bg-surface-container-high/50 rounded-lg px-2 py-1" href="#">Community</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors text-label-md font-label-md hover:bg-surface-container-high/50 rounded-lg px-2 py-1" href="#">My Trips</a>
+</nav>
+<div class="flex items-center gap-sm">
+<button class="p-2 rounded-full hover:bg-surface-container-high/50 transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 rounded-full hover:bg-surface-container-high/50 transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-surface-container overflow-hidden border border-outline-variant">
+<img alt="User profile avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzOLnYBGFAHXontCjZXPqawc4RATirXc64QgNC-lTU2-gWcHCHvIMXHbTLMlt1rE61V2aMJB0lrqmfOQdj01ke98g3DE5HQaovZb8cVUvE_1qsEqZpDaabRJpom1MgA3QmZhwl2YLh8zxU9VbxSKehR4wAXxKRuj4PLq75_en6myzc4lAUS9_z6FMC2_1yg9nH7wC4tkeRd-px9swfS1GDhU7NdyhnSV971-hryUDqf1xboGKPIAng_DIlbxpAkgiYHK6uGPzgnBY"/>
+</div>
+</div>
+</header>
+<main class="flex-grow pt-[80px]">
+<!-- Hero Section -->
+<section class="relative w-full h-[614px] md:h-[716px] min-h-[500px] mb-xl overflow-hidden rounded-b-[2rem] md:rounded-b-[3rem] mx-auto max-w-[1440px]">
+<img alt="Explore the World" class="absolute inset-0 w-full h-full object-cover object-center" data-alt="A breathtaking view of a pristine mountain lake surrounded by majestic peaks at sunrise. The water perfectly reflects the sky, creating a vibrant, inspiring travel scene. The lighting is soft and golden, illuminating a lone kayak on the water. The overall aesthetic is modern, high-quality, and evokes boundless possibility." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBE81a4dvKlErwrefYGEkqc2dGrkFRou58qMqMdU6Jtx6GNa139YByTQJubPVW-FyLeLINY_uv7UGaYdxe7HUzLZqIQL4WVnMEHU4R5vXuTlKVesBfHe031GHwVv4aAJwiEtzg0GwdAS9ol1FVIgOORjLiVck-uImhpBDur6K8RD4cxnlHIr31lQB9acLt_YV6fzglsG33dE_wxKJOb1eLLfPI1baQsM41_puz8sfiRTaTdgkp2Bi_BfisL43rj2lzdtO5hRMK1kBY"/>
+<div class="absolute inset-0 hero-gradient"></div>
+<div class="absolute inset-0 flex flex-col justify-end pb-xl px-gutter md:px-[64px] max-w-container-max mx-auto">
+<h1 class="text-display-lg-mobile md:text-display-lg font-display-lg-mobile md:font-display-lg text-white mb-md max-w-2xl drop-shadow-lg">Explore the World Your Way</h1>
+<div class="glass-panel rounded-xl p-xs md:p-sm flex flex-col md:flex-row gap-xs md:gap-sm max-w-3xl w-full">
+<div class="relative flex-grow">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-10 pr-4 py-3 bg-surface-lowest/90 border-none rounded-lg text-body-md font-body-md text-on-surface focus:ring-2 focus:ring-primary placeholder-outline-variant transition-all" placeholder="Where do you want to go?" type="text"/>
+</div>
+<button class="bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md py-3 px-6 rounded-lg transition-colors whitespace-nowrap flex items-center justify-center gap-2">
+                        Search
+                        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">arrow_forward</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Interest Filters -->
+<section class="max-w-container-max mx-auto px-gutter md:px-[64px] mb-xl">
+<div class="flex gap-sm overflow-x-auto pb-4 hide-scrollbar">
+<button class="px-6 py-2 rounded-full border border-primary bg-primary/10 text-primary font-label-md text-label-md whitespace-nowrap hover:bg-primary/20 transition-colors">All</button>
+<button class="px-6 py-2 rounded-full border border-outline-variant bg-surface text-on-surface-variant font-label-md text-label-md whitespace-nowrap hover:border-primary hover:text-primary transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">hiking</span> Adventure
+                </button>
+<button class="px-6 py-2 rounded-full border border-outline-variant bg-surface text-on-surface-variant font-label-md text-label-md whitespace-nowrap hover:border-primary hover:text-primary transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">spa</span> Relaxation
+                </button>
+<button class="px-6 py-2 rounded-full border border-outline-variant bg-surface text-on-surface-variant font-label-md text-label-md whitespace-nowrap hover:border-primary hover:text-primary transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">museum</span> Culture
+                </button>
+<button class="px-6 py-2 rounded-full border border-outline-variant bg-surface text-on-surface-variant font-label-md text-label-md whitespace-nowrap hover:border-primary hover:text-primary transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">forest</span> Nature
+                </button>
+</div>
+</section>
+<!-- Recommended For You -->
+<section class="max-w-container-max mx-auto px-gutter md:px-[64px] mb-xl">
+<div class="flex justify-between items-end mb-md">
+<div>
+<h2 class="text-headline-lg font-headline-lg text-on-surface">Recommended for You</h2>
+<p class="text-body-md font-body-md text-on-surface-variant mt-1">Based on your love for coastal views and local cuisine.</p>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+<!-- Card 1 -->
+<div class="bg-surface rounded-xl overflow-hidden shadow-[0_10px_20px_rgba(0,88,188,0.05)] border border-outline-variant/20 hover:-translate-y-1 transition-transform duration-300 group cursor-pointer">
+<div class="relative aspect-[4/3] overflow-hidden">
+<img alt="Cinque Terre" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A vibrant coastal town with pastel-colored houses clinging to a steep cliffside overlooking a deep blue Mediterranean sea. The scene is brightly lit with midday sunshine, conveying a lively, culturally rich travel destination. The style is modern, airy, and high-quality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmPWOev-0Ms3YurDD-B-l-dmserpcFDi8k1pVImFFKCCRSAuyclJprgqf7ZQyEDM1FnKFH4a4TF-xgd8nJCRJ1g-ienxMKtFcrfjcx-vZrItlAzUagYhNfvzGhk7IdrG61EwaaIwQunbIAjrrcqhiqRl4N-azdLTpLx0UVNebEwc21fb7Sd0rXHRDP5ozSUdX6clvSLTExVALMj1vR9xSTXT8dtGmNcTTiZSI9dhjeHfDyOc9SLeb94KBRfU1Vz-J4DgVlTxR6TKU"/>
+<div class="absolute top-3 right-3 glass-panel rounded-full px-2 py-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-secondary-container" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-label-sm font-label-sm text-on-surface">4.9</span>
+</div>
+</div>
+<div class="p-sm">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-headline-md font-headline-md text-on-surface">Cinque Terre, Italy</h3>
+<div class="flex items-center text-error">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+</div>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant mb-4 line-clamp-2">Cliffside villages with colorful houses, steep vineyards, and harbors filled with fishing boats.</p>
+<div class="h-1 w-full bg-surface-container rounded-full overflow-hidden mt-auto">
+<div class="h-full bg-gradient-to-r from-tertiary-fixed to-error w-3/4"></div>
+</div>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-1 text-right">High Interest</p>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface rounded-xl overflow-hidden shadow-[0_10px_20px_rgba(0,88,188,0.05)] border border-outline-variant/20 hover:-translate-y-1 transition-transform duration-300 group cursor-pointer">
+<div class="relative aspect-[4/3] overflow-hidden">
+<img alt="Paris" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A romantic Parisian street scene at dusk, featuring a cozy cafe with warm glowing lights spilling onto cobblestone streets. The Eiffel Tower is softly visible in the background against a twilight sky. The mood is intimate, elegant, and perfectly captures a modern travel aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBK4HBSfxtnQJsuWBSK9FLpyp0yUnbxMemZAIT8aSls0BIfQutejVKvm40j6FVCaPAZNe16LFc0uwacIb99OeeN0Nzz8FNl29u2OZL4daHqbMfRY_nrX14X6_YXJvkbY7wT8x9YGWgr_E0EcliRpYHxtqQABxn8SeNfpHAfN4sF5AJKqv9__Q2BIsrnqNWLrD5f0i9yKiNOIVP0cED73XMO5XVdrKQ4wrf9duxZfhLxuMrEf5gQ03zvRQkK4fnujzl-n1JXsdJD5bY"/>
+<div class="absolute top-3 right-3 glass-panel rounded-full px-2 py-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-secondary-container" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-label-sm font-label-sm text-on-surface">4.8</span>
+</div>
+</div>
+<div class="p-sm">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-headline-md font-headline-md text-on-surface">Paris, France</h3>
+<div class="flex items-center text-secondary-container">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+</div>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant mb-4 line-clamp-2">Global center for art, fashion, gastronomy and culture. Its 19th-century cityscape is crisscrossed by wide boulevards.</p>
+<div class="h-1 w-full bg-surface-container rounded-full overflow-hidden mt-auto">
+<div class="h-full bg-gradient-to-r from-tertiary-fixed to-secondary-container w-1/2"></div>
+</div>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-1 text-right">Trending</p>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface rounded-xl overflow-hidden shadow-[0_10px_20px_rgba(0,88,188,0.05)] border border-outline-variant/20 hover:-translate-y-1 transition-transform duration-300 group cursor-pointer">
+<div class="relative aspect-[4/3] overflow-hidden">
+<img alt="Maldives" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A stunning aerial view of a vibrant coral reef in clear turquoise waters of the Maldives. Overwater bungalows sit gracefully on wooden stilts. The lighting is bright and sunny, creating a serene, luxurious relaxation vibe typical of a high-end travel experience." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDeSddXdErEjNV-91uZKyfEzdUfUMck_UYTFT6r5FiAeoFiREwGE5jnLE-94Ugk7L3zNG8zxtfX6WPnPlLxlwzgXkr0LPe48ZmAhuQym2EsJJYs02KnoE94DPzbuzOF3RIe1ZG8k82eLBXHo-z4oWkk3cmrQgZUmOYP24bBp49ohHXVm65cGhziUSuVjqmwiucWLsVvl1hxu75SWccfNaHn8wT8c3ODW37UoudePMtlfWvGdYC_Yy7aNPWEFCJs8rb4HxDAbfJYESE"/>
+<div class="absolute top-3 right-3 glass-panel rounded-full px-2 py-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-secondary-container" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-label-sm font-label-sm text-on-surface">5.0</span>
+</div>
+</div>
+<div class="p-sm">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-headline-md font-headline-md text-on-surface">Maldives</h3>
+<div class="flex items-center text-tertiary">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">water_drop</span>
+</div>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant mb-4 line-clamp-2">Tropical nation in the Indian Ocean composed of 26 ring-shaped atolls, known for beaches and blue lagoons.</p>
+<div class="h-1 w-full bg-surface-container rounded-full overflow-hidden mt-auto">
+<div class="h-full bg-tertiary-fixed w-1/4"></div>
+</div>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-1 text-right">Quiet</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full py-xl px-gutter flex flex-col md:flex-row justify-between items-start gap-md bg-surface-container-highest mt-xl flat no shadows">
+<div class="flex flex-col gap-sm">
+<span class="text-headline-md font-headline-md text-on-surface">Vagabond</span>
+<p class="text-body-md font-body-md text-on-surface-variant">© 2024 Vagabond Travel. Boundless Possibility.</p>
+</div>
+<div class="flex flex-wrap gap-md">
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-secondary transition-colors opacity-80 hover:opacity-100" href="#">About Us</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-secondary transition-colors opacity-80 hover:opacity-100" href="#">Safety Guide</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-secondary transition-colors opacity-80 hover:opacity-100" href="#">Terms of Service</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-secondary transition-colors opacity-80 hover:opacity-100" href="#">Privacy Policy</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-secondary transition-colors opacity-80 hover:opacity-100" href="#">Contact</a>
+</div>
+</footer>
+<style>
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</body></html>

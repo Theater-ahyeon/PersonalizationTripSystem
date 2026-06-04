@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>颐和园个性化旅游系统</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23f9f9ff'/%3E%3Ccircle cx='22' cy='32' r='10' fill='%230058bc'/%3E%3Cpath d='M28 42c9-18 18-25 30-26-5 15-15 27-30 26Z' fill='%23008733'/%3E%3Ccircle cx='46' cy='19' r='6' fill='%23fd8b00'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./vendor/leaflet.css">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="top-nav">
+      <a class="brand-mark" href="#recommendView" data-view="recommendView" aria-label="返回探索页">
+        <span class="brand-dot"></span>
+        <span>TripSystem</span>
+      </a>
+      <nav id="tourTabs" class="tour-tabs" aria-label="功能切换">
+        <button type="button" class="tab-button active" data-view="recommendView">探索</button>
+        <button type="button" class="tab-button" data-view="routeView">路线</button>
+        <button type="button" class="tab-button" data-view="queryView">设施</button>
+        <button type="button" class="tab-button" data-view="diaryView">日记</button>
+        <button type="button" class="tab-button" data-view="foodView">美食</button>
+      </nav>
+      <div class="nav-tools" aria-label="用户与状态">
+        <button class="icon-button" type="button" title="数据状态">i</button>
+        <button class="icon-button" type="button" title="设置">⚙</button>
+        <div class="avatar" aria-label="当前用户">游</div>
+      </div>
+    </header>
+
+    <main class="main-stage">
+      <section id="recommendView" class="view-panel active explore-view" aria-label="探索与推荐">
+        <section class="hero-section">
+          <div class="hero-media" aria-hidden="true">
+            <img src="./assets/spots/real/long-corridor.jpg" alt="">
+            <img src="./assets/spots/real/tower-buddhist-incense.jpg" alt="">
+            <img src="./assets/spots/real/long-corridor.jpg" alt="">
+          </div>
+          <div class="hero-content">
+            <h1>探索颐和园的个性化路线</h1>
+            <p>把兴趣、评分、热度、道路图和日记交流放在同一个可演示的旅行系统里。</p>
+            <div class="hero-search glass-panel">
+              <label class="search-field" for="preferenceInput">
+                <span>兴趣关键词</span>
+                <input id="preferenceInput" type="search" placeholder="例如：建筑 湖景 摄影 美食">
+              </label>
+              <button id="recommendButton" class="primary-button" type="button">开始推荐</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="content-band">
+          <div class="section-heading">
+            <div>
+              <h2>推荐目的地</h2>
+              <p>Top-K 最小堆根据评分、热度和兴趣匹配生成前 10 个景点。</p>
+            </div>
+            <div class="inline-controls">
+              <label>用户画像<select id="userSelect"></select></label>
+              <label>分类<select id="recommendCategory"></select></label>
+              <label>目的地查询<input id="recommendKeyword" type="search" placeholder="名称、类别、关键字"></label>
+              <label>排序<select id="recommendSort">
+                <option value="composite">综合推荐</option>
+                <option value="heat">热度优先</option>
+                <option value="rating">评分优先</option>
+                <option value="interest">兴趣优先</option>
+              </select></label>
+            </div>
+          </div>
+          <div class="category-rail" aria-label="推荐分类">
+            <button type="button" class="chip active" data-category="">全部</button>
+            <button type="button" class="chip" data-category="自然">自然</button>
+            <button type="button" class="chip" data-category="建筑">建筑</button>
+            <button type="button" class="chip" data-category="文化">文化</button>
+            <button type="button" class="chip" data-category="观景">观景</button>
+            <button type="button" class="chip" data-category="出入口">出入口</button>
+          </div>
+          <div id="recommendAlgorithmNote" class="algorithm-note" aria-live="polite"></div>
+          <div id="recommendResults" class="destination-grid"></div>
+        </section>
+      </section>
+
+      <section id="routeView" class="view-panel route-view" aria-label="路线规划">
+        <section class="route-shell">
+          <div class="map-panel" aria-label="地图区域">
+            <div id="map" class="map-canvas"></div>
+            <div id="mapFallback" class="fallback-map" hidden>
+              <p>地图底图暂未加载，仍可查看节点、路线和推荐结果。</p>
+            </div>
+            <div id="loadingState" class="loading-state">正在加载颐和园 OSM 节点和道路...</div>
+            <div class="map-floating glass-panel">
+              <label for="mapRegionSelect">地图范围</label>
+              <div class="map-region-row">
+                <select id="mapRegionSelect" aria-label="全国城市定位">
+                  <option value="dataset">颐和园数据集</option>
+                  <option value="china">全国视野</option>
+                  <option value="beijing">北京</option>
+                  <option value="shanghai">上海</option>
+                  <option value="guangzhou">广州</option>
+                  <option value="shenzhen">深圳</option>
+                  <option value="chengdu">成都</option>
+                  <option value="xian">西安</option>
+                  <option value="hangzhou">杭州</option>
+                  <option value="wuhan">武汉</option>
+                  <option value="chongqing">重庆</option>
+                </select>
+                <button id="datasetMapButton" class="small-button" type="button">数据集</button>
+              </div>
+              <div id="mapDataNotice" class="map-data-notice">全国底图可浏览；路线算法使用当前加载的数据包。</div>
+              <label for="nodeSearchInput">地图节点搜索</label>
+              <input id="nodeSearchInput" type="search" placeholder="东宫门、长廊、苏州街..." autocomplete="off">
+            </div>
+          </div>
+
+          <aside class="route-sidebar" aria-label="路线详情">
+            <div class="section-heading compact">
+              <div>
+                <h1>路线规划</h1>
+                <p>Dijkstra / A* / TSP-DP 路径演示。</p>
+              </div>
+              <button id="clearRouteButton" type="button" class="icon-button">×</button>
+            </div>
+
+            <div class="planner-card glass-panel">
+              <p class="eyebrow">区域数据包</p>
+              <label>算法数据包<select id="regionPackSelect"></select></label>
+              <div id="regionPackStatus" class="region-pack-status">正在读取区域数据包清单...</div>
+            </div>
+
+            <div class="planner-card glass-panel">
+              <div class="form-grid">
+                <label>起点<select id="startSelect"></select></label>
+                <label>终点<select id="goalSelect"></select></label>
+              </div>
+              <div class="mode-toggle" role="group" aria-label="交通方式">
+                <button type="button" class="mode-button active" data-mode="walk">步行</button>
+                <button type="button" class="mode-button" data-mode="bike">骑行</button>
+              </div>
+              <label class="strategy-select">路线策略<select id="routeStrategySelect">
+                <option value="distance">最短距离</option>
+                <option value="time">最短时间</option>
+                <option value="congestion">拥挤度时间</option>
+                <option value="transport">交通工具策略</option>
+              </select></label>
+              <button id="routeButton" type="button" class="primary-button full">高亮最短路径</button>
+            </div>
+
+            <div class="planner-card glass-panel">
+              <p class="eyebrow">室内导航策略</p>
+              <div class="form-grid">
+                <label>室内起点<select id="indoorStartSelect"></select></label>
+                <label>室内终点<select id="indoorGoalSelect"></select></label>
+              </div>
+              <button id="indoorRouteButton" class="secondary-button full" type="button">生成室内路径</button>
+              <div id="indoorRouteResult" class="indoor-result">模拟文昌院：大门、电梯、楼层和展厅节点图。</div>
+            </div>
+
+            <div class="quick-filters" aria-label="设施快捷筛选">
+              <button type="button" class="chip facility-chip" data-facility="卫生间">卫生间</button>
+              <button type="button" class="chip facility-chip" data-facility="咖啡">咖啡</button>
+              <button type="button" class="chip facility-chip" data-facility="游客服务">游客服务</button>
+              <button type="button" class="chip facility-chip" data-facility="商店">商店</button>
+            </div>
+
+            <div class="section-row">
+              <h2>多点游览</h2>
+              <button id="runMultiButton" type="button" class="small-button">TSP-DP 生成</button>
+            </div>
+            <div id="multiStopList" class="multi-stop-list"></div>
+
+            <section id="route-summary" class="result-card timeline-card" aria-live="polite">
+              <p class="eyebrow">演示提示</p>
+              <h3>默认路线：颐和园东宫门 → 苏州街入口</h3>
+              <p>点击“高亮最短路径”后，地图会显示醒目的路线描边和路径节点。</p>
+            </section>
+
+            <section id="detail-panel" class="detail-panel route-detail-panel" aria-label="地点详情">
+              <div class="empty-detail">
+                <p class="eyebrow">地点详情</p>
+                <h2>选择地图或结果中的地点</h2>
+                <p>这里会显示图片、简介、评分、热度、坐标和路线操作。</p>
+              </div>
+            </section>
+
+            <section class="node-browser glass-panel">
+              <div class="section-row">
+                <h2>节点列表</h2>
+                <span class="algorithm-badge">OSM</span>
+              </div>
+              <div id="nodeList" class="node-list" aria-live="polite"></div>
+            </section>
+          </aside>
+        </section>
+      </section>
+
+      <section id="queryView" class="view-panel" aria-label="场所查询">
+        <section class="page-header">
+          <h1>附近设施查询</h1>
+          <p>按类别、关键词和图上路径距离查找卫生间、商店、服务中心等设施。</p>
+        </section>
+        <div class="tool-layout">
+          <aside class="filter-panel glass-panel">
+            <label>当前位置<select id="facilityOriginSelect"></select></label>
+            <label>设施类型<select id="facilityTypeSelect"></select></label>
+            <label>搜索范围<select id="facilityRangeSelect">
+              <option value="300">300 米内</option>
+              <option value="600" selected>600 米内</option>
+              <option value="1000">1000 米内</option>
+              <option value="99999">全部可达</option>
+            </select></label>
+            <label>关键词<input id="facilityKeyword" type="search" placeholder="例如：卫生间、游客服务、商店"></label>
+            <button id="facilitySearchButton" class="primary-button full" type="button">查询设施</button>
+          </aside>
+          <div id="facilityResults" class="result-list card-list"></div>
+        </div>
+      </section>
+
+      <section id="diaryView" class="view-panel diary-view" aria-label="旅游日记">
+        <section class="diary-hero">
+          <div>
+            <h1>记录你的颐和园旅程</h1>
+            <p>浏览社区日记，查看热度、评分、兴趣匹配和 Huffman 压缩率。</p>
+          </div>
+          <div class="upload-panel glass-panel">
+            <div class="diary-compose">
+              <div class="form-grid">
+                <label>日记标题<input id="diaryTitleInput" type="text" placeholder="例如：长廊和昆明湖半日游"></label>
+                <label>目的地<input id="diaryDestinationInput" type="text" placeholder="例如：颐和园"></label>
+              </div>
+              <label>正文<textarea id="diaryContentInput" rows="4" placeholder="记录文字、照片说明、视频片段描述等"></textarea></label>
+              <div class="form-grid">
+                <label>标签<input id="diaryTagsInput" type="text" placeholder="建筑,湖景,摄影"></label>
+                <label>媒体说明<input id="diaryMediaInput" type="text" placeholder="照片/视频文件名或描述"></label>
+              </div>
+              <label>图片/视频<input id="diaryMediaFileInput" type="file" accept="image/*,video/*" multiple></label>
+              <button id="diaryCreateButton" class="primary-button" type="button">保存日记</button>
+            </div>
+            <button id="aigcDraftButton" class="primary-button" type="button">生成日记草稿</button>
+            <button id="aigcAnimationButton" class="secondary-button" type="button">生成动画分镜</button>
+            <div id="aigcStoryboard" class="storyboard-output"></div>
+          </div>
+        </section>
+        <section class="content-band">
+          <div class="section-heading">
+            <div>
+              <h2>社区日记</h2>
+              <p>KMP 全文检索，按热度、评分或兴趣匹配排序。</p>
+            </div>
+            <div class="inline-controls">
+              <label>排序<select id="diarySort">
+                <option value="heat">热度优先</option>
+                <option value="rating">评分优先</option>
+                <option value="interest">兴趣匹配</option>
+              </select></label>
+              <label>检索方式<select id="diarySearchMode">
+                <option value="fulltext">全文检索</option>
+                <option value="title">标题精确</option>
+                <option value="destination">目的地</option>
+              </select></label>
+              <label>关键词<input id="diaryKeyword" type="search" placeholder="长廊、夕阳、苏州街"></label>
+              <button id="diarySearchButton" class="secondary-button" type="button">检索</button>
+            </div>
+          </div>
+          <div id="diaryAlgorithmNote" class="algorithm-note" aria-live="polite"></div>
+          <div id="diaryResults" class="diary-masonry"></div>
+        </section>
+      </section>
+
+      <section id="foodView" class="view-panel" aria-label="美食推荐">
+        <section class="page-header">
+          <h1>景点周边美食推荐</h1>
+          <p>结合菜系、评分、热度和路线距离，为当前景点推荐餐饮。</p>
+        </section>
+        <div class="tool-layout">
+          <aside class="filter-panel glass-panel">
+            <label>当前景点<select id="foodSpotSelect"></select></label>
+            <label>菜系<select id="cuisineSelect"></select></label>
+            <label>排序<select id="foodSortSelect">
+              <option value="composite">综合推荐</option>
+              <option value="heat">热度优先</option>
+              <option value="rating">评分优先</option>
+              <option value="distance">距离最近</option>
+            </select></label>
+            <label>模糊搜索<input id="foodKeyword" type="search" placeholder="北京菜、咖啡、烤鸭"></label>
+            <button id="foodRecommendButton" class="primary-button full" type="button">推荐美食</button>
+          </aside>
+          <div id="foodAlgorithmNote" class="algorithm-note" aria-live="polite"></div>
+          <div id="foodResults" class="result-list card-list"></div>
+        </div>
+      </section>
+
+    </main>
+
+    <nav class="mobile-nav" aria-label="移动端功能切换">
+      <button type="button" class="mobile-tab active" data-view="recommendView">探索</button>
+      <button type="button" class="mobile-tab" data-view="routeView">路线</button>
+      <button type="button" class="mobile-tab" data-view="diaryView">日记</button>
+    </nav>
+  </div>
+
+  <script src="./vendor/leaflet.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

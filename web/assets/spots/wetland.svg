@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" role="img" aria-label="wetland">
+  <rect width="640" height="400" fill="#d6ece8"/>
+  <path d="M0 245c92-42 148 38 240 2s154-48 250-4 112 20 150-2v159H0z" fill="#7cb5a6"/>
+  <path d="M0 300c84-24 154 28 250 10s126-50 236-10 114 26 154 4v96H0z" fill="#569c95"/>
+  <path d="M94 265c8-54 18-94 36-132M142 270c10-50 22-90 45-132M488 270c-6-46-18-84-42-124" stroke="#6d8754" stroke-width="18" stroke-linecap="round"/>
+  <path d="M428 116c32 8 56 26 72 54-46 4-84-10-112-42z" fill="#ffffff"/>
+  <circle cx="500" cy="172" r="7" fill="#2c3c37"/>
+</svg>

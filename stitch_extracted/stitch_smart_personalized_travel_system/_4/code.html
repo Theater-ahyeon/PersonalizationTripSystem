@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Vagabond - User Profile</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* Custom scrollbar for horizontal lists */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Glassmorphic shadow utility based on style guide */
+        .shadow-glass {
+            box-shadow: 0 10px 20px rgba(0, 88, 188, 0.15); /* Tinted with primary color */
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-dim": "#cfdaf2",
+                        "primary-container": "#0070eb",
+                        "tertiary-fixed": "#72fe88",
+                        "on-surface-variant": "#414755",
+                        "surface": "#f9f9ff",
+                        "surface-container-high": "#dee8ff",
+                        "secondary": "#904d00",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-fixed-variant": "#00531c",
+                        "tertiary-fixed-dim": "#53e16f",
+                        "error": "#ba1a1a",
+                        "tertiary-container": "#008733",
+                        "on-secondary-fixed-variant": "#6e3900",
+                        "surface-container": "#e7eeff",
+                        "secondary-container": "#fd8b00",
+                        "on-surface": "#111c2d",
+                        "on-tertiary-fixed": "#002107",
+                        "on-secondary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#fefcff",
+                        "surface-bright": "#f9f9ff",
+                        "surface-container-low": "#f0f3ff",
+                        "primary-fixed": "#d8e2ff",
+                        "outline-variant": "#c1c6d7",
+                        "primary": "#0058bc",
+                        "outline": "#717786",
+                        "inverse-on-surface": "#ecf1ff",
+                        "secondary-fixed": "#ffdcc3",
+                        "surface-tint": "#005bc1",
+                        "inverse-surface": "#263143",
+                        "inverse-primary": "#adc6ff",
+                        "on-primary": "#ffffff",
+                        "on-secondary-container": "#603100",
+                        "on-secondary-fixed": "#2f1500",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary": "#006b27",
+                        "background": "#f9f9ff",
+                        "secondary-fixed-dim": "#ffb77d",
+                        "on-primary-fixed-variant": "#004493",
+                        "surface-container-highest": "#d8e3fb",
+                        "on-primary-fixed": "#001a41",
+                        "surface-variant": "#d8e3fb",
+                        "on-tertiary-container": "#f7fff2",
+                        "on-background": "#111c2d",
+                        "on-error": "#ffffff",
+                        "primary-fixed-dim": "#adc6ff",
+                        "on-tertiary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "64px",
+                        "container-max": "1280px",
+                        "sm": "16px",
+                        "md": "24px",
+                        "gutter": "24px",
+                        "xs": "8px",
+                        "base": "4px",
+                        "lg": "40px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "label-sm": ["Inter"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "body-lg": ["Inter"],
+                        "display-lg-mobile": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "display-lg-mobile": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface font-body-md antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-gutter py-base max-w-container-max mx-auto bg-surface/70 dark:bg-inverse-surface/70 backdrop-blur-xl border-b border-white/20 shadow-sm transition-transform duration-150">
+<div class="flex items-center gap-md">
+<span class="text-headline-md font-headline-md font-bold text-primary dark:text-primary-fixed tracking-tight">Vagabond</span>
+</div>
+<nav class="hidden md:flex gap-md items-center">
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary transition-colors text-label-md font-label-md px-sm py-xs hover:bg-surface-container-high/50 dark:hover:bg-surface-container-highest/50 rounded-lg" href="#">Explore</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary transition-colors text-label-md font-label-md px-sm py-xs hover:bg-surface-container-high/50 dark:hover:bg-surface-container-highest/50 rounded-lg" href="#">Plan</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary transition-colors text-label-md font-label-md px-sm py-xs hover:bg-surface-container-high/50 dark:hover:bg-surface-container-highest/50 rounded-lg" href="#">Community</a>
+<!-- Active State Navigation -->
+<a class="text-primary dark:text-inverse-primary border-b-2 border-primary dark:border-inverse-primary pb-1 font-bold text-label-md font-label-md px-sm pt-xs" href="#">My Trips</a>
+</nav>
+<div class="flex items-center gap-sm">
+<button aria-label="notifications" class="p-xs rounded-full hover:bg-surface-container-high/50 dark:hover:bg-surface-container-highest/50 transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button aria-label="settings" class="p-xs rounded-full hover:bg-surface-container-high/50 dark:hover:bg-surface-container-highest/50 transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<img alt="User profile avatar" class="w-10 h-10 rounded-full object-cover border-2 border-surface-container-highest ml-xs cursor-pointer hover:scale-95 transition-transform" data-alt="A brightly lit, professional headshot of a young woman smiling warmly. The background is a gently blurred, vibrant tropical setting, suggesting travel. Soft natural lighting highlights her face. The overall aesthetic is clean, modern, and perfectly suited for a high-end travel application profile picture." src="https://lh3.googleusercontent.com/aida-public/AB6AXuALBLQnONyPaPXis6-b3VuHCbHmFfBpWtKaqyN9H14EMzCE-HgwqYGoarCXaA80N3CguJF8XyN1IAAFwPpjMh77CRw2cXVADO9iZs9aAP9PtZMRz9xjLJoA53-J2ymKxuB5vTIno0BKd8aTfwKILs_CJbGNsLKJuv0B4HR6K5ImvWkjsP62jCtWwCh9npy-YDQtPpxbmzk9JIiwumQ083reH5Ai-oH4R5_GrDudK8Qkjthd-l36AjwlhX28RdLi0_LVtoX6VmqePk8"/>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="max-w-container-max mx-auto px-gutter pt-[120px] pb-xl flex flex-col gap-xl">
+<!-- Profile Header Section -->
+<section class="flex flex-col md:flex-row items-center md:items-start gap-xl bg-surface-container-lowest p-xl rounded-[2rem] shadow-glass border border-white/40 backdrop-blur-sm relative overflow-hidden">
+<!-- Decorative background element -->
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary-fixed opacity-30 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+<div class="relative group">
+<img alt="User Profile Picture" class="w-40 h-40 rounded-full object-cover shadow-md border-4 border-surface ring-2 ring-primary-fixed transition-transform duration-300 group-hover:scale-105" data-alt="A close-up, high-quality portrait of a female traveler with a cheerful expression. She is softly illuminated by natural daylight against an abstract, bright, and vibrant background. The styling is clean, modern, and embodies the light-mode glassmorphic aesthetic of a premium travel platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRs2s9JuN3NXiZtv4DJv8XxqNyOU9tTydyviq7_x5BwvVObAq0TjoGZO3umavsmoO3m3iqr3u1dNJ-7Xj9M0OM8sMnPcavnh9UAkfgH9XUeDSi77YYYyUZWEWKCJEogARVgWj4RZWCKmxFDLBrnTGq2ubgLWioTB3BO2zpQDwO7I98-bZCOdBRJSY70NrvxUpAgTAgxckAUC5GPNLmQPoMKhEP322Y9bXpmS2zHHLnTyMWszUNmaslQnqPKPcaW4tEdWe1KCyiBLo"/>
+<button class="absolute bottom-0 right-0 bg-primary text-on-primary p-2 rounded-full shadow-md hover:bg-surface-tint transition-colors">
+<span class="material-symbols-outlined" style="font-size: 20px;">edit</span>
+</button>
+</div>
+<div class="flex-1 text-center md:text-left z-10">
+<h1 class="text-display-lg font-display-lg text-on-surface mb-xs hidden md:block">Elena Rodriguez</h1>
+<h1 class="text-display-lg-mobile font-display-lg-mobile text-on-surface mb-xs block md:hidden">Elena Rodriguez</h1>
+<p class="text-body-lg font-body-lg text-on-surface-variant max-w-2xl mb-lg">Digital nomad, sunrise chaser, and coffee enthusiast. Collecting moments across 24 countries and counting. Always looking for the next hidden gem.</p>
+<div class="flex flex-wrap justify-center md:justify-start gap-lg bg-surface-container p-sm rounded-2xl w-fit">
+<div class="flex flex-col items-center md:items-start px-sm">
+<span class="text-headline-md font-headline-md text-primary">24</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Countries</span>
+</div>
+<div class="w-px bg-outline-variant/50 hidden md:block"></div>
+<div class="flex flex-col items-center md:items-start px-sm">
+<span class="text-headline-md font-headline-md text-primary">12</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Upcoming</span>
+</div>
+<div class="w-px bg-outline-variant/50 hidden md:block"></div>
+<div class="flex flex-col items-center md:items-start px-sm">
+<span class="text-headline-md font-headline-md text-secondary">8.4k</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Followers</span>
+</div>
+</div>
+</div>
+<div class="flex gap-sm z-10 w-full md:w-auto justify-center">
+<button class="bg-primary text-on-primary px-lg py-sm rounded-lg text-label-md font-label-md hover:bg-surface-tint transition-colors shadow-sm flex items-center gap-xs">
+<span class="material-symbols-outlined" style="font-size: 18px;">add</span> Follow
+                </button>
+<button class="border border-primary text-primary px-lg py-sm rounded-lg text-label-md font-label-md hover:bg-primary-fixed transition-colors flex items-center gap-xs">
+<span class="material-symbols-outlined" style="font-size: 18px;">share</span> Share
+                </button>
+</div>
+</section>
+<!-- Main Dashboard Content Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-xl">
+<!-- Left Column: Plans & Saved -->
+<div class="lg:col-span-7 flex flex-col gap-xl">
+<!-- My Plans -->
+<section>
+<div class="flex justify-between items-end mb-md">
+<h2 class="text-headline-lg font-headline-lg text-on-surface">Upcoming Journeys</h2>
+<a class="text-primary text-label-md font-label-md hover:underline flex items-center gap-xs" href="#">View all <span class="material-symbols-outlined" style="font-size: 16px;">arrow_forward</span></a>
+</div>
+<div class="flex flex-col gap-sm">
+<!-- Plan Card 1 -->
+<div class="bg-surface-container-lowest rounded-xl p-sm shadow-glass flex items-center gap-md border border-white/50 group cursor-pointer hover:-translate-y-1 transition-transform duration-300">
+<div class="w-24 h-24 rounded-lg overflow-hidden shrink-0 relative">
+<img alt="Bali Beach" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="A stunning, high-resolution photograph of a pristine beach in Bali at sunrise. Soft pastel pinks and blues reflect on calm turquoise water. Minimalist composition with subtle tropical elements. The lighting is ethereal and bright, styled for a modern, glassmorphic travel dashboard layout." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDebVI3h6uGOFKHdQwzgCroqjndjGYS0mNC2ogRO93Fdk2Ubau_Oi01rkttcoOs9FHq2rtrpMb1HkEFKa5f_dtRRfSjr5-fbr80_t56ZKptflRphJqlWuJVSkwKoLnKj0rbdVeNP7juXL3C0Sl7seQR1xtnRUDCBJ1qpBGQdM3ReIoECJM5nhGOvVckjVIl4357BzKfOAhWo1DdIxNohBYCxeXoxT6yWEJ5InIKHh84DQKVDZonncjVAXzwc31Oej4uHMHY9Ey3pCk"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-xs">
+<h3 class="text-headline-md font-headline-md text-on-surface leading-tight">Ubud Retreat</h3>
+<span class="bg-primary-container text-on-primary-container text-label-sm font-label-sm px-2 py-1 rounded-md">In 12 Days</span>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant flex items-center gap-xs mb-xs">
+<span class="material-symbols-outlined text-outline" style="font-size: 16px;">calendar_month</span> Oct 15 - Oct 22
+                                </p>
+<div class="flex -space-x-2">
+<img alt="Traveler" class="w-6 h-6 rounded-full border-2 border-surface-container-lowest" data-alt="A small, circular avatar portrait of a smiling person, used as a UI element to indicate a travel companion. Bright, clean lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKJnrBHL_r-zdA-4OfyBBMAynXRKEgg1MMILSeYTjLt-EO0SjdtQGFcYCIYbrChfQcWgsP6y3T8Gei9i9YzDV89xZF9Y9nkGUisQXiZ8zOtSket7ArKe3x1epIRzEiZc3aTSuD5t1Ne3LTF_57dWGLb9ryOAn8lCcurHtvHXnLIvK2TyaJ8_k4jQHzmCUpYc8lhSmaSqUzdJFh_-mva6dvUvhI1sjVLQBFmAPSukEkQXXVdnm8DmWY7uGavbpLwNJhl8vu9Jtvmms"/>
+<div class="w-6 h-6 rounded-full border-2 border-surface-container-lowest bg-surface-container-highest flex items-center justify-center text-[10px] font-bold text-on-surface">+2</div>
+</div>
+</div>
+</div>
+<!-- Plan Card 2 -->
+<div class="bg-surface-container-lowest rounded-xl p-sm shadow-sm hover:shadow-glass flex items-center gap-md border border-white/50 group cursor-pointer transition-all duration-300">
+<div class="w-24 h-24 rounded-lg overflow-hidden shrink-0 relative">
+<img alt="Swiss Alps" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="An inspiring, bright photograph of a mountainous landscape on a clear, sunny day. Snow-capped peaks contrast against a vivid blue sky with lush green valleys. The image exudes a sense of fresh air and boundless possibility, tailored for a clean, white-themed modern travel UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDHanP2mdDcxlfVoJrNj5cHR1tE6nYb2cSmdkHZ-FVVCZurfmu9q04Ql_Z58diHUCBwJbb4KWYaJcwbHHedMUcsbvkn2x6SyV54OHaE6j3V3hK2_OWzmUfDRhAYY4sXzoB2xIgFNfWMhfvr48iLg7RNNdZk2m2o2bL9IC1yXw3xUvIxR2rjPmoqafm-Lrcbe5PxoBVaiDG0WC18fvDY5CZBcJEHhBm0YK7yEaRdwfMLa9urqLybmSVIjKr0D0Xp8Ncnv6b42Ykz0C8"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-xs">
+<h3 class="text-headline-md font-headline-md text-on-surface leading-tight">Alpine Escape</h3>
+<span class="bg-surface-variant text-on-surface-variant text-label-sm font-label-sm px-2 py-1 rounded-md">Planning</span>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant flex items-center gap-xs">
+<span class="material-symbols-outlined text-outline" style="font-size: 16px;">calendar_month</span> Dec 05 - Dec 14
+                                </p>
+</div>
+</div>
+</div>
+</section>
+<!-- Saved Destinations Grid -->
+<section class="mt-lg">
+<div class="flex justify-between items-end mb-md">
+<h2 class="text-headline-lg font-headline-lg text-on-surface">Saved Spots</h2>
+<div class="flex gap-2">
+<button class="p-1 rounded-md bg-surface-container-highest text-on-surface hover:bg-outline-variant transition-colors"><span class="material-symbols-outlined">grid_view</span></button>
+<button class="p-1 rounded-md text-outline hover:text-on-surface transition-colors"><span class="material-symbols-outlined">format_list_bulleted</span></button>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-sm">
+<!-- Saved Card 1 -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-glass transition-shadow duration-300 border border-outline-variant/20 relative group cursor-pointer">
+<div class="aspect-[4/3] w-full relative overflow-hidden">
+<img alt="Kyoto Streets" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A beautifully composed photograph of a traditional street in Kyoto, Japan, bathed in soft, diffused morning light. The scene highlights warm wooden architectural tones and a serene atmosphere, designed to fit seamlessly into a modern, light-themed, premium travel application canvas." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpLQ0_PeZE6J3xXuaefqPmAD1KHRGdsOM6Lnd4K2bsyq3BuP0kYsQUWlYoLvvAUrZZnVbx6zjFdQt2wIA_WyOa_vT_JTR1AcXZ2GsBU_Fs5xdSudYNkYZA6sUaSWS-rt-XMttNEtVjDWIjtt64_2p0d9EDTyXJB1MzKOoBAC43DladMZGnafiiJ6sCv0uzEWiX6NZbpFZWPKGaupbYlbYOanYUXZX8du3yFVX79-SPRJFVOhtAimr9CPESnGwrl7mPTWKsRLzPewE"/>
+<!-- Glassmorphic Rating Badge -->
+<div class="absolute top-sm right-sm bg-surface/70 backdrop-blur-md px-2 py-1 rounded-full flex items-center gap-1 border border-white/50 shadow-sm">
+<span class="material-symbols-outlined text-secondary-container" data-weight="fill" style="font-size: 14px;">star</span>
+<span class="text-label-sm font-label-sm text-on-surface">4.9</span>
+</div>
+</div>
+<div class="p-sm">
+<h3 class="text-body-lg font-body-lg font-semibold text-on-surface">Kyoto Old Town</h3>
+<p class="text-label-sm font-label-sm text-on-surface-variant flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined" style="font-size: 14px;">location_on</span> Japan
+                                </p>
+</div>
+<!-- Crowd Heat Map Line -->
+<div class="h-1 w-full absolute bottom-0 bg-gradient-to-r from-tertiary-fixed to-secondary-container"></div>
+</div>
+<!-- Saved Card 2 -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-glass transition-shadow duration-300 border border-outline-variant/20 relative group cursor-pointer">
+<div class="aspect-[4/3] w-full relative overflow-hidden">
+<img alt="Cinque Terre" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A breathtaking view of colorful coastal cliffside architecture overlooking a deep azure sea. The bright Mediterranean sun casts clean shadows, creating a vibrant, high-contrast scene. The mood is idyllic and effortless, capturing the essence of a dream destination for a premium travel UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAFuigctqPxl3AezJO4n5Hsny1o2kxDvQN8Z8xQdMM8JOXNTU463l29gawXgTXAsm6sdBBHhV7OmD4vHcr-c9b_vSuMG8NLcB8pL0dX7USJr0h1X2JDSToWeHcmFN2dj_s1_E4ZvNhZszocOXQYJCqeQq2LclO5Sqj09cQ379xGSQUQxqUsRr4h518CK3JDY3PfCbQyMaH-EQ2kwym32wF1VryFOZdoiqU4YefMgaOLjiVhgBn_VzOad084ZdBjLR7jL4hjvy_mDp4"/>
+<div class="absolute top-sm right-sm bg-surface/70 backdrop-blur-md px-2 py-1 rounded-full flex items-center gap-1 border border-white/50 shadow-sm">
+<span class="material-symbols-outlined text-secondary-container" data-weight="fill" style="font-size: 14px;">star</span>
+<span class="text-label-sm font-label-sm text-on-surface">4.8</span>
+</div>
+</div>
+<div class="p-sm">
+<h3 class="text-body-lg font-body-lg font-semibold text-on-surface">Cinque Terre</h3>
+<p class="text-label-sm font-label-sm text-on-surface-variant flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined" style="font-size: 14px;">location_on</span> Italy
+                                </p>
+</div>
+<div class="h-1 w-full absolute bottom-0 bg-gradient-to-r from-tertiary-fixed via-secondary-container to-error"></div>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: Map Visualization -->
+<div class="lg:col-span-5 h-full">
+<section class="sticky top-[120px]">
+<div class="flex justify-between items-end mb-md">
+<h2 class="text-headline-lg font-headline-lg text-on-surface flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary">public</span> My Footprints
+                        </h2>
+</div>
+<div class="bg-surface-container-lowest rounded-2xl p-sm shadow-glass border border-white/50 relative overflow-hidden h-[500px] flex flex-col">
+<!-- Minimalist Map Styling Overlay applied over image to ensure bright/light mode feel -->
+<div class="relative w-full flex-1 rounded-xl overflow-hidden bg-surface-dim/30 isolate">
+<img alt="Map Visualization" class="w-full h-full object-cover opacity-80 mix-blend-multiply filter grayscale contrast-125 brightness-110" data-alt="A stylized, light-themed map visualization showing global landmasses. The map uses minimal details, focusing on soft light gray and white tones to represent terrain, perfectly aligning with a modern, glassmorphic UI design system. It serves as a subtle, premium backdrop for plotting travel locations." data-location="World Map" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpDQjiZH-g05B3gY_s-9QYYEkz2rDlubRHtjGtvVqcbauOtZZR5r2Z_ggSfiZvAKda-WWKk7ua7XKxpmM_OP2FLfLCbJSX5ZFOuqM_FnHHW6saAeMJwNnhU0mcLrLFmaIt4CzeewV90iCzGYxDMZ5z96m-4opQcKXg1L-9EmHBsDnX5VzvnZo20dExRWCyrd9HAK9uKThk-P6JbNNsHh5SuEKJafDk7s9oTpITO1hXeiAHf3MGsZ_eYIKVb7JaaYWpWMOBl8TjrPg"/>
+<!-- Stylized Map Overlays (Pins & Routes) -->
+<div class="absolute inset-0 pointer-events-none">
+<!-- Pin 1: Europe -->
+<div class="absolute top-[35%] left-[52%] flex flex-col items-center animate-bounce" style="animation-duration: 2s;">
+<div class="bg-primary text-on-primary w-8 h-8 rounded-full flex items-center justify-center shadow-md border-2 border-white z-10">
+<span class="material-symbols-outlined" style="font-size: 16px;">flight_land</span>
+</div>
+<div class="w-1 h-8 bg-gradient-to-b from-primary to-transparent -mt-2"></div>
+</div>
+<!-- Pin 2: Asia -->
+<div class="absolute top-[45%] left-[75%] flex flex-col items-center">
+<div class="bg-secondary-container text-on-secondary-container w-6 h-6 rounded-full flex items-center justify-center shadow-sm border-2 border-white z-10">
+<div class="w-2 h-2 bg-secondary rounded-full"></div>
+</div>
+</div>
+<!-- Route Line SVG (Atmospheric effect) -->
+<svg class="absolute inset-0 w-full h-full" style="z-index: 1;">
+<path class="opacity-60" d="M 52% 35% Q 65% 25% 75% 45%" fill="transparent" stroke="#0058bc" stroke-dasharray="4,4" stroke-width="2"></path>
+</svg>
+</div>
+<!-- Floating Map Controls -->
+<div class="absolute bottom-sm right-sm flex flex-col gap-2 z-20">
+<button class="w-10 h-10 bg-surface/90 backdrop-blur-md rounded-full shadow-sm flex items-center justify-center text-on-surface hover:bg-surface-container transition-colors border border-white/50">
+<span class="material-symbols-outlined">add</span>
+</button>
+<button class="w-10 h-10 bg-surface/90 backdrop-blur-md rounded-full shadow-sm flex items-center justify-center text-on-surface hover:bg-surface-container transition-colors border border-white/50">
+<span class="material-symbols-outlined">remove</span>
+</button>
+</div>
+</div>
+<!-- Map Stats Summary -->
+<div class="mt-sm p-sm bg-surface-container rounded-xl flex justify-around items-center">
+<div class="text-center">
+<div class="text-body-lg font-body-lg font-bold text-on-surface">3</div>
+<div class="text-label-sm font-label-sm text-on-surface-variant">Continents</div>
+</div>
+<div class="w-px h-8 bg-outline-variant/40"></div>
+<div class="text-center">
+<div class="text-body-lg font-body-lg font-bold text-on-surface">15,400</div>
+<div class="text-label-sm font-label-sm text-on-surface-variant">Miles Traveled</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-xl px-gutter flex flex-col md:flex-row justify-between items-start gap-md bg-surface-container-highest dark:bg-inverse-surface mt-xl flat no shadows">
+<div class="flex flex-col gap-sm">
+<span class="text-headline-md font-headline-md text-on-surface dark:text-inverse-on-surface font-bold tracking-tight">Vagabond</span>
+<p class="text-body-md font-body-md text-primary dark:text-primary-fixed-dim">© 2024 Vagabond Travel. Boundless Possibility.</p>
+</div>
+<nav class="flex flex-wrap gap-md opacity-80 hover:opacity-100 transition-opacity">
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-secondary dark:hover:text-secondary-fixed transition-colors text-label-sm font-label-sm" href="#">About Us</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-secondary dark:hover:text-secondary-fixed transition-colors text-label-sm font-label-sm" href="#">Safety Guide</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-secondary dark:hover:text-secondary-fixed transition-colors text-label-sm font-label-sm" href="#">Terms of Service</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-secondary dark:hover:text-secondary-fixed transition-colors text-label-sm font-label-sm" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-secondary dark:hover:text-secondary-fixed transition-colors text-label-sm font-label-sm" href="#">Contact</a>
+</nav>
+</footer>
+</body></html>

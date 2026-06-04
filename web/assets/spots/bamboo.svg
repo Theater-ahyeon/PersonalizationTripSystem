@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" role="img" aria-label="bamboo path">
+  <rect width="640" height="400" fill="#dfeee0"/>
+  <rect y="310" width="640" height="90" fill="#9cc081"/>
+  <path d="M300 400c10-76 30-124 62-180 33 56 52 104 62 180z" fill="#d6c19b"/>
+  <path d="M120 40v290M180 20v300M460 35v300M520 18v310" stroke="#4f8b4f" stroke-width="22" stroke-linecap="round"/>
+  <path d="M92 108l90 32M153 164l102 26M410 124l98-44M436 190l110-20" stroke="#6fb36b" stroke-width="18" stroke-linecap="round"/>
+  <path d="M300 330c44-30 80-30 124 0" fill="none" stroke="#fff8e7" stroke-width="13" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" role="img" aria-label="museum">
+  <rect width="640" height="400" fill="#eef0e8"/>
+  <rect y="300" width="640" height="100" fill="#c7c9ba"/>
+  <path d="M120 150h400v155H120z" fill="#f8f6ef"/>
+  <path d="M95 150h450L320 58z" fill="#8b6f54"/>
+  <rect x="155" y="175" width="48" height="130" fill="#b69b7d"/>
+  <rect x="246" y="175" width="48" height="130" fill="#b69b7d"/>
+  <rect x="337" y="175" width="48" height="130" fill="#b69b7d"/>
+  <rect x="428" y="175" width="48" height="130" fill="#b69b7d"/>
+  <rect x="95" y="305" width="450" height="28" fill="#735a45"/>
+</svg>

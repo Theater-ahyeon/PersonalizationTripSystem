@@ -1,0 +1,192 @@
+[
+  {
+    "id": 1,
+    "name": "游客01",
+    "preference_tags": [
+      "历史",
+      "建筑",
+      "室内"
+    ],
+    "preferred_categories": [
+      "历史",
+      "建筑"
+    ],
+    "route_mode": "walk",
+    "history_spot_ids": [
+      1,
+      9,
+      16
+    ]
+  },
+  {
+    "id": 2,
+    "name": "游客02",
+    "preference_tags": [
+      "湖景",
+      "拍照",
+      "夕阳"
+    ],
+    "preferred_categories": [
+      "湖景",
+      "拍照"
+    ],
+    "route_mode": "bike",
+    "history_spot_ids": [
+      2,
+      10,
+      17
+    ]
+  },
+  {
+    "id": 3,
+    "name": "游客03",
+    "preference_tags": [
+      "安静",
+      "园林",
+      "低拥挤"
+    ],
+    "preferred_categories": [
+      "安静",
+      "园林"
+    ],
+    "route_mode": "walk",
+    "history_spot_ids": [
+      3,
+      11,
+      18
+    ]
+  },
+  {
+    "id": 4,
+    "name": "游客04",
+    "preference_tags": [
+      "亲子",
+      "服务",
+      "轻松"
+    ],
+    "preferred_categories": [
+      "亲子",
+      "服务"
+    ],
+    "route_mode": "walk",
+    "history_spot_ids": [
+      4,
+      12,
+      19
+    ]
+  },
+  {
+    "id": 5,
+    "name": "游客05",
+    "preference_tags": [
+      "美食",
+      "购物",
+      "文化"
+    ],
+    "preferred_categories": [
+      "美食",
+      "购物"
+    ],
+    "route_mode": "bike",
+    "history_spot_ids": [
+      5,
+      13,
+      16
+    ]
+  },
+  {
+    "id": 6,
+    "name": "游客06",
+    "preference_tags": [
+      "徒步",
+      "路线",
+      "登高"
+    ],
+    "preferred_categories": [
+      "徒步",
+      "路线"
+    ],
+    "route_mode": "walk",
+    "history_spot_ids": [
+      6,
+      14,
+      17
+    ]
+  },
+  {
+    "id": 7,
+    "name": "游客07",
+    "preference_tags": [
+      "展陈",
+      "文物",
+      "讲解"
+    ],
+    "preferred_categories": [
+      "展陈",
+      "文物"
+    ],
+    "route_mode": "walk",
+    "history_spot_ids": [
+      7,
+      15,
+      18
+    ]
+  },
+  {
+    "id": 8,
+    "name": "游客08",
+    "preference_tags": [
+      "骑行",
+      "湖岸",
+      "效率"
+    ],
+    "preferred_categories": [
+      "骑行",
+      "湖岸"
+    ],
+    "route_mode": "bike",
+    "history_spot_ids": [
+      8,
+      9,
+      19
+    ]
+  },
+  {
+    "id": 9,
+    "name": "游客09",
+    "preference_tags": [
+      "地标",
+      "打卡",
+      "热门"
+    ],
+    "preferred_categories": [
+      "地标",
+      "打卡"
+    ],
+    "route_mode": "walk",
+    "history_spot_ids": [
+      1,
+      10,
+      16
+    ]
+  },
+  {
+    "id": 10,
+    "name": "游客10",
+    "preference_tags": [
+      "自然",
+      "树荫",
+      "休闲"
+    ],
+    "preferred_categories": [
+      "自然",
+      "树荫"
+    ],
+    "route_mode": "walk",
+    "history_spot_ids": [
+      2,
+      11,
+      17
+    ]
+  }
+]

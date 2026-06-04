@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Community Travel Diaries - Vagabond</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-dim": "#cfdaf2",
+                      "primary-container": "#0070eb",
+                      "tertiary-fixed": "#72fe88",
+                      "on-surface-variant": "#414755",
+                      "surface": "#f9f9ff",
+                      "surface-container-high": "#dee8ff",
+                      "secondary": "#904d00",
+                      "on-error-container": "#93000a",
+                      "on-tertiary-fixed-variant": "#00531c",
+                      "tertiary-fixed-dim": "#53e16f",
+                      "error": "#ba1a1a",
+                      "tertiary-container": "#008733",
+                      "on-secondary-fixed-variant": "#6e3900",
+                      "surface-container": "#e7eeff",
+                      "secondary-container": "#fd8b00",
+                      "on-surface": "#111c2d",
+                      "on-tertiary-fixed": "#002107",
+                      "on-secondary": "#ffffff",
+                      "error-container": "#ffdad6",
+                      "on-primary-container": "#fefcff",
+                      "surface-bright": "#f9f9ff",
+                      "surface-container-low": "#f0f3ff",
+                      "primary-fixed": "#d8e2ff",
+                      "outline-variant": "#c1c6d7",
+                      "primary": "#0058bc",
+                      "outline": "#717786",
+                      "inverse-on-surface": "#ecf1ff",
+                      "secondary-fixed": "#ffdcc3",
+                      "surface-tint": "#005bc1",
+                      "inverse-surface": "#263143",
+                      "inverse-primary": "#adc6ff",
+                      "on-primary": "#ffffff",
+                      "on-secondary-container": "#603100",
+                      "on-secondary-fixed": "#2f1500",
+                      "surface-container-lowest": "#ffffff",
+                      "tertiary": "#006b27",
+                      "background": "#f9f9ff",
+                      "secondary-fixed-dim": "#ffb77d",
+                      "on-primary-fixed-variant": "#004493",
+                      "surface-container-highest": "#d8e3fb",
+                      "on-primary-fixed": "#001a41",
+                      "surface-variant": "#d8e3fb",
+                      "on-tertiary-container": "#f7fff2",
+                      "on-background": "#111c2d",
+                      "on-error": "#ffffff",
+                      "primary-fixed-dim": "#adc6ff",
+                      "on-tertiary": "#ffffff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "xl": "64px",
+                      "container-max": "1280px",
+                      "sm": "16px",
+                      "md": "24px",
+                      "gutter": "24px",
+                      "xs": "8px",
+                      "base": "4px",
+                      "lg": "40px"
+              },
+              "fontFamily": {
+                      "label-md": ["Inter"],
+                      "body-md": ["Inter"],
+                      "headline-md": ["Plus Jakarta Sans"],
+                      "headline-lg": ["Plus Jakarta Sans"],
+                      "label-sm": ["Inter"],
+                      "display-lg": ["Plus Jakarta Sans"],
+                      "body-lg": ["Inter"],
+                      "display-lg-mobile": ["Plus Jakarta Sans"]
+              },
+              "fontSize": {
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "display-lg-mobile": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        .masonry-grid {
+            column-count: 1;
+            column-gap: 24px;
+        }
+        @media (min-width: 768px) {
+            .masonry-grid { column-count: 2; }
+        }
+        @media (min-width: 1024px) {
+            .masonry-grid { column-count: 3; }
+        }
+        .masonry-item {
+            break-inside: avoid;
+            margin-bottom: 24px;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md text-body-md antialiased min-h-screen flex flex-col">
+<!-- TopNavBar (Shared Component) -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-gutter py-base max-w-container-max mx-auto bg-surface/70 backdrop-blur-xl border-b border-white/20 shadow-sm hidden md:flex transition-all duration-300" id="top-nav">
+<div class="flex items-center gap-md">
+<a class="text-headline-md font-headline-md font-bold text-primary" href="#">Vagabond</a>
+</div>
+<nav class="flex gap-sm">
+<a class="text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-container-high/50 rounded-lg px-sm py-xs flex items-center justify-center font-label-md text-label-md" href="#">Explore</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-container-high/50 rounded-lg px-sm py-xs flex items-center justify-center font-label-md text-label-md" href="#">Plan</a>
+<a class="text-primary border-b-2 border-primary pb-1 font-bold hover:bg-surface-container-high/50 rounded-lg px-sm py-xs flex items-center justify-center font-label-md text-label-md scale-95 transition-transform duration-150" href="#">Community</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-container-high/50 rounded-lg px-sm py-xs flex items-center justify-center font-label-md text-label-md" href="#">My Trips</a>
+</nav>
+<div class="flex items-center gap-sm">
+<button class="text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-container-high/50 rounded-full p-xs flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-container-high/50 rounded-full p-xs flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-surface-container cursor-pointer ml-xs">
+<img alt="User profile avatar" class="w-full h-full object-cover" data-alt="A close-up portrait of a young woman with a soft, natural smile, looking directly at the camera. The lighting is bright and even, creating a clean, modern aesthetic that fits a travel app's light mode UI. The background is a subtle, out-of-focus blur, keeping the focus entirely on her face. The overall mood is approachable and fresh." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjuEVPFXQkMCpzhQ5ijbLHAU24xsXEshZgDzkiS9CX-jhElg9Czy5p7ZKBTMva0J1OLZN3npDS6WaR6c70ORjqGCF2D8Rw0zESZTQ_LRB0jbke4sIZGevXLjPAQkqEghO3Pclerjm-wB_RvwB0jS6kANNsohgPudcu_LDIG00oDAx_kJCq17PxbW6xvULvMUsOePWGJHTRuZ9PO33GcPIhpw_mZjjQao2KbzzB2eVsjStPu3v7LQmLPt9b_s3a4MvkooA4hoxy49o"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-xl md:pt-[100px] px-sm md:px-gutter lg:px-xl max-w-container-max mx-auto w-full pb-xl">
+<!-- Hero Section: Create Diary -->
+<section class="mb-xl relative rounded-xl overflow-hidden shadow-sm">
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
+<img alt="Travel landscape" class="w-full h-[400px] md:h-[500px] object-cover absolute inset-0 z-0" data-alt="A breathtaking, wide-angle shot of a classic American road trip scene, featuring a straight highway leading toward majestic, snow-capped mountains in the distance. The sky is a clear, vibrant blue with scattered, fluffy white clouds, casting soft shadows on the rugged landscape. The lighting is bright, natural daylight, evoking a sense of boundless possibility and adventure. The composition is expansive, fitting perfectly as an inspiring hero image for a modern travel application." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB082ZfgXvZ6ZnzpokTWXagIxTKqCYqDqZI8cAjBi3WZ1g3wvH4fujj-F5Mv8nPe5QrbBRORa2LRO76gl6kkbc7ScUGOnkdeDbRJWFTGWI8iF8HE73UnoWuwt08bnlvo6GUPvRPO8TZewsCLMvU1v2WAFRredIUFBM0ZshYiJb30O8n3kEmqiMppD-b3xXwxJi2eRrvjBSih2NSQ7efdZ4CyT12XQ2CPm4EU2HPUKiwtALO3gm4ZD0v9hQLyWAG7OfLUQIM1mgXXsk"/>
+<div class="relative z-20 h-[400px] md:h-[500px] flex flex-col justify-end p-md md:p-xl">
+<h1 class="text-on-secondary font-display-lg text-display-lg-mobile md:text-display-lg mb-sm">Share Your Journey</h1>
+<p class="text-on-secondary font-body-lg text-body-lg max-w-2xl mb-md opacity-90">Upload your photos and let our AI draft your travel story, capturing the mood, location, and magic of your trip.</p>
+<div class="glass-panel rounded-xl p-sm md:p-md max-w-3xl flex flex-col md:flex-row gap-sm items-center">
+<div class="flex-grow w-full">
+<label class="flex items-center justify-center w-full h-20 border-2 border-dashed border-outline-variant rounded-lg cursor-pointer hover:bg-surface/50 transition-colors bg-surface/30" for="photo-upload">
+<div class="flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined">add_photo_alternate</span>
+<span class="font-label-md text-label-md">Drop photos to start</span>
+</div>
+<input class="hidden" id="photo-upload" multiple="" type="file"/>
+</label>
+</div>
+<button class="w-full md:w-auto bg-primary text-on-primary font-label-md text-label-md px-md py-sm rounded-lg hover:bg-surface-tint transition-colors flex items-center justify-center gap-xs shrink-0 h-20">
+<span class="material-symbols-outlined" data-weight="fill">auto_awesome</span>
+                         Auto-Draft Diary
+                     </button>
+</div>
+</div>
+</section>
+<!-- Community Feed Header -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-md gap-sm">
+<h2 class="text-headline-lg font-headline-lg text-on-surface">Community Diaries</h2>
+<div class="flex gap-sm overflow-x-auto hide-scrollbar w-full md:w-auto pb-2 md:pb-0">
+<button class="bg-surface-container text-on-surface px-sm py-xs rounded-full font-label-sm text-label-sm whitespace-nowrap hover:bg-surface-container-high transition-colors">Trending</button>
+<button class="bg-surface text-on-surface-variant border border-outline-variant px-sm py-xs rounded-full font-label-sm text-label-sm whitespace-nowrap hover:bg-surface-container transition-colors">Following</button>
+<button class="bg-surface text-on-surface-variant border border-outline-variant px-sm py-xs rounded-full font-label-sm text-label-sm whitespace-nowrap hover:bg-surface-container transition-colors">Near Me</button>
+</div>
+</div>
+<!-- Masonry Grid -->
+<div class="masonry-grid">
+<!-- Diary Card 1 -->
+<div class="masonry-item group relative bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-surface-container">
+<div class="relative">
+<img alt="Chengdu trip" class="w-full h-auto object-cover" data-alt="A vertically oriented, high-resolution photograph capturing a vibrant street scene in Chengdu, China. The narrow alleyway is lined with traditional wooden architecture, glowing warmly under the soft light of numerous red paper lanterns strung overhead. The atmosphere is bustling yet intimate, with blurred figures in the background hinting at activity. The color palette is rich with deep reds, warm wood tones, and cool shadows, perfect for a high-quality travel diary cover image." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWQICU06wG7IjqSgLRqpbyKmrHjLlUGhy3KvajjLoC4atjB-I77qLxj4x3DRcNjsyDExwDEU1KD8AcV1EdvmVBJXknzyR6Tn6J6srZcXJxaXo-DDsBM3bWqYri6eS7OSJGb6cX9_22u_Jl02NDYwQ6NbcUbvvcZ0ryH6W4i51cVnrOPbGzxLsS7mPtAVqWiJC8SGoqQpec952a_vVLkxSDhBP31qqGeP3b3awoR96IaHooJwqR-2TzVkjAxBKkZ8aJfkbsfNAHam8"/>
+<div class="absolute top-sm right-sm flex gap-xs">
+<div class="glass-panel rounded-full px-xs py-[2px] flex items-center gap-[2px]">
+<span class="material-symbols-outlined text-secondary-container text-[14px]" data-weight="fill">star</span>
+<span class="text-on-surface font-label-sm text-label-sm">4.9</span>
+</div>
+</div>
+<!-- Hover overlay actions -->
+<div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-sm">
+<button class="glass-panel p-xs rounded-full text-on-surface hover:text-primary transition-colors" title="Save to Routes">
+<span class="material-symbols-outlined">bookmark_add</span>
+</button>
+</div>
+</div>
+<div class="p-sm">
+<div class="flex items-center gap-xs mb-xs">
+<img alt="Author" class="w-6 h-6 rounded-full" data-alt="A small, circular avatar image showing a young man with glasses, smiling softly against an out-of-focus background. The lighting is natural and bright, suitable for a user profile icon in a clean, modern interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDV0P5A8Aou-l9BAi3b_pYM1_RclEpGkR9R-3V2rQvlCsa-SsXIqrKeDgid4MdHRaBgnx_SPkoq7zda078e3JplcsVdHPTzaryBG5XRpB2cEUK2Fom-_MDDilpI2DiEuMkrp-RciR_mXbbQ2wwVk6Gyl3xQMFYW7iq9QoUy-ClbTtPk4k29rZPWvEeQLf4-Y_6BSlbf9OXVoby9t8Yed_O0gKhOr9nx2GTv9DegpzSlh7r11ug2ZHRSpHQHI1o3STTWIGprIOYOGA"/>
+<span class="font-label-sm text-label-sm text-on-surface-variant">@wanderlust_joe</span>
+<span class="font-label-sm text-label-sm text-outline mx-auto text-[10px]">•</span>
+<span class="font-label-sm text-label-sm text-outline">Oct 12</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-xs leading-tight">A Magical Weekend in Chengdu</h3>
+<p class="font-body-sm text-body-md text-on-surface-variant line-clamp-2 mb-sm text-sm">Spicy hotpot, misty mountains, and endless cups of tea. This city has a rhythm completely its own.</p>
+<div class="flex flex-wrap gap-xs mb-sm">
+<span class="bg-surface-container text-on-surface-variant px-xs py-[2px] rounded text-[10px] font-label-sm">#Foodie</span>
+<span class="bg-surface-container text-on-surface-variant px-xs py-[2px] rounded text-[10px] font-label-sm">#Culture</span>
+</div>
+<div class="flex justify-between items-center border-t border-surface-container-high pt-xs mt-xs">
+<div class="flex gap-sm">
+<button class="flex items-center gap-[4px] text-on-surface-variant hover:text-primary transition-colors group/btn">
+<span class="material-symbols-outlined text-[18px] group-hover/btn:scale-110 transition-transform">favorite</span>
+<span class="font-label-sm text-label-sm">245</span>
+</button>
+<button class="flex items-center gap-[4px] text-on-surface-variant hover:text-primary transition-colors group/btn">
+<span class="material-symbols-outlined text-[18px] group-hover/btn:scale-110 transition-transform">chat_bubble</span>
+<span class="font-label-sm text-label-sm">18</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Diary Card 2 -->
+<div class="masonry-item group relative bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-surface-container">
+<div class="relative">
+<img alt="Paris trip" class="w-full h-auto object-cover" data-alt="A square-format photograph showing a romantic, classic view of Paris. The Eiffel Tower stands prominently in the background against a soft, pastel-colored sunset sky. In the foreground, out-of-focus wrought iron balcony railings add depth. The overall tone is dreamy and elegant, fitting for a premium travel diary entry." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCu6YDl0-K4Ix8ZkIcbXcLzC3FpiVjeYHabmhPwXLs-WQAzthfTeOiy3utiUcgFoSs_PDc8_6sZmXjru6rUiP5tf5cjFianF-GSQqhIOO10dv_alSdwS0tMfTadS86kRu2yVbqKxabM9RYplBWmZBVhdLRjK-1YulN3Uq7N6w-ZHmt39MhXN7XgMk4KQXo9iCD4WopFbDFFgIR9-8WSJ7iYkX-oTWLdBeRbIW-Le4gQLngkHxmJFrwGGJYCd7UEPr0mvoPMJvCW5vY"/>
+<div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-sm">
+<button class="glass-panel p-xs rounded-full text-on-surface hover:text-primary transition-colors" title="Save to Routes">
+<span class="material-symbols-outlined">bookmark_add</span>
+</button>
+</div>
+</div>
+<div class="p-sm">
+<div class="flex items-center gap-xs mb-xs">
+<img alt="Author" class="w-6 h-6 rounded-full" data-alt="A small circular avatar of a woman with long dark hair, wearing a neutral-colored top. The background is a soft, warm blur, and her expression is friendly. The image is bright and cleanly lit." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxydlsryuqVWcjMtAh0_E8D_UgfRwnt1XHLmGPvA8mQ1njYVRq5suU44bCPgp13L7gdWBQP5oYCXmLf3eFw_Zufx6qFLv23pxJA7nhzXEv5czFrHBwBH8Cbp8GebFlq3ETnN__ZokQETzZfaLsQNs9Q5r4LjvhtITbU1gjUUWZ_lR-lry9vGNh8XexJXgNFKXuoXsZVw5kmBlfA7_0D4HMRcKC-pGf9GErArqG7V0pKfNkcxIaKZxSrC3AfTX6YsCqhlN6HpMke2U"/>
+<span class="font-label-sm text-label-sm text-on-surface-variant">@emma_travels</span>
+<span class="font-label-sm text-label-sm text-outline mx-auto text-[10px]">•</span>
+<span class="font-label-sm text-label-sm text-outline">Oct 10</span>
+</div>
+<h3 class="font-headline-md text-[20px] text-on-surface mb-xs leading-tight">Hidden Corners of Paris</h3>
+<p class="font-body-sm text-[14px] text-on-surface-variant line-clamp-3 mb-sm">Avoiding the main tourist traps to find the quiet, leafy squares where locals actually drink their morning espresso.</p>
+<div class="flex justify-between items-center border-t border-surface-container-high pt-xs mt-xs">
+<div class="flex gap-sm">
+<button class="flex items-center gap-[4px] text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">favorite</span>
+<span class="font-label-sm text-label-sm">892</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Diary Card 3 (Text Heavy) -->
+<div class="masonry-item group relative bg-surface-container-low rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-surface-container p-sm">
+<div class="flex items-center gap-xs mb-sm">
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-label-md text-label-md">T</div>
+<div>
+<div class="font-label-sm text-label-sm text-on-surface leading-none">Tom H.</div>
+<div class="font-label-sm text-[10px] text-outline">Just now</div>
+</div>
+</div>
+<h3 class="font-headline-md text-[20px] text-on-surface mb-xs leading-tight">Packing Light for 3 Weeks</h3>
+<p class="font-body-sm text-[15px] text-on-surface-variant mb-sm">I finally mastered the carry-on only rule for my trip across Europe. The trick isn't fewer clothes, it's a strict color palette. Stick to navy, white, and olive. Everything matches.</p>
+<div class="flex flex-wrap gap-xs mb-sm">
+<span class="bg-surface text-on-surface-variant border border-outline-variant px-xs py-[2px] rounded text-[10px] font-label-sm">#Tips</span>
+<span class="bg-surface text-on-surface-variant border border-outline-variant px-xs py-[2px] rounded text-[10px] font-label-sm">#Minimalism</span>
+</div>
+<div class="flex justify-between items-center border-t border-surface-container-high pt-xs mt-xs">
+<div class="flex gap-sm">
+<button class="flex items-center gap-[4px] text-on-surface-variant hover:text-primary transition-colors group/btn">
+<span class="material-symbols-outlined text-[18px] group-hover/btn:scale-110 transition-transform">favorite</span>
+<span class="font-label-sm text-label-sm">56</span>
+</button>
+<button class="flex items-center gap-[4px] text-on-surface-variant hover:text-primary transition-colors group/btn">
+<span class="material-symbols-outlined text-[18px] group-hover/btn:scale-110 transition-transform">chat_bubble</span>
+<span class="font-label-sm text-label-sm">4</span>
+</button>
+</div>
+<button class="text-on-surface-variant hover:text-primary transition-colors" title="Save Tip">
+<span class="material-symbols-outlined text-[20px]">bookmark</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer (Shared Component) -->
+<footer class="w-full py-xl px-gutter flex flex-col md:flex-row justify-between items-start gap-md bg-surface-container-highest mt-xl flat no shadows text-body-md font-body-md">
+<div class="flex flex-col gap-sm">
+<div class="text-headline-md font-headline-md text-on-surface">Vagabond</div>
+<div class="text-label-sm font-label-sm text-primary opacity-80">© 2024 Vagabond Travel. Boundless Possibility.</div>
+</div>
+<nav class="flex flex-wrap gap-md">
+<a class="text-on-surface-variant hover:text-secondary transition-colors opacity-80 hover:opacity-100 font-label-sm text-label-sm" href="#">About Us</a>
+<a class="text-on-surface-variant hover:text-secondary transition-colors opacity-80 hover:opacity-100 font-label-sm text-label-sm" href="#">Safety Guide</a>
+<a class="text-on-surface-variant hover:text-secondary transition-colors opacity-80 hover:opacity-100 font-label-sm text-label-sm" href="#">Terms of Service</a>
+<a class="text-on-surface-variant hover:text-secondary transition-colors opacity-80 hover:opacity-100 font-label-sm text-label-sm" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant hover:text-secondary transition-colors opacity-80 hover:opacity-100 font-label-sm text-label-sm" href="#">Contact</a>
+</nav>
+</footer>
+<!-- Mobile Bottom Nav (Simulated replacement for top nav on small screens) -->
+<nav class="md:hidden fixed bottom-0 w-full bg-surface/90 backdrop-blur-lg border-t border-outline-variant/30 flex justify-around items-center py-sm pb-6 z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+<button class="flex flex-col items-center gap-[2px] text-on-surface-variant">
+<span class="material-symbols-outlined">explore</span>
+<span class="font-label-sm text-[10px]">Explore</span>
+</button>
+<button class="flex flex-col items-center gap-[2px] text-on-surface-variant">
+<span class="material-symbols-outlined">map</span>
+<span class="font-label-sm text-[10px]">Plan</span>
+</button>
+<button class="flex flex-col items-center gap-[2px] text-primary">
+<span class="material-symbols-outlined" data-weight="fill">group</span>
+<span class="font-label-sm text-[10px] font-bold">Community</span>
+</button>
+<button class="flex flex-col items-center gap-[2px] text-on-surface-variant">
+<span class="material-symbols-outlined">luggage</span>
+<span class="font-label-sm text-[10px]">My Trips</span>
+</button>
+</nav>
+</body></html>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" role="img" aria-label="camp lawn">
+  <rect width="640" height="400" fill="#dceef1"/>
+  <rect y="240" width="640" height="160" fill="#8fc16f"/>
+  <path d="M218 320l90-128 92 128z" fill="#f2b35d"/>
+  <path d="M308 192v128" stroke="#7e4d32" stroke-width="12"/>
+  <path d="M400 320l70-96 72 96z" fill="#8fb7d7"/>
+  <path d="M470 224v96" stroke="#526f85" stroke-width="10"/>
+  <circle cx="118" cy="88" r="34" fill="#f4bf55"/>
+  <path d="M80 344c90-28 178-18 264-6s150 18 240-14" fill="none" stroke="#f8ffe8" stroke-width="16" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" role="img" aria-label="lakeside plaza">
+  <rect width="640" height="400" fill="#d9edf2"/>
+  <rect y="235" width="640" height="165" fill="#8dc4d4"/>
+  <path d="M0 275c86-28 142 28 224 4s142-54 230-18 140 22 186-2v141H0z" fill="#5da0ba"/>
+  <path d="M48 225h360c44 0 77 28 92 72H0c10-42 24-72 48-72z" fill="#b7d8b8"/>
+  <circle cx="500" cy="72" r="36" fill="#f6c45a"/>
+  <path d="M118 236h160" stroke="#ffffff" stroke-width="16" stroke-linecap="round"/>
+  <path d="M138 256h110" stroke="#ffffff" stroke-width="10" stroke-linecap="round"/>
+</svg>
