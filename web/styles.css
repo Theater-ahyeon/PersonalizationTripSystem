@@ -903,19 +903,6 @@ button:hover {
   color: var(--primary);
 }
 
-.storyboard-output .frame-card {
-  background: var(--surface);
-  border: 1px solid var(--outline);
-  border-radius: var(--radius-sm);
-  padding: 12px;
-  margin-bottom: 10px;
-}
-
-.storyboard-output .frame-card .frame-title {
-  font-weight: 600;
-  color: var(--primary);
-}
-
 .indoor-result ol,
 .storyboard-output ol {
   margin: 8px 0 0;

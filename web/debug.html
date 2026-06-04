@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><title>诊断</title></head>
+<body>
+<h1>诊断 TripSystem 前端</h1>
+<div id="log"></div>
+<script>
+const log = (...args) => {
+  const line = document.createElement("pre");
+  line.textContent = args.join(" ");
+  document.getElementById("log").appendChild(line);
+  console.log(...args);
+};
+
+async function run() {
+  // 1. Test data loading
+  log("=== 1. 数据加载测试 ===");
+  for (const [name, paths] of Object.entries({
+    spots: ["./data/spots.json"],
+    users: ["./data/users.json"],
+    diaries: ["./data/diaries/index.json"],
+    nodes: ["./data/osm_nodes.json"],
+    edges: ["./data/osm_edges.json"],
+    restaurants: ["./data/restaurants.json"],
+    facilities: ["./data/facilities.json"]
+  })) {
+    try {
+      const r = await fetch(paths[0]);
+      const d = await r.json();
+      log(`✅ ${name}: ${Array.isArray(d) ? d.length + " 条" : typeof d} (HTTP ${r.status})`);
+    } catch(e) {
+      log(`❌ ${name}: ${e.message}`);
+    }
+  }
+
+  // 2. Test recommendation logic (simplified)
+  log("\n=== 2. 推荐逻辑测试 ===");
+  try {
+    const spotsR = await fetch("./data/spots.json");
+    const spots = await spotsR.json();
+    const usersR = await fetch("./data/users.json");
+    const users = await usersR.json();
+
+    // Simulate fillUserSelect default
+    const firstNonAdmin = users.find(u => !u.is_admin);
+    log(`默认用户: ${firstNonAdmin?.name} (id=${firstNonAdmin?.id}, tags=${firstNonAdmin?.preference_tags?.join(",")})`);
+
+    // Simulate recommendSpots matching
+    const tokens = firstNonAdmin?.preference_tags || ["文化","建筑"];
+    let matchCount = 0;
+    const matched = spots.filter(s => {
+      const text = `${s.name} ${s.category} ${s.tags}`.toLowerCase();
+      return tokens.some(t => text.includes(t.toLowerCase()));
+    });
+    log(`偏好标签: ${tokens.join(", ")}`);
+    log(`匹配景点数: ${matched.length} / ${spots.length}`);
+    log(`前5个匹配: ${matched.slice(0,5).map(s => s.name).join(", ")}`);
+
+    if (matched.length === 0) {
+      log("❌ 没有任何景点匹配当前用户偏好！");
+      // Check all unique tags
+      const allTags = new Set();
+      spots.forEach(s => String(s.tags || "").split(",").forEach(t => allTags.add(t.trim())));
+      log(`所有可用标签: ${[...allTags].slice(0,30).join(", ")}...`);
+    }
+  } catch(e) {
+    log(`❌ 推荐逻辑错误: ${e.message}`);
+  }
+
+  // 3. Test diaries
+  log("\n=== 3. 日记测试 ===");
+  try {
+    const diariesR = await fetch("./data/diaries/index.json");
+    const diaries = await diariesR.json();
+    log(`✅ 日记数量: ${diaries.length}`);
+    if (diaries.length > 0) {
+      log(`首条: ${diaries[0].title} (热度=${diaries[0].heat})`);
+    }
+  } catch(e) {
+    log(`❌ 日记错误: ${e.message}`);
+  }
+
+  log("\n=== 诊断完成 ===");
+}
+run();
+</script>
+</body>
+</html>

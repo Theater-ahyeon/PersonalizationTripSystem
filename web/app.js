@@ -801,7 +801,7 @@ function recommendSpots() {
     candidateCount: scopedCandidates.length,
     lshBucketCount: lshCandidates.length,
     category,
-    keyword,
+    keyword: effectiveKeyword,
     sortMode
   });
 }
@@ -1951,9 +1951,10 @@ function unique(values) {
 
 function resolveAssetPath(image) {
   if (!image) return FALLBACK_IMAGE;
-  if (image.startsWith("web/")) return `../${image}`;
+  // Strip "web/" prefix — the HTTP server root is already the web/ directory
+  if (image.startsWith("web/")) return `./${image.slice(4)}`;
   if (image.startsWith("./") || image.startsWith("../") || image.startsWith("http")) return image;
-  return `../${image}`;
+  return `./${image}`;
 }
 
 function haversineM(a, b) {
