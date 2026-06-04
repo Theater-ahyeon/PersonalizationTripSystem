@@ -3,17 +3,17 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>颐和园个性化旅游系统</title>
+  <title>Vagabond 个性化旅行</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23f9f9ff'/%3E%3Ccircle cx='22' cy='32' r='10' fill='%230058bc'/%3E%3Cpath d='M28 42c9-18 18-25 30-26-5 15-15 27-30 26Z' fill='%23008733'/%3E%3Ccircle cx='46' cy='19' r='6' fill='%23fd8b00'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="./vendor/leaflet.css">
-  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./styles.css?v=20260605-account-full">
 </head>
 <body>
   <div class="app-shell">
     <header class="top-nav">
       <a class="brand-mark" href="#recommendView" data-view="recommendView" aria-label="返回探索页">
         <span class="brand-dot"></span>
-        <span>TripSystem</span>
+        <span>Vagabond</span>
       </a>
       <nav id="tourTabs" class="tour-tabs" aria-label="功能切换">
         <button type="button" class="tab-button active" data-view="recommendView">探索</button>
@@ -23,9 +23,9 @@
         <button type="button" class="tab-button" data-view="foodView">美食</button>
       </nav>
       <div class="nav-tools" aria-label="用户与状态">
-        <button class="icon-button" type="button" title="数据状态">i</button>
-        <button class="icon-button" type="button" title="设置">⚙</button>
-        <div class="avatar" aria-label="当前用户">游</div>
+        <button id="statusButton" class="icon-button" type="button" title="数据状态">i</button>
+        <button id="settingsButton" class="icon-button" type="button" title="设置">⚙</button>
+        <button id="accountButton" class="avatar" type="button" aria-label="当前用户">游</button>
       </div>
     </header>
 
@@ -33,13 +33,11 @@
       <section id="recommendView" class="view-panel active explore-view" aria-label="探索与推荐">
         <section class="hero-section">
           <div class="hero-media" aria-hidden="true">
-            <img src="./assets/spots/real/long-corridor.jpg" alt="">
-            <img src="./assets/spots/real/tower-buddhist-incense.jpg" alt="">
-            <img src="./assets/spots/real/long-corridor.jpg" alt="">
+            <img src="./assets/spots/real/summer-long-corridor-commons.jpg" alt="">
           </div>
           <div class="hero-content">
-            <h1>探索颐和园的个性化路线</h1>
-            <p>把兴趣、评分、热度、道路图和日记交流放在同一个可演示的旅行系统里。</p>
+            <h1>按你的方式探索下一段旅程</h1>
+            <p>从真实景点、路线、场所和旅行日记里，为你挑出更适合此刻出发的目的地。</p>
             <div class="hero-search glass-panel">
               <label class="search-field" for="preferenceInput">
                 <span>兴趣关键词</span>
@@ -53,8 +51,8 @@
         <section class="content-band">
           <div class="section-heading">
             <div>
-              <h2>推荐目的地</h2>
-              <p>Top-K 最小堆根据评分、热度和兴趣匹配生成前 10 个景点。</p>
+              <h2>为你推荐</h2>
+              <p>结合偏好、口碑和人气，优先呈现更值得停留的目的地。</p>
             </div>
             <div class="inline-controls">
               <label>用户画像<select id="userSelect"></select></label>
@@ -88,11 +86,11 @@
             <div id="mapFallback" class="fallback-map" hidden>
               <p>地图底图暂未加载，仍可查看节点、路线和推荐结果。</p>
             </div>
-            <div id="loadingState" class="loading-state">正在加载颐和园 OSM 节点和道路...</div>
+            <div id="loadingState" class="loading-state">正在加载目的地地图和道路...</div>
             <div class="map-floating glass-panel">
               <label>地图范围</label>
               <div class="fixed-map-region" aria-label="当前地图范围">颐和园数据集</div>
-              <div id="mapDataNotice" class="map-data-notice">颐和园单数据集；路线算法使用当前加载的数据包。</div>
+              <div id="mapDataNotice" class="map-data-notice">当前路线基于已加载的目的地道路数据生成。</div>
               <label for="nodeSearchInput">地图节点搜索</label>
               <input id="nodeSearchInput" type="search" placeholder="东宫门、长廊、苏州街..." autocomplete="off">
             </div>
@@ -102,14 +100,14 @@
             <div class="section-heading compact">
               <div>
                 <h1>路线规划</h1>
-                <p>Dijkstra / A* / TSP-DP 路径演示。</p>
+                <p>选择起点和想去的地方，生成一条更顺路的游览动线。</p>
               </div>
-              <button id="clearRouteButton" type="button" class="icon-button">×</button>
+              <button id="clearRouteButton" type="button" class="icon-button" title="清除路线">×</button>
             </div>
 
             <div class="planner-card glass-panel">
-              <p class="eyebrow">区域数据包</p>
-              <label>算法数据包<select id="regionPackSelect"></select></label>
+              <p class="eyebrow">当前目的地</p>
+              <label>旅行区域<select id="regionPackSelect"></select></label>
               <div id="regionPackStatus" class="region-pack-status">正在读取区域数据包清单...</div>
             </div>
 
@@ -125,10 +123,10 @@
               <label class="strategy-select">路线策略<select id="routeStrategySelect">
                 <option value="distance">最短距离</option>
                 <option value="time">最短时间</option>
-                <option value="congestion">拥挤度时间</option>
-                <option value="transport">交通工具策略</option>
+                <option value="congestion">避开拥挤</option>
+                <option value="transport">混合交通</option>
               </select></label>
-              <button id="routeButton" type="button" class="primary-button full">高亮最短路径</button>
+              <button id="routeButton" type="button" class="primary-button full">生成游览路线</button>
             </div>
 
             <div class="planner-card glass-panel">
@@ -150,14 +148,14 @@
 
             <div class="section-row">
               <h2>多点游览</h2>
-              <button id="runMultiButton" type="button" class="small-button">TSP-DP 生成</button>
+              <button id="runMultiButton" type="button" class="small-button">生成环游路线</button>
             </div>
             <div id="multiStopList" class="multi-stop-list"></div>
 
             <section id="route-summary" class="result-card timeline-card" aria-live="polite">
-              <p class="eyebrow">演示提示</p>
-              <h3>默认路线：颐和园东宫门 → 苏州街入口</h3>
-              <p>点击“高亮最短路径”后，地图会显示醒目的路线描边和路径节点。</p>
+              <p class="eyebrow">路线提示</p>
+              <h3>选择一个终点，地图会为你亮起路线</h3>
+              <p>路线卡片会显示预计距离、时间和沿途重点停留点。</p>
             </section>
 
             <section id="detail-panel" class="detail-panel route-detail-panel" aria-label="地点详情">
@@ -170,8 +168,8 @@
 
             <section class="node-browser glass-panel">
               <div class="section-row">
-                <h2>节点列表</h2>
-                <span class="algorithm-badge">OSM</span>
+                <h2>地点列表</h2>
+                <span class="algorithm-badge">地图</span>
               </div>
               <div id="nodeList" class="node-list" aria-live="polite"></div>
             </section>
@@ -181,8 +179,8 @@
 
       <section id="queryView" class="view-panel" aria-label="场所查询">
         <section class="page-header">
-          <h1>附近设施查询</h1>
-          <p>按类别、关键词和图上路径距离查找卫生间、商店、服务中心等设施。</p>
+          <h1>附近设施</h1>
+          <p>从当前位置出发，快速找到卫生间、商店、服务中心和休息点。</p>
         </section>
         <div class="tool-layout">
           <aside class="filter-panel glass-panel">
@@ -204,8 +202,8 @@
       <section id="diaryView" class="view-panel diary-view" aria-label="旅游日记">
         <section class="diary-hero">
           <div>
-            <h1>记录你的颐和园旅程</h1>
-            <p>浏览社区日记，查看热度、评分、兴趣匹配和 Huffman 压缩率。</p>
+            <h1>分享你的旅程</h1>
+            <p>上传照片、整理文字，让一次游览变成可浏览、可交流的旅行故事。</p>
           </div>
           <div class="upload-panel glass-panel">
             <div class="diary-compose">
@@ -221,15 +219,15 @@
               <label>图片/视频<input id="diaryMediaFileInput" type="file" accept="image/*,video/*" multiple></label>
               <button id="diaryCreateButton" class="primary-button" type="button">保存日记</button>
               <button id="diaryExportButton" class="secondary-button" type="button">导出日记 JSON</button>
-              <p class="diary-export-note">导出后可替换 web/data/diaries/index.json，或交给 C++ 数据目录同步。</p>
+              <p class="diary-export-note">导出后可同步到项目数据目录，方便继续维护日记内容。</p>
             </div>
             <button id="aigcDraftButton" class="primary-button" type="button">生成模拟日记草稿</button>
             <button id="aigcAnimationButton" class="secondary-button" type="button">生成模拟分镜</button>
             <div id="aigcStoryboard" class="storyboard-output">
               <div class="storyboard-placeholder">
                 <div class="storyboard-icon">🎬</div>
-                <p>模拟分镜 / 待接入模型</p>
-                <p class="storyboard-hint">当前为规则脚本模拟，未接入真实 AIGC 模型；可扩展为文生图或图生视频服务。</p>
+                <p>旅行故事板</p>
+                <p class="storyboard-hint">根据照片描述和文字，先生成可展示的分镜草稿。</p>
               </div>
             </div>
           </div>
@@ -238,7 +236,7 @@
           <div class="section-heading">
             <div>
               <h2>社区日记</h2>
-              <p>KMP 全文检索，按热度、评分或兴趣匹配排序。</p>
+              <p>浏览大家的旅行故事，也可以按目的地、标题和正文查找灵感。</p>
             </div>
             <div class="inline-controls">
               <label>排序<select id="diarySort">
@@ -262,8 +260,8 @@
 
       <section id="foodView" class="view-panel" aria-label="美食推荐">
         <section class="page-header">
-          <h1>景点周边美食推荐</h1>
-          <p>结合菜系、评分、热度和路线距离，为当前景点推荐餐饮。</p>
+          <h1>周边美食</h1>
+          <p>根据当前位置、菜系偏好、口碑和步行距离，挑出更合适的休息与用餐地点。</p>
         </section>
         <div class="tool-layout">
           <aside class="filter-panel glass-panel">
@@ -285,6 +283,207 @@
 
     </main>
 
+    <footer class="site-footer" aria-label="全局页脚">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <strong>Vagabond</strong>
+          <p>© 2024 Vagabond Travel. Boundless Possibility.</p>
+        </div>
+        <nav class="footer-links" aria-label="辅助链接">
+          <a href="#recommendView" data-view="recommendView">About Us</a>
+          <a href="#routeView" data-view="routeView">Safety Guide</a>
+          <a href="#diaryView" data-view="diaryView">Terms of Service</a>
+          <a href="#foodView" data-view="foodView">Privacy Policy</a>
+          <a href="#queryView" data-view="queryView">Contact</a>
+        </nav>
+      </div>
+    </footer>
+
+    <div id="diaryModal" class="diary-modal" hidden role="dialog" aria-modal="true" aria-labelledby="diaryModalTitle">
+      <div class="diary-modal-backdrop" data-diary-close></div>
+      <article class="diary-modal-card" tabindex="-1">
+        <button class="diary-modal-close" type="button" data-diary-close aria-label="关闭日记详情">×</button>
+        <img id="diaryModalImage" class="diary-modal-image" src="./assets/spots/real/summer-seventeen-arch-bridge.jpg" alt="">
+        <div class="diary-modal-body">
+          <div id="diaryModalMeta" class="diary-card-meta"></div>
+          <h2 id="diaryModalTitle"></h2>
+          <p id="diaryModalContent"></p>
+          <div id="diaryModalTags" class="diary-tag-row"></div>
+          <div class="diary-review-panel" aria-label="日记评分与评论">
+            <div class="review-header">
+              <strong>给这篇日记评分</strong>
+              <span id="diaryReviewHint">选择 1-5 星并留下评论</span>
+            </div>
+            <div id="diaryStarPicker" class="star-picker" role="radiogroup" aria-label="选择评分">
+              <button type="button" role="radio" data-rating="1" aria-label="1 星">★</button>
+              <button type="button" role="radio" data-rating="2" aria-label="2 星">★</button>
+              <button type="button" role="radio" data-rating="3" aria-label="3 星">★</button>
+              <button type="button" role="radio" data-rating="4" aria-label="4 星">★</button>
+              <button type="button" role="radio" data-rating="5" aria-label="5 星">★</button>
+            </div>
+            <textarea id="diaryCommentInput" rows="3" placeholder="写下你的观感，比如路线是否有帮助、照片是否吸引你..."></textarea>
+            <button id="diarySubmitReviewButton" class="primary-button diary-submit-review" type="button">提交评价</button>
+          </div>
+          <section class="diary-comments" aria-label="日记评论">
+            <div class="review-header">
+              <strong>评论</strong>
+              <span id="diaryCommentCount">0 条</span>
+            </div>
+            <div id="diaryCommentList" class="diary-comment-list"></div>
+          </section>
+        </div>
+      </article>
+    </div>
+
+    <div id="accountModal" class="app-modal" hidden role="dialog" aria-modal="true" aria-labelledby="accountModalTitle">
+      <div class="app-modal-backdrop" data-modal-close="accountModal"></div>
+      <article class="app-modal-card account-card" tabindex="-1">
+        <button class="diary-modal-close" type="button" data-modal-close="accountModal" aria-label="关闭账号面板">×</button>
+        <div class="modal-heading account-heading">
+          <div>
+            <p class="eyebrow">Account</p>
+            <h2 id="accountModalTitle">我的 Vagabond</h2>
+          </div>
+          <span id="accountIdBadge" class="account-id-badge">ID --</span>
+        </div>
+        <section class="account-profile">
+          <div class="account-avatar" id="accountAvatarLarge">游</div>
+          <div>
+            <h3 id="accountNameDisplay">未登录</h3>
+            <p id="accountEmailDisplay">登录后，推荐、日记评论、路线偏好和界面设置会保存在当前浏览器。</p>
+            <p id="accountBioDisplay" class="account-bio">把这里当成你的旅行首页。</p>
+          </div>
+        </section>
+        <div class="account-stats">
+          <span><strong id="profileDiaryCount">0</strong>日记</span>
+          <span><strong id="profileCommentCount">0</strong>评论</span>
+          <span><strong id="profilePreferenceCount">0</strong>偏好</span>
+        </div>
+        <nav class="account-tabbar" aria-label="账号功能">
+          <button class="account-tab-button active" type="button" data-account-tab="loginPanel">登录</button>
+          <button class="account-tab-button" type="button" data-account-tab="signupPanel">注册</button>
+          <button class="account-tab-button" type="button" data-account-tab="profilePanel">资料</button>
+          <button class="account-tab-button" type="button" data-account-tab="securityPanel">安全</button>
+          <button class="account-tab-button" type="button" data-account-tab="preferencePanel">偏好</button>
+        </nav>
+        <div class="account-panels">
+          <section id="loginPanel" class="account-section active" data-account-panel>
+            <h3>登录已有账号</h3>
+            <div class="form-grid">
+              <label>账号 ID 或邮箱<input id="loginIdentifierInput" type="text" autocomplete="username" placeholder="例如：1001 或 you@example.com"></label>
+              <label>密码<input id="loginPasswordInput" type="password" autocomplete="current-password" placeholder="演示账号默认 demo123"></label>
+            </div>
+            <label>快速选择演示账号<select id="loginUserSelect"></select></label>
+            <div class="account-actions">
+              <button id="loginButton" class="primary-button" type="button">登录</button>
+              <button id="quickLoginButton" class="secondary-button" type="button">使用所选账号</button>
+            </div>
+          </section>
+          <section id="signupPanel" class="account-section" data-account-panel>
+            <h3>创建新账号</h3>
+            <div class="form-grid">
+              <label>昵称<input id="signupNameInput" type="text" autocomplete="name" placeholder="例如：颐和园探索者"></label>
+              <label>邮箱<input id="signupEmailInput" type="email" autocomplete="email" placeholder="new@example.com"></label>
+            </div>
+            <div class="form-grid">
+              <label>密码<input id="signupPasswordInput" type="password" autocomplete="new-password" placeholder="至少 6 位"></label>
+              <label>所在城市<input id="signupHomeCityInput" type="text" placeholder="例如：北京"></label>
+            </div>
+            <label>偏好标签<input id="signupTagsInput" type="text" placeholder="建筑, 湖景, 美食"></label>
+            <button id="signupButton" class="secondary-button full" type="button">创建并登录</button>
+          </section>
+          <section id="profilePanel" class="account-section" data-account-panel>
+            <h3>编辑资料</h3>
+            <div class="form-grid">
+              <label>账号 ID<input id="profileIdInput" type="number" min="1" step="1" placeholder="可改为容易记住的数字 ID"></label>
+              <label>昵称<input id="profileNameInput" type="text" placeholder="例如：湖边漫游者"></label>
+            </div>
+            <div class="form-grid">
+              <label>邮箱<input id="profileEmailInput" type="email" placeholder="you@example.com"></label>
+              <label>所在城市<input id="profileHomeCityInput" type="text" placeholder="例如：北京"></label>
+            </div>
+            <label>个人简介<textarea id="profileBioInput" rows="3" placeholder="写一句你喜欢怎样旅行"></textarea></label>
+            <div class="account-actions">
+              <button id="saveProfileButton" class="primary-button" type="button">保存资料</button>
+              <button id="logoutButton" class="secondary-button" type="button">退出登录</button>
+            </div>
+          </section>
+          <section id="securityPanel" class="account-section" data-account-panel>
+            <h3>账号安全</h3>
+            <div class="form-grid">
+              <label>当前密码<input id="currentPasswordInput" type="password" autocomplete="current-password" placeholder="演示账号默认 demo123"></label>
+              <label>新密码<input id="newPasswordInput" type="password" autocomplete="new-password" placeholder="至少 6 位"></label>
+            </div>
+            <button id="savePasswordButton" class="primary-button" type="button">更新密码</button>
+          </section>
+          <section id="preferencePanel" class="account-section" data-account-panel>
+            <h3>旅行偏好</h3>
+            <label>旅行偏好<input id="profileTagsInput" type="text" placeholder="湖景, 摄影, 安静"></label>
+            <div class="form-grid">
+              <label>默认出行方式<select id="profileRouteModeSelect">
+                <option value="walk">步行</option>
+                <option value="bike">骑行</option>
+              </select></label>
+              <label>头像颜色<select id="profileAvatarColorSelect">
+                <option value="#0058bc">海湾蓝</option>
+                <option value="#008733">庭院绿</option>
+                <option value="#fd8b00">日落橙</option>
+                <option value="#7c3aed">花影紫</option>
+              </select></label>
+            </div>
+            <button id="savePreferenceButton" class="primary-button full" type="button">保存偏好</button>
+          </section>
+        </div>
+        <p id="accountFeedback" class="modal-feedback" aria-live="polite"></p>
+      </article>
+    </div>
+
+    <div id="statusModal" class="app-modal" hidden role="dialog" aria-modal="true" aria-labelledby="statusModalTitle">
+      <div class="app-modal-backdrop" data-modal-close="statusModal"></div>
+      <article class="app-modal-card compact-modal-card">
+        <button class="diary-modal-close" type="button" data-modal-close="statusModal" aria-label="关闭状态面板">×</button>
+        <div class="modal-heading">
+          <p class="eyebrow">Status</p>
+          <h2 id="statusModalTitle">数据状态</h2>
+        </div>
+        <div id="statusSummary" class="status-grid"></div>
+      </article>
+    </div>
+
+    <div id="settingsModal" class="app-modal" hidden role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
+      <div class="app-modal-backdrop" data-modal-close="settingsModal"></div>
+      <article class="app-modal-card compact-modal-card">
+        <button class="diary-modal-close" type="button" data-modal-close="settingsModal" aria-label="关闭设置面板">×</button>
+        <div class="modal-heading">
+          <p class="eyebrow">Settings</p>
+          <h2 id="settingsModalTitle">应用设置</h2>
+        </div>
+        <label>视觉模式<select id="themeSelect">
+          <option value="light">明亮旅行风格</option>
+          <option value="soft">柔和浅蓝风格</option>
+        </select></label>
+        <label>默认打开页面<select id="defaultViewSelect">
+          <option value="recommendView">探索</option>
+          <option value="routeView">路线</option>
+          <option value="queryView">设施</option>
+          <option value="diaryView">日记</option>
+          <option value="foodView">美食</option>
+        </select></label>
+        <label>默认路线方式<select id="defaultRouteModeSelect">
+          <option value="walk">步行</option>
+          <option value="bike">骑行</option>
+        </select></label>
+        <label>日记默认排序<select id="defaultDiarySortSelect">
+          <option value="heat">热度优先</option>
+          <option value="rating">评分优先</option>
+          <option value="interest">兴趣匹配</option>
+        </select></label>
+        <label class="toggle-row"><input id="compactCardsToggle" type="checkbox"> 紧凑卡片显示</label>
+        <button id="saveSettingsButton" class="primary-button full" type="button">保存设置</button>
+        <p id="settingsFeedback" class="modal-feedback" aria-live="polite"></p>
+      </article>
+    </div>
+
     <nav class="mobile-nav" aria-label="移动端功能切换">
       <button type="button" class="mobile-tab active" data-view="recommendView">探索</button>
       <button type="button" class="mobile-tab" data-view="routeView">路线</button>
@@ -295,6 +494,6 @@
   </div>
 
   <script src="./vendor/leaflet.js"></script>
-  <script src="./app.js"></script>
+  <script src="./app.js?v=20260605-account-full"></script>
 </body>
 </html>
