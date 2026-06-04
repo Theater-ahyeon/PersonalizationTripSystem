@@ -66,6 +66,20 @@ App (CLI menu, main.cpp)
 
 On first run, `DataManager` auto-generates sample data if files are absent.
 
+## Documentation
+
+The `docs/` directory follows the [Diátaxis](https://diataxis.fr/) framework:
+
+| Quadrant | File | Purpose |
+|----------|------|---------|
+| Explanation | `explanation.architecture.md` | System architecture, design decisions, trade-offs |
+| Reference | `reference.defense-checklist.md` | Course requirement coverage, algorithm API, data evidence |
+| Reference | `reference.algorithms.md` (planned) | Algorithm complexity, interfaces, comparison tables |
+| How-to | `how-to.build-and-test.md` (planned) | Build, run, smoke test, add region data |
+| Tutorial | `tutorial.getting-started.md` (planned) | 5-minute quick start for new developers |
+
+Original design docs (`软件开发文档.md`, `个性化旅游系统核心功能点.md`, etc.) remain as supplementary material.
+
 ## Key Design Constraints
 
 - **No external C++ libraries** — all data structures and algorithms are implemented by hand; this is a course design requirement.

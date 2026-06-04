@@ -33,6 +33,11 @@ public:
                       << "0 保存并退出 / Save and exit\n请选择: ";
             std::string choice;
             std::getline(std::cin, choice);
+            if (std::cin.eof() || std::cin.fail()) {
+                data_.save();
+                std::cout << "\n输入结束，数据已保存，程序退出。\n";
+                return 0;
+            }
             if (choice == "1") recommendService_.run(data_);
             else if (choice == "2") pathPlanner_.run(data_);
             else if (choice == "3") searchService_.run(data_);

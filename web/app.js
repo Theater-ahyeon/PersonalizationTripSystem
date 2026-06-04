@@ -129,7 +129,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     recommendFood();
     byId("loadingState").classList.add("hidden");
   } catch (error) {
-    byId("loadingState").textContent = `数据加载失败：${error.message}`;
+    const errMsg = error && error.message ? error.message : String(error || "未知错误");
+    byId("loadingState").textContent = `数据加载失败：${errMsg}`;
     byId("mapFallback").hidden = false;
   }
 });
@@ -620,6 +621,9 @@ function renderMultiStopList() {
       <input class="stop-check" type="checkbox" data-node-id="${node.id}">
       <span>${escapeHtml(node.name)}<small>${escapeHtml(node.description || node.type)}</small></span>
     `;
+    const checkBox = label.querySelector("input");
+    checkBox.checked = isMultiStopChecked(node.id);
+    checkBox.addEventListener("change", () => setMultiStopChecked(node.id, checkBox.checked));
     container.appendChild(label);
   });
 }
@@ -1022,10 +1026,14 @@ function edgeCongestion(edge) {
 function drawRoute(path, color) {
   clearRouteLayers(false);
   if (!state.map || path.length < 2) return;
-  const latLngs = path.map((id) => {
+  const latLngs = path.reduce((acc, id) => {
     const node = findNode(id);
-    return [node.lat, node.lon];
-  });
+    if (node && node.lat != null && node.lon != null) {
+      acc.push([node.lat, node.lon]);
+    }
+    return acc;
+  }, []);
+  if (latLngs.length < 2) return;
   const bg = L.polyline(latLngs, {
     color: "#1f2d2c",
     weight: 13,
@@ -1060,7 +1068,8 @@ function clearRouteLayers(writeSummary = true) {
 }
 
 function searchFacilities() {
-  const origin = Number(byId("facilityOriginSelect").value || 1);
+  const originRaw = byId("facilityOriginSelect").value;
+  const origin = originRaw !== "" ? Number(originRaw) : 1;
   const type = byId("facilityTypeSelect").value;
   const keyword = byId("facilityKeyword").value.trim().toLowerCase();
   const range = Number(byId("facilityRangeSelect").value || 99999);
@@ -1405,7 +1414,8 @@ function generateAigcStoryboard() {
 }
 
 function recommendFood() {
-  const spotId = Number(byId("foodSpotSelect").value || 1);
+  const spotIdRaw = byId("foodSpotSelect").value;
+  const spotId = spotIdRaw !== "" ? Number(spotIdRaw) : 1;
   const cuisine = byId("cuisineSelect").value;
   const keyword = byId("foodKeyword").value.trim().toLowerCase();
   const sortMode = byId("foodSortSelect").value;
@@ -1581,7 +1591,8 @@ function focusNode(id) {
 }
 
 function selectedUser() {
-  const id = Number(byId("userSelect").value || 1);
+  const userIdRaw = byId("userSelect").value;
+  const id = userIdRaw !== "" ? Number(userIdRaw) : 1;
   return state.users.find((user) => Number(user.id) === id);
 }
 
@@ -1876,9 +1887,10 @@ function textOfDiary(diary) {
 }
 
 function averageLatLng(nodes) {
+  if (!nodes || nodes.length === 0) return [39.9, 116.4]; // default: Beijing center
   const sum = nodes.reduce((acc, node) => {
-    acc.lat += Number(node.lat);
-    acc.lon += Number(node.lon);
+    acc.lat += Number(node.lat || 0);
+    acc.lon += Number(node.lon || 0);
     return acc;
   }, { lat: 0, lon: 0 });
   return [sum.lat / nodes.length, sum.lon / nodes.length];

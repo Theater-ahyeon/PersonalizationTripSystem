@@ -37,10 +37,14 @@ inline std::string trim(const std::string& s) {
 inline std::string escapeJson(const std::string& s) {
     std::string out;
     for (char c : s) {
-        if (c == '\\') out += "\\\\";
-        else if (c == '"') out += "\\\"";
-        else if (c == '\n') out += "\\n";
-        else out += c;
+        switch (c) {
+        case '\\': out += "\\\\"; break;
+        case '"':  out += "\\\""; break;
+        case '\n': out += "\\n"; break;
+        case '\r': out += "\\r"; break;
+        case '\t': out += "\\t"; break;
+        default:   out += c; break;
+        }
     }
     return out;
 }

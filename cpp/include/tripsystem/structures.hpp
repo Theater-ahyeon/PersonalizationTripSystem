@@ -51,6 +51,7 @@ public:
     }
 
     V* get(const K& key) {
+        if (buckets_.empty()) return nullptr;
         auto& bucket = buckets_[indexFor(key)];
         for (auto& kv : bucket) {
             if (kv.first == key) return &kv.second;
@@ -59,6 +60,7 @@ public:
     }
 
     const V* get(const K& key) const {
+        if (buckets_.empty()) return nullptr;
         const auto& bucket = buckets_[indexFor(key)];
         for (const auto& kv : bucket) {
             if (kv.first == key) return &kv.second;
@@ -110,6 +112,7 @@ public:
     }
 
     T pop() {
+        if (data_.empty()) return T{};
         T item = data_.front();
         data_[0] = data_.back();
         data_.pop_back();

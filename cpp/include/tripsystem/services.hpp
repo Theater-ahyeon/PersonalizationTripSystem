@@ -42,6 +42,7 @@ inline void listSpots(const DataManager& data) {
 }
 
 inline double normalizedHeat(int heat) {
+    if (heat < 0) heat = 0;
     return std::min(1.0, heat / 1000.0);
 }
 
