@@ -93,6 +93,7 @@ const state = {
 const byId = (id) => document.getElementById(id);
 
 document.addEventListener("DOMContentLoaded", async () => {
+  loadAuthState(); // now safe — DOM is ready
   bindStaticControls();
   bindAuthEvents();
   bindAdminEvents();
@@ -1977,10 +1978,10 @@ function loadAuthState() {
     if (saved) currentUser = JSON.parse(saved);
   } catch { currentUser = null; }
   if (!currentUser) {
-    // Default guest: first user in the list (non-admin)
     currentUser = { id: 1, name: "游客", isAdmin: false, preference_tags: ["文化", "建筑"], preferred_categories: [] };
   }
-  updateUserBadge();
+  // Only update DOM badge if DOM is ready (guard against pre-DOMContentLoaded call)
+  if (document.readyState !== "loading") updateUserBadge();
 }
 
 function saveAuthState() {
