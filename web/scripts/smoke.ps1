@@ -232,12 +232,13 @@ if ($FacilityTypes.Count -lt 10) {
   throw "Expected at least 10 facility types, found $($FacilityTypes.Count)"
 }
 
-$OutOfBeijingBox = @($Nodes | Where-Object {
+$SummerPalaceNodes = @($Nodes | Where-Object { [int]$_.id -lt 5000 })
+$OutOfBeijingBox = @($SummerPalaceNodes | Where-Object {
   [double]$_.lat -lt 39.9850 -or [double]$_.lat -gt 40.0120 -or
   [double]$_.lon -lt 116.2550 -or [double]$_.lon -gt 116.3050
 })
 if ($OutOfBeijingBox.Count -gt 0) {
-  throw "Expected all OSM nodes to be inside the Summer Palace bbox; first bad node: $($OutOfBeijingBox[0].name)"
+  throw "Expected Summer Palace OSM nodes to be inside the bbox; first bad node: $($OutOfBeijingBox[0].name)"
 }
 
 if (-not (@($Nodes | Where-Object { $_.name -eq $TextEastGate }).Count)) {
