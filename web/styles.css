@@ -777,6 +777,19 @@ button:hover {
   border-radius: var(--radius-sm);
 }
 
+.fixed-map-region {
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(193, 198, 215, 0.92);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--ink);
+  font-weight: 800;
+  padding: 0 12px;
+  margin-bottom: 10px;
+}
+
 .route-sidebar {
   min-width: 0;
   overflow: auto;

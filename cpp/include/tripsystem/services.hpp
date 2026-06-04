@@ -327,10 +327,20 @@ private:
             std::cout << "未找到 OSM 离线数据，请检查 cpp/data/osm_nodes.json 和 osm_edges.json。\n";
             return;
         }
-        std::cout << "OSM 节点列表:\n";
+        std::cout << "OSM 可选 POI 节点列表:\n";
+        int hiddenTransitionNodes = 0;
         for (const auto& n : data.osmNodes) {
+            const auto* edges = data.osmNeighbors(n.id);
+            if (n.spotId <= 0 || !edges || edges->empty()) {
+                ++hiddenTransitionNodes;
+                continue;
+            }
             std::cout << n.id << ". " << n.name << " [" << n.type << "] "
                       << n.lat << "," << n.lon << "\n";
+        }
+        if (hiddenTransitionNodes > 0) {
+            std::cout << "已隐藏 " << hiddenTransitionNodes
+                      << " 个仅用于路网过渡的节点。\n";
         }
         int start = readInt("起点 OSM node id: ");
         int goal = readInt("终点 OSM node id: ");

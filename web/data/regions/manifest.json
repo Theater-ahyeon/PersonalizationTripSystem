@@ -1,54 +1,16 @@
 [
   {
     "id": "summer_palace",
-    "name": "颐和园数据包",
-    "city": "北京",
+    "name": "\u9890\u548c\u56ed\u6570\u636e\u5305",
+    "city": "\u5317\u4eac",
     "status": "active",
     "map_region": "dataset",
-    "description": "当前可运行的算法数据包，包含颐和园内部景点、道路、设施和餐饮数据。",
-    "nodes_path": "../cpp/data/osm_nodes.json",
-    "edges_path": "../cpp/data/osm_edges.json",
-    "spots_path": "../cpp/data/spots.json",
-    "roads_path": "../cpp/data/roads.json",
-    "facilities_path": "../cpp/data/facilities.json",
-    "restaurants_path": "../cpp/data/restaurants.json"
-  },
-  {
-    "id": "tsinghua_campus",
-    "name": "清华大学校园数据包",
-    "city": "北京",
-    "status": "active",
-    "map_region": "dataset",
-    "description": "可运行的学校内部数据包，包含清华校园节点、步行/骑行道路、服务设施和校园餐饮，用于证明景区和学校都可用。",
-    "nodes_path": "./data/regions/tsinghua_campus/osm_nodes.json",
-    "edges_path": "./data/regions/tsinghua_campus/osm_edges.json",
-    "spots_path": "./data/regions/tsinghua_campus/spots.json",
-    "roads_path": "./data/regions/tsinghua_campus/roads.json",
-    "facilities_path": "./data/regions/tsinghua_campus/facilities.json",
-    "restaurants_path": "./data/regions/tsinghua_campus/restaurants.json"
-  },
-  {
-    "id": "beijing_city",
-    "name": "北京全域数据包",
-    "city": "北京",
-    "status": "planned",
-    "map_region": "beijing",
-    "description": "待接入北京多景区/校园路网数据，用于跨目的地推荐与区域内路线规划。"
-  },
-  {
-    "id": "shanghai_city",
-    "name": "上海示例数据包",
-    "city": "上海",
-    "status": "planned",
-    "map_region": "shanghai",
-    "description": "待生成上海景区和校园数据包，复用当前 Top-K、GeoHash、LSH、Dijkstra 和 TSP-DP 算法。"
-  },
-  {
-    "id": "campus_template",
-    "name": "校园模板数据包",
-    "city": "通用",
-    "status": "template",
-    "map_region": "china",
-    "description": "用于学校内部场景：教学楼、宿舍、食堂、图书馆、超市、骑行道路和室内导航。"
+    "description": "\u9884\u7f6e\u7684\u9890\u548c\u56ed\u5355\u6570\u636e\u96c6\uff0c\u5305\u542b\u666f\u70b9\u3001\u8def\u7f51\u8fc7\u6e21\u8282\u70b9\u3001\u8bbe\u65bd\u548c\u9910\u996e\u6f14\u793a\u6570\u636e\u3002",
+    "nodes_path": "./data/osm_nodes.json",
+    "edges_path": "./data/osm_edges.json",
+    "spots_path": "./data/spots.json",
+    "roads_path": "./data/roads.json",
+    "facilities_path": "./data/facilities.json",
+    "restaurants_path": "./data/restaurants.json"
   }
 ]

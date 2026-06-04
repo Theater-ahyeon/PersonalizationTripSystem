@@ -34,18 +34,6 @@ const ROUTE_STRATEGIES = {
     color: "#0058bc"
   }
 };
-const MAP_REGIONS = {
-  china: { center: [35.8617, 104.1954], zoom: 4 },
-  beijing: { center: [39.9042, 116.4074], zoom: 11 },
-  shanghai: { center: [31.2304, 121.4737], zoom: 11 },
-  guangzhou: { center: [23.1291, 113.2644], zoom: 11 },
-  shenzhen: { center: [22.5431, 114.0579], zoom: 11 },
-  chengdu: { center: [30.5728, 104.0668], zoom: 11 },
-  xian: { center: [34.3416, 108.9398], zoom: 11 },
-  hangzhou: { center: [30.2741, 120.1551], zoom: 11 },
-  wuhan: { center: [30.5928, 114.3055], zoom: 11 },
-  chongqing: { center: [29.563, 106.5516], zoom: 10 }
-};
 const INDOOR_NODES = [
   { id: "gate", name: "文昌院大门", floor: "1F" },
   { id: "lobby", name: "前厅导览台", floor: "1F" },
@@ -120,6 +108,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     initializeMap();
     reloadCurrentDataset({ fit: true });
+    await applyInitialUrlState();
     byId("loadingState").classList.add("hidden");
   } catch (error) {
     const errMsg = error && error.message ? error.message : String(error || "未知错误");
@@ -161,15 +150,8 @@ function bindStaticControls() {
 
   byId("nodeSearchInput").addEventListener("input", (event) => {
     const keyword = event.target.value.trim().toLowerCase();
-    const filtered = state.nodes.filter((node) => textOfNode(node).toLowerCase().includes(keyword));
+    const filtered = selectableRouteNodes().filter((node) => textOfNode(node).toLowerCase().includes(keyword));
     renderNodeList(filtered);
-  });
-  byId("mapRegionSelect").addEventListener("change", (event) => {
-    focusMapRegion(event.target.value);
-  });
-  byId("datasetMapButton").addEventListener("click", () => {
-    byId("mapRegionSelect").value = "dataset";
-    focusMapRegion("dataset", true);
   });
   byId("regionPackSelect").addEventListener("change", (event) => {
     selectRegionPack(event.target.value);
@@ -180,7 +162,6 @@ function bindStaticControls() {
       state.mode = button.dataset.mode;
       document.querySelectorAll(".mode-button").forEach((item) => item.classList.remove("active"));
       button.classList.add("active");
-      renderRoadNetwork();
     });
   });
 
@@ -339,23 +320,15 @@ function fitMapToData(force = false) {
 
 function focusMapRegion(region, force = false) {
   if (!state.map) return;
-  if (region === "dataset") {
-    fitMapToData(true);
-    return;
-  }
-  const preset = MAP_REGIONS[region];
-  if (!preset) return;
-  state.mapRegion = region;
-  state.mapFitted = false;
-  state.map.setView(preset.center, preset.zoom, { animate: !force });
-  updateLocalOverlayVisibility();
+  state.mapRegion = "dataset";
+  fitMapToData(Boolean(force || region === "dataset"));
   updateMapDataNotice();
 }
 
 function updateLocalOverlayVisibility() {
   if (!state.map) return;
   const showLocal = state.map.getZoom() >= 13;
-  [...state.edgeLayers, ...state.facilityLayers, ...state.markers.values()].forEach((layer) => {
+  [...state.facilityLayers, ...state.markers.values()].forEach((layer) => {
     if (!layer) return;
     if (showLocal && !state.map.hasLayer(layer)) layer.addTo(state.map);
     if (!showLocal && state.map.hasLayer(layer)) layer.remove();
@@ -367,9 +340,7 @@ function updateMapDataNotice() {
   if (!notice) return;
   const pack = findRegionPack(state.currentRegionPackId);
   const packName = pack?.name || "当前数据包";
-  notice.textContent = state.mapRegion === "dataset"
-    ? `当前数据包：${packName}，${routableNodes().length} 个可路由节点、${state.edges.length} 条有向边；路线、设施和美食推荐使用本包数据。`
-    : "全国底图可浏览；路线、设施和多点游览算法会在切回可运行数据包后使用本地道路图。";
+  notice.textContent = `当前数据包：${packName}，${selectableRouteNodes().length} 个可选目的地；路线按本包路网计算。`;
 }
 
 function addMapResetControl() {
@@ -400,7 +371,7 @@ function reloadCurrentDataset({ fit = false } = {}) {
   }
   clearRouteLayers(false);
   populateControls();
-  renderNodeList(state.nodes);
+  renderNodeList(selectableRouteNodes());
   buildFacilityGeoIndex();
   buildSimilarityIndexes();
   renderNodeMarkers();
@@ -416,9 +387,9 @@ function reloadCurrentDataset({ fit = false } = {}) {
 }
 
 function populateControls() {
-  fillNodeSelect(byId("startSelect"), routableNodes());
-  fillNodeSelect(byId("goalSelect"), routableNodes());
-  fillNodeSelect(byId("facilityOriginSelect"), routableNodes());
+  fillNodeSelect(byId("startSelect"), selectableRouteNodes());
+  fillNodeSelect(byId("goalSelect"), selectableRouteNodes());
+  fillNodeSelect(byId("facilityOriginSelect"), selectableRouteNodes());
   fillSpotSelect(byId("foodSpotSelect"), state.spots);
   fillUserSelect();
   fillCategorySelect();
@@ -466,10 +437,7 @@ async function selectRegionPack(packId) {
   const pack = findRegionPack(packId);
   if (!pack) return;
   if (pack.status !== "active" || !pack.nodes_path || !pack.edges_path || !pack.spots_path) {
-    if (pack.map_region && byId("mapRegionSelect")) {
-      byId("mapRegionSelect").value = pack.map_region;
-      focusMapRegion(pack.map_region, true);
-    }
+    if (pack.map_region) focusMapRegion(pack.map_region, true);
     renderRegionPackStatus(pack.id);
     return;
   }
@@ -483,8 +451,8 @@ async function selectRegionPack(packId) {
   renderRegionPackStatus(pack.id, "正在加载区域数据包...");
   try {
     await loadRegionPack(pack.id);
-    if (pack.map_region && byId("mapRegionSelect")) byId("mapRegionSelect").value = pack.map_region;
-    summarize(`已切换到 ${pack.name}，当前可规划 ${routableNodes().length} 个节点。`);
+    if (pack.map_region) focusMapRegion(pack.map_region, true);
+    summarize(`已切换到 ${pack.name}，当前可选择 ${selectableRouteNodes().length} 个目的地，底层路网包含 ${routableNodes().length} 个节点。`);
   } catch (error) {
     state.currentRegionPackId = previousPackId;
     if (select) select.value = previousPackId;
@@ -542,6 +510,37 @@ function regionPackStatusLabel(status) {
   return "待接入";
 }
 
+async function applyInitialUrlState() {
+  const params = new URLSearchParams(window.location.search);
+  const packId = params.get("pack");
+  if (packId && packId !== state.currentRegionPackId) {
+    await selectRegionPack(packId);
+  }
+
+  const viewId = params.get("view") || window.location.hash.replace(/^#/, "");
+  if (viewId && byId(viewId)) switchView(viewId);
+
+  setSelectValueIfPresent("startSelect", params.get("start"));
+  setSelectValueIfPresent("goalSelect", params.get("goal"));
+  setSelectValueIfPresent("routeStrategySelect", params.get("strategy"));
+  if (params.get("mode")) {
+    const modeButton = document.querySelector(`[data-mode="${params.get("mode")}"]`);
+    if (modeButton) modeButton.click();
+  }
+  if (params.get("run") === "route") runShortestPath();
+}
+
+function setSelectValueIfPresent(id, value) {
+  if (!value) return;
+  const select = byId(id);
+  if (!select) return;
+  const stringValue = String(value);
+  if (Array.from(select.options).some((option) => option.value === stringValue)) {
+    select.value = stringValue;
+    if (id === "routeStrategySelect") state.routeStrategy = stringValue;
+  }
+}
+
 function routableNodeIds() {
   const ids = new Set();
   state.edges.forEach((edge) => {
@@ -559,6 +558,10 @@ function isRoutableNode(nodeOrId) {
 function routableNodes() {
   const ids = routableNodeIds();
   return state.nodes.filter((node) => ids.has(Number(node.id)));
+}
+
+function selectableRouteNodes() {
+  return routableNodes().filter((node) => Number(node.spot_id) > 0);
 }
 
 function fillNodeSelect(select, nodes) {
@@ -732,7 +735,7 @@ function renderNodeList(nodes) {
 function renderMultiStopList() {
   const container = byId("multiStopList");
   container.innerHTML = "";
-  routableNodes().filter((node) => Number(node.spot_id) > 0).forEach((node) => {
+  selectableRouteNodes().forEach((node) => {
     const label = document.createElement("label");
     label.className = "stop-item";
     label.innerHTML = `
@@ -751,25 +754,22 @@ function renderNodeMarkers() {
   state.markers.forEach((marker) => marker.remove());
   state.markers.clear();
 
-  state.nodes.forEach((node) => {
-    const isSpotNode = Number(node.spot_id) > 0;
+  selectableRouteNodes().forEach((node) => {
     const marker = L.circleMarker([node.lat, node.lon], {
       title: node.name,
-      radius: isSpotNode ? 7 : 3.2,
-      color: isSpotNode ? "#0b4f42" : "#56625e",
-      weight: isSpotNode ? 2.4 : 1.1,
-      fillColor: isSpotNode ? "#f4b942" : "#f8fbf9",
-      fillOpacity: isSpotNode ? 0.92 : 0.66
+      radius: 7,
+      color: "#0b4f42",
+      weight: 2.4,
+      fillColor: "#f4b942",
+      fillOpacity: 0.92
     }).addTo(state.map);
     marker.bindPopup(`<p class="popup-title">${escapeHtml(node.name)}</p><p class="popup-text">${escapeHtml(node.description || node.type)}</p>`);
-    if (isSpotNode) {
-      marker.bindTooltip(node.name, {
-        permanent: true,
-        direction: "top",
-        offset: [0, -8],
-        className: "map-label spot-label"
-      });
-    }
+    marker.bindTooltip(node.name, {
+      permanent: true,
+      direction: "top",
+      offset: [0, -8],
+      className: "map-label spot-label"
+    });
     marker.on("click", () => showNodeDetail(node));
     state.markers.set(node.id, marker);
   });
@@ -807,22 +807,6 @@ function renderRoadNetwork() {
   if (!state.map) return;
   state.edgeLayers.forEach((layer) => layer.remove());
   state.edgeLayers = [];
-
-  state.edges
-    .filter((edge) => edge.from < edge.to && edgeSupportsMode(edge, state.mode))
-    .forEach((edge) => {
-      const from = findNode(edge.from);
-      const to = findNode(edge.to);
-      if (!from || !to) return;
-      const layer = L.polyline([[from.lat, from.lon], [to.lat, to.lon]], {
-        color: edge.mode === "bike" ? "#175c9f" : "#2f6856",
-        weight: edge.mode === "bike" ? 3.4 : 3,
-        opacity: 0.68,
-        dashArray: edge.mode === "both" ? null : "6 8"
-      }).addTo(state.map);
-      layer.bindTooltip(`${edge.road_name} · ${edge.distance}m · ${edge.mode}`);
-      state.edgeLayers.push(layer);
-    });
 }
 
 function showNodeDetail(node) {
@@ -1170,6 +1154,8 @@ function drawRoute(path, color) {
   state.routeLayers.push(fg);
   path.forEach((id, index) => {
     const node = findNode(id);
+    const shouldMark = index === 0 || index === path.length - 1 || Number(node?.spot_id) > 0;
+    if (!shouldMark) return;
     const marker = L.circleMarker([node.lat, node.lon], {
       radius: index === 0 || index === path.length - 1 ? 8 : 6,
       color: "#1f2d2c",
@@ -1661,13 +1647,19 @@ function facilityGraphDistance(originNodeId, facility) {
 }
 
 function summarizeRoute(title, result) {
-  const names = result.path.map((id) => findNode(id)?.name || id);
+  const pathNodes = result.path.map((id) => findNode(id)).filter(Boolean);
+  const poiNodes = pathNodes.filter((node) => Number(node.spot_id) > 0);
+  const transitionCount = pathNodes.filter((node) => Number(node.spot_id) === 0).length;
+  const start = pathNodes[0];
+  const goal = pathNodes[pathNodes.length - 1];
+  const keyPoi = unique(poiNodes.map((node) => node.name));
   const strategy = routeStrategyInfo(result.strategy);
   byId("route-summary").innerHTML = `
     <p class="eyebrow">${escapeHtml(title)}</p>
     <h3>${state.mode === "bike" ? "骑行" : "步行"} · 总距离 ${result.distance.toFixed(1)} 米 · 约 ${result.minutes.toFixed(1)} 分钟</h3>
     <p>${escapeHtml(strategy.algorithm)}，平均拥挤度 ${(result.averageCongestion * 100).toFixed(0)}%。</p>
-    <ol>${names.map((name) => `<li>${escapeHtml(name)}</li>`).join("")}</ol>
+    <p>起点：${escapeHtml(start?.name || "-")}；终点：${escapeHtml(goal?.name || "-")}；经过 ${transitionCount} 个路网过渡节点。</p>
+    <ol>${keyPoi.map((name) => `<li>${escapeHtml(name)}</li>`).join("")}</ol>
   `;
 }
 

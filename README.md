@@ -1,6 +1,6 @@
 # PersonalizationTripSystem
 
-个性化旅游系统课程设计，当前可运行场景包含 **北京颐和园景区数据包 + 清华大学校园数据包**。
+个性化旅游系统课程设计，当前可运行场景为 **北京颐和园单数据集**。
 
 项目采用 C++17 CLI 作为算法主体，前端使用纯 HTML/CSS/JavaScript + Leaflet 做验收演示。数据不依赖数据库，运行时从 `cpp/data/*.json` 和日记二进制压缩文件加载。
 
@@ -15,16 +15,16 @@
 
 ## 数据规模
 
-- `cpp/data/osm_nodes.json`：281 个节点，其中 228 个为颐和园可路由 OSM 节点，53 个为北京高校真实坐标展示/推荐节点。
-- `cpp/data/osm_edges.json`：526 条有向道路边，支持步行/骑行模式。
-- `cpp/data/spots.json`：247 个景区/校园目的地，其中颐和园内部节点可参与路线规划，北京高校节点用于地图展示、推荐和查询。
+- `cpp/data/osm_nodes.json`：550 个节点，其中 20 个为颐和园可选 POI、530 个为真实路网/插值过渡节点。
+- `cpp/data/osm_edges.json`：1156 条颐和园有向道路边，只包含真实路网边和 POI 短接入边，支持步行/骑行模式；输出边段最长约 120 米。
+- `cpp/data/spots.json`：20 个颐和园推荐条目；路线下拉框仅展示可路由 POI 节点。
 - `cpp/data/facilities.json`：60 个服务设施，12 种设施类型。
 - `cpp/data/restaurants.json`：50 条餐饮推荐数据，10 种菜系。
 - `cpp/data/users.json`：10 个用户画像。
 - `cpp/data/diaries/index.json`：12 条前端日记交流展示数据。
-- `cpp/data/regions/tsinghua_campus/`：清华校园独立数据包，14 个校园节点、36 条有向边、18 条景点道路、8 个设施、6 条餐饮数据。
+- `cpp/data/regions/manifest.json`：仅保留 `summer_palace` 一个 active 数据包。
 
-真实图片已补充到 `web/assets/spots/real/`，来源记录在 `web/assets/ATTRIBUTIONS.md`；清华校园和颐和园高频推荐卡片会优先显示真实图片，加载失败时回退到本地占位图。
+真实图片保留在 `web/assets/spots/real/`，来源记录在 `web/assets/ATTRIBUTIONS.md`；颐和园高频推荐卡片会优先显示真实图片，加载失败时回退到本地占位图。
 
 ## 构建与运行
 
@@ -49,10 +49,10 @@ http://localhost:5173/web/index.html
 
 建议答辩演示顺序：
 
-1. 打开“数据”视图，展示 200+ 节点、200+ 道路边、服务设施、用户和日记规模。
+1. 打开“数据”视图，展示颐和园主包、服务设施、用户和日记规模。
 2. 打开“推荐”视图，展示兴趣、评分、热度排序。
 3. 打开“路线”视图，默认运行“颐和园东宫门 → 苏州街入口”最短路径并高亮地图。
-4. 在“路线”视图切换到“清华大学校园数据包”，展示学校内部路线、设施和美食推荐同样可用。
+4. 切换起终点，展示“北宫门 → 十七孔桥”“新建宫门 → 佛香阁”等路线都沿道路折线行进。
 5. 打开“查询”“日记”“美食”视图，分别说明场所查询、日记交流、美食推荐、日记 JSON 导出和模拟 AIGC 分镜。
 
 ## 重新拉取 OSM 路网
@@ -63,7 +63,13 @@ http://localhost:5173/web/index.html
 node .\web\scripts\generate-osm-data.mjs summer-palace
 ```
 
-脚本只在生成数据时访问 Overpass。生成后的 JSON 已落盘，普通运行和答辩演示不需要联网。
+重新生成颐和园单数据包：
+
+```powershell
+node .\web\scripts\generate-osm-data.mjs all
+```
+
+脚本只在生成数据时访问 OpenStreetMap/Overpass。生成后的 JSON 已落盘，普通运行和答辩演示不需要联网。
 
 ## 验证
 
@@ -72,4 +78,4 @@ powershell -ExecutionPolicy Bypass -File .\web\scripts\smoke.ps1
 powershell -ExecutionPolicy Bypass -File .\cpp\scripts\smoke.ps1
 ```
 
-前端 smoke 会校验主包数据规模、清华校园数据包、图片来源、日记导出入口、AIGC 模拟标注、关键功能视图、图片路径和默认路径可达性。
+前端 smoke 会校验颐和园单数据集规模、400-700 个过渡节点、无 POI 直连边、样例路线过渡节点、图片来源、关键功能入口、图片路径和默认路径可达性。

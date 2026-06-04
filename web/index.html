@@ -90,24 +90,9 @@
             </div>
             <div id="loadingState" class="loading-state">正在加载颐和园 OSM 节点和道路...</div>
             <div class="map-floating glass-panel">
-              <label for="mapRegionSelect">地图范围</label>
-              <div class="map-region-row">
-                <select id="mapRegionSelect" aria-label="全国城市定位">
-                  <option value="dataset">颐和园数据集</option>
-                  <option value="china">全国视野</option>
-                  <option value="beijing">北京</option>
-                  <option value="shanghai">上海</option>
-                  <option value="guangzhou">广州</option>
-                  <option value="shenzhen">深圳</option>
-                  <option value="chengdu">成都</option>
-                  <option value="xian">西安</option>
-                  <option value="hangzhou">杭州</option>
-                  <option value="wuhan">武汉</option>
-                  <option value="chongqing">重庆</option>
-                </select>
-                <button id="datasetMapButton" class="small-button" type="button">数据集</button>
-              </div>
-              <div id="mapDataNotice" class="map-data-notice">全国底图可浏览；路线算法使用当前加载的数据包。</div>
+              <label>地图范围</label>
+              <div class="fixed-map-region" aria-label="当前地图范围">颐和园数据集</div>
+              <div id="mapDataNotice" class="map-data-notice">颐和园单数据集；路线算法使用当前加载的数据包。</div>
               <label for="nodeSearchInput">地图节点搜索</label>
               <input id="nodeSearchInput" type="search" placeholder="东宫门、长廊、苏州街..." autocomplete="off">
             </div>
