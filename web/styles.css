@@ -418,6 +418,7 @@ button:hover {
   justify-content: space-between;
   gap: 24px;
   margin-bottom: 22px;
+  flex-wrap: wrap;
 }
 
 .section-heading.compact {
@@ -428,6 +429,8 @@ button:hover {
 .section-heading p,
 .page-header p {
   margin-bottom: 0;
+  flex-shrink: 1;
+  min-width: 0;
 }
 
 .inline-controls {
@@ -436,10 +439,11 @@ button:hover {
   justify-content: flex-end;
   gap: 12px;
   flex-wrap: wrap;
+  flex-shrink: 0;
 }
 
 .inline-controls label {
-  min-width: 170px;
+  min-width: 120px;
 }
 
 .category-rail,
@@ -814,6 +818,35 @@ button:hover {
   color: var(--muted);
   padding: 10px 12px;
   line-height: 1.6;
+}
+
+.storyboard-placeholder {
+  text-align: center;
+  padding: 24px 16px;
+}
+
+.storyboard-icon {
+  font-size: 40px;
+  margin-bottom: 12px;
+}
+
+.storyboard-hint {
+  font-size: 0.85em;
+  opacity: 0.7;
+  margin-top: 8px;
+}
+
+.storyboard-output .frame-card {
+  background: var(--surface);
+  border: 1px solid var(--outline);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  margin-bottom: 10px;
+}
+
+.storyboard-output .frame-card .frame-title {
+  font-weight: 600;
+  color: var(--primary);
 }
 
 .indoor-result ol,

@@ -86,8 +86,10 @@ public:
             loadDiaries();
         }
         if (spots.empty() || roads.empty() || restaurants.empty()) {
+            // Parse may have failed; regenerate in-memory but DO NOT overwrite disk files.
+            // The user can explicitly save on exit if they accept the sample data.
             generateSampleData();
-            save();
+            std::cout << "警告：部分数据文件解析失败，已使用样本数据。原始文件未被修改。\n";
         }
         buildIndexes();
     }

@@ -1,12 +1,12 @@
 const DATA_PATHS = {
-  nodes: ["../cpp/data/osm_nodes.json", "/cpp/data/osm_nodes.json"],
-  edges: ["../cpp/data/osm_edges.json", "/cpp/data/osm_edges.json"],
-  spots: ["../cpp/data/spots.json", "/cpp/data/spots.json"],
-  restaurants: ["../cpp/data/restaurants.json", "/cpp/data/restaurants.json"],
-  facilities: ["../cpp/data/facilities.json", "/cpp/data/facilities.json"],
-  users: ["../cpp/data/users.json", "/cpp/data/users.json"],
-  diaries: ["../cpp/data/diaries/index.json", "/cpp/data/diaries/index.json"],
-  regions: ["../cpp/data/regions/manifest.json", "/cpp/data/regions/manifest.json"]
+  nodes: ["./data/osm_nodes.json", "../cpp/data/osm_nodes.json"],
+  edges: ["./data/osm_edges.json", "../cpp/data/osm_edges.json"],
+  spots: ["./data/spots.json", "../cpp/data/spots.json"],
+  restaurants: ["./data/restaurants.json", "../cpp/data/restaurants.json"],
+  facilities: ["./data/facilities.json", "../cpp/data/facilities.json"],
+  users: ["./data/users.json", "../cpp/data/users.json"],
+  diaries: ["./data/diaries/index.json", "../cpp/data/diaries/index.json"],
+  regions: ["./data/regions/manifest.json", "../cpp/data/regions/manifest.json"]
 };
 
 const FALLBACK_IMAGE = "./assets/spots/real/long-corridor.jpg";
@@ -286,8 +286,18 @@ function initializeMap() {
     attribution: "© OpenStreetMap contributors · 本地道路/设施数据"
   }).addTo(state.map);
 
+  let tileErrorCount = 0;
   tileLayer.on("tileerror", () => {
-    byId("loadingState").textContent = "在线地图瓦片暂不可用，已保留本地道路、建筑和设施标注。";
+    tileErrorCount++;
+    if (tileErrorCount >= 3) {
+      byId("loadingState").classList.remove("hidden");
+      byId("loadingState").style.background = "rgba(253, 139, 0, 0.12)";
+      byId("loadingState").textContent = "在线地图瓦片暂不可用，正在使用本地道路、建筑和设施数据。";
+    }
+  });
+  tileLayer.on("load", () => {
+    tileErrorCount = 0;
+    byId("loadingState").classList.add("hidden");
   });
 
   addMapResetControl();

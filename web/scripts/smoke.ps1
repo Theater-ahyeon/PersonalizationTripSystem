@@ -31,6 +31,22 @@ foreach ($Path in @($Index, $Styles, $App, $Assets, $OsmNodes, $OsmEdges, $Spots
   }
 }
 
+# Also verify web/data/ copies exist for HTTP serving
+$WebDataDirs = @("web\data", "web\data\diaries", "web\data\regions")
+foreach ($Dir in $WebDataDirs) {
+  $FullPath = Join-Path $RepoRoot $Dir
+  if (-not (Test-Path $FullPath)) {
+    throw "Missing web/data directory required for HTTP serving: $FullPath. Run setup-data.ps1 first."
+  }
+}
+$WebDataFiles = @("osm_nodes.json", "osm_edges.json", "spots.json", "restaurants.json", "facilities.json", "users.json")
+foreach ($File in $WebDataFiles) {
+  $FullPath = Join-Path $RepoRoot "web\data\$File"
+  if (-not (Test-Path $FullPath)) {
+    throw "Missing web/data file: $FullPath. Run setup-data.ps1 to copy from cpp/data/."
+  }
+}
+
 $IndexText = Get-Content -Raw -Encoding UTF8 -Path $Index
 $StyleText = Get-Content -Raw -Encoding UTF8 -Path $Styles
 $AppText = Get-Content -Raw -Encoding UTF8 -Path $App
@@ -94,6 +110,8 @@ $RequiredIndex = @(
   "indoorStartSelect",
   "indoorGoalSelect",
   "aigcAnimationButton",
+  "aigcStoryboard",
+  "storyboard-placeholder",
   "diarySearchMode",
   "routeStrategySelect",
   "leaflet.css",

@@ -28,11 +28,20 @@ The build script auto-detects g++ in PATH or MSYS2 (`C:/msys64/mingw64/bin`). Co
 
 ## Web Frontend
 
-The `web/` directory contains a standalone HTML5/Leaflet.js visualization that renders OSM map data. It expects a Python HTTP server on port 5173:
+The `web/` directory contains a standalone HTML5/Leaflet.js visualization that renders OSM map data.
 
+**First-time setup** (or whenever `cpp/data/` files change):
+```powershell
+powershell -ExecutionPolicy Bypass -File .\web\scripts\setup-data.ps1
+```
+
+This copies `cpp/data/*.json` into `web/data/` so the HTTP server can serve them.
+
+**Start the server:**
 ```bash
 python -m http.server 5173 --directory web
 ```
+Then open http://localhost:5173/
 
 ## Architecture
 
