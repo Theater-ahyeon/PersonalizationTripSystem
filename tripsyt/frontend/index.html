@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tripsyt - 个性化旅游系统</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #f5f7fa;
+        color: #333;
+      }
+      .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 40px 20px;
+        text-align: center;
+      }
+      .header h1 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+      }
+      .header p {
+        font-size: 1.2em;
+        opacity: 0.9;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .api-section {
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      }
+      .api-section h2 {
+        color: #667eea;
+        margin-bottom: 16px;
+        font-size: 1.4em;
+      }
+      .api-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 12px;
+      }
+      .api-item {
+        background: #f8f9ff;
+        border-radius: 8px;
+        padding: 12px 16px;
+        border-left: 4px solid #667eea;
+      }
+      .api-item .method {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.8em;
+        font-weight: bold;
+        color: white;
+        margin-right: 8px;
+      }
+      .method-get {
+        background: #61affe;
+      }
+      .method-post {
+        background: #49cc90;
+      }
+      .api-item .path {
+        font-family: monospace;
+        font-size: 0.95em;
+        color: #333;
+      }
+      .api-item .desc {
+        font-size: 0.85em;
+        color: #666;
+        margin-top: 4px;
+      }
+      .status {
+        text-align: center;
+        padding: 20px;
+      }
+      .status-dot {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #49cc90;
+        margin-right: 8px;
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+      .test-btn {
+        background: #667eea;
+        color: white;
+        border: none;
+        padding: 10px 24px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1em;
+        margin-top: 12px;
+      }
+      .test-btn:hover {
+        background: #5a6fd6;
+      }
+      #result {
+        background: #1e1e1e;
+        color: #d4d4d4;
+        padding: 16px;
+        border-radius: 8px;
+        margin-top: 12px;
+        font-family: monospace;
+        font-size: 0.9em;
+        white-space: pre-wrap;
+        max-height: 400px;
+        overflow-y: auto;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>Tripsyt</h1>
+      <p>个性化旅游系统 API</p>
+    </div>
+    <div class="container">
+      <div class="status">
+        <span class="status-dot"></span>
+        <span>服务器运行中</span>
+        <br />
+        <button class="test-btn" onclick="testApi()">测试API连接</button>
+        <div id="result"></div>
+      </div>
+
+      <div class="api-section">
+        <h2>旅游推荐</h2>
+        <div class="api-list">
+          <div class="api-item">
+            <span class="method method-get">GET</span
+            ><span class="path">/api/areas</span>
+            <div class="desc">
+              获取景区列表 ?sort=heat|rating&topK=10&keyword=xxx&category=xxx
+            </div>
+          </div>
+          <div class="api-item">
+            <span class="method method-get">GET</span
+            ><span class="path">/api/areas/:id</span>
+            <div class="desc">获取景区详情</div>
+          </div>
+          <div class="api-item">
+            <span class="method method-get">GET</span
+            ><span class="path">/api/buildings</span>
+            <div class="desc">获取景区建筑物 ?areaId=x</div>
+          </div>
+          <div class="api-item">
+            <span class="method method-get">GET</span
+            ><span class="path">/api/recommend</span>
+            <div class="desc">推荐景区 ?sort=heat|rating|interest&topK=10</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="api-section">
+        <h2>路线规划</h2>
+        <div class="api-list">
+          <div class="api-item">
+            <span class="method method-post">POST</span
+            ><span class="path">/api/route/shortest</span>
+            <div class="desc">最短距离路径 {start, end, areaId}</div>
+          </div>
+          <div class="api-item">
+            <span class="method method-post">POST</span
+            ><span class="path">/api/route/fastest</span>
+            <div class="desc">最短时间路径 {start, end, areaId}</div>
+          </div>
+          <div class="api-item">
+            <span class="method method-post">POST</span
+            ><span class="path">/api/route/multipoint</span>
+            <div class="desc">途经多点路径 {start, waypoints[], areaId}</div>
+          </div>
+          <div class="api-item">
+            <span class="method method-post">POST</span
+            ><span class="path">/api/route/transport</span>
+            <div class="desc">
+              指定交通工具路径 {start, end, transport, areaId}
+            </div>
+          </div>
+          <div class="api-item">
+            <span class="method method-post">POST</span
+            ><span class="path">/api/route/indoor</span>
+            <div class="desc">室内导航 {buildingId, start, end}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="api-section">
+        <h2>场所查询</h2>
+        <div class="api-list">
+          <div class="api-item">
+            <span class="method method-get">GET</span
+            ><span class="path">/api/facilities</span>
+            <div class="desc">
+              查找附近设施 ?areaId=x&nodeId=x&range=x&category=xxx
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="api-section">
+        <h2>旅游日记</h2>
+        <div class="api-list">
+          <div class="api-item">
+            <span class="method method-get">GET</span
+            ><span class="path">/api/diaries</span>
+            <div class="desc">获取日记列表 ?sort=heat|rating&topK=10</div>
+          </div>
+          <div class="api-item">
+            <span class="method method-post">POST</span
+            ><span class="path">/api/diaries</span>
+            <div class="desc">
+              创建日记 {userId, title, content, destination}
+            </div>
+          </div>
+          <div class="api-item">
+            <span class="method method-get">GET</span
+            ><span class="path">/api/diaries/:id</span>
+            <div class="desc">获取日记详情</div>
+          </div>
+          <div class="api-item">
+            <span class="method method-post">POST</span
+            ><span class="path">/api/diaries/:id/rate</span>
+            <div class="desc">评分 {score}</div>
+          </div>
+          <div class="api-item">
+            <span class="method method-post">POST</span
+            ><span class="path">/api/diaries/:id/view</span>
+            <div class="desc">浏览</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="api-section">
+        <h2>日记交流</h2>
+        <div class="api-list">
+          <div class="api-item">
+            <span class="method method-get">GET</span
+            ><span class="path">/api/diaries/search</span>
+            <div class="desc">
+              搜索日记 ?destination=xxx / ?title=xxx / ?keyword=xxx
+            </div>
+          </div>
+          <div class="api-item">
+            <span class="method method-post">POST</span
+            ><span class="path">/api/diaries/:id/compress</span>
+            <div class="desc">压缩日记</div>
+          </div>
+          <div class="api-item">
+            <span class="method method-post">POST</span
+            ><span class="path">/api/diaries/:id/decompress</span>
+            <div class="desc">解压日记</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="api-section">
+        <h2>美食推荐</h2>
+        <div class="api-list">
+          <div class="api-item">
+            <span class="method method-get">GET</span
+            ><span class="path">/api/foods</span>
+            <div class="desc">
+              获取美食列表
+              ?areaId=x&sort=heat|rating|distance&topK=10&cuisine=xxx&keyword=xxx
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="api-section">
+        <h2>用户</h2>
+        <div class="api-list">
+          <div class="api-item">
+            <span class="method method-post">POST</span
+            ><span class="path">/api/users/login</span>
+            <div class="desc">登录 {username, password}</div>
+          </div>
+          <div class="api-item">
+            <span class="method method-get">GET</span
+            ><span class="path">/api/users/:id</span>
+            <div class="desc">获取用户信息</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      async function testApi() {
+        const result = document.getElementById("result");
+        result.style.display = "block";
+        result.textContent = "正在测试API连接...";
+        try {
+          const resp = await fetch("/api/areas?topK=3");
+          const data = await resp.json();
+          result.textContent = JSON.stringify(data, null, 2);
+        } catch (e) {
+          result.textContent = "连接失败: " + e.message;
+        }
+      }
+    </script>
+  </body>
+</html>
