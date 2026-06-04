@@ -815,6 +815,10 @@ function renderRecommendationCards(results, meta = {}) {
     `;
   }
   container.innerHTML = "";
+  if (!results || !results.length) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-icon">🔍</div><p>没有找到匹配的目的地，请尝试调整筛选条件。</p></div>`;
+    return;
+  }
   results.forEach((item, index) => {
     const node = findNodeBySpot(item.spot.id);
     const image = recommendationImage(item.spot, node);
