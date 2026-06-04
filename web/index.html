@@ -54,7 +54,7 @@
           <div class="section-heading">
             <div>
               <h2>推荐目的地</h2>
-              <p>Top-K 最小堆根据评分、热度和兴趣匹配生成前 10 个景点。</p>
+              <p>根据评分、热度和您的兴趣偏好，智能推荐最匹配的旅游目的地。</p>
             </div>
             <div class="inline-controls">
               <label>用户画像<select id="userSelect"></select></label>
@@ -117,7 +117,7 @@
             <div class="section-heading compact">
               <div>
                 <h1>路线规划</h1>
-                <p>Dijkstra / A* / TSP-DP 路径演示。</p>
+                <p>智能路径规划 · 支持多种出行策略与多点游览。</p>
               </div>
               <button id="clearRouteButton" type="button" class="icon-button">×</button>
             </div>
@@ -165,7 +165,7 @@
 
             <div class="section-row">
               <h2>多点游览</h2>
-              <button id="runMultiButton" type="button" class="small-button">TSP-DP 生成</button>
+              <button id="runMultiButton" type="button" class="small-button">生成多点路线</button>
             </div>
             <div id="multiStopList" class="multi-stop-list"></div>
 
@@ -212,7 +212,16 @@
             <label>关键词<input id="facilityKeyword" type="search" placeholder="例如：卫生间、游客服务、商店"></label>
             <button id="facilitySearchButton" class="primary-button full" type="button">查询设施</button>
           </aside>
-          <div id="facilityResults" class="result-list card-list"></div>
+          <div id="facilityResults" class="result-list card-list">
+            <div class="results-welcome">
+              <div class="welcome-illustration">📍</div>
+              <h3>查找附近设施</h3>
+              <p>选择当前位置与设施类型，点击「查询设施」即可查看卫生间、商店、服务中心等周边设施。</p>
+              <div class="welcome-hints">
+                <span>🚻 卫生间</span><span>☕ 咖啡厅</span><span>🛍️ 商店</span><span>ℹ️ 游客服务</span>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -220,7 +229,7 @@
         <section class="diary-hero">
           <div>
             <h1>记录你的颐和园旅程</h1>
-            <p>浏览社区日记，查看热度、评分、兴趣匹配和 Huffman 压缩率。</p>
+            <p>浏览社区日记，发现精彩旅程，与旅友分享你的颐和园故事。</p>
           </div>
           <div class="upload-panel glass-panel">
             <div class="diary-compose">
@@ -236,8 +245,10 @@
               <label>图片/视频<input id="diaryMediaFileInput" type="file" accept="image/*,video/*" multiple></label>
               <button id="diaryCreateButton" class="primary-button" type="button">保存日记</button>
             </div>
-            <button id="aigcDraftButton" class="primary-button" type="button">生成日记草稿</button>
-            <button id="aigcAnimationButton" class="secondary-button" type="button">生成动画分镜</button>
+            <div class="aigc-actions">
+              <button id="aigcDraftButton" class="primary-button" type="button">生成日记草稿</button>
+              <button id="aigcAnimationButton" class="secondary-button" type="button">生成动画分镜</button>
+            </div>
             <div id="aigcStoryboard" class="storyboard-output">
               <div class="storyboard-placeholder">
                 <div class="storyboard-icon">🎬</div>
@@ -251,7 +262,7 @@
           <div class="section-heading">
             <div>
               <h2>社区日记</h2>
-              <p>KMP 全文检索，按热度、评分或兴趣匹配排序。</p>
+              <p>全文检索社区日记，按热度、评分或兴趣匹配排序。</p>
             </div>
             <div class="inline-controls">
               <label>排序<select id="diarySort">
@@ -292,7 +303,16 @@
             <button id="foodRecommendButton" class="primary-button full" type="button">推荐美食</button>
           </aside>
           <div id="foodAlgorithmNote" class="algorithm-note" aria-live="polite"></div>
-          <div id="foodResults" class="result-list card-list"></div>
+          <div id="foodResults" class="result-list card-list">
+            <div class="results-welcome">
+              <div class="welcome-illustration">🍽️</div>
+              <h3>探索周边美食</h3>
+              <p>选择当前景点与菜系偏好，点击「推荐美食」发现附近餐厅，结合评分、热度和距离智能排序。</p>
+              <div class="welcome-hints">
+                <span>🥘 北京菜</span><span>☕ 咖啡</span><span>🍜 面馆</span><span>🥤 茶饮</span>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 

@@ -2287,7 +2287,7 @@
     "type": "university",
     "spot_id": 201,
     "description": "清华大学，北京知名高等学府。",
-    "image": "web/assets/spots/uni/清华大学.svg"
+    "image": "web/assets/spots/uni/清华大学.jpg"
   },
   {
     "id": 5001,
@@ -2297,7 +2297,7 @@
     "type": "university",
     "spot_id": 202,
     "description": "北京大学，北京知名高等学府。",
-    "image": "web/assets/spots/uni/北京大学.svg"
+    "image": "web/assets/spots/uni/北京大学.jpg"
   },
   {
     "id": 5002,
@@ -2307,7 +2307,7 @@
     "type": "university",
     "spot_id": 203,
     "description": "中国人民大学，北京知名高等学府。",
-    "image": "web/assets/spots/uni/中国人民大学.svg"
+    "image": "web/assets/spots/uni/中国人民大学.jpg"
   },
   {
     "id": 5003,
@@ -2317,7 +2317,7 @@
     "type": "university",
     "spot_id": 204,
     "description": "北京师范大学，北京知名高等学府。",
-    "image": "web/assets/spots/uni/北京师范大学.svg"
+    "image": "web/assets/spots/uni/北京师范大学.jpg"
   },
   {
     "id": 5004,
@@ -2327,7 +2327,7 @@
     "type": "university",
     "spot_id": 205,
     "description": "北京航空航天大学，北京知名高等学府。",
-    "image": "web/assets/spots/uni/北京航空航天大学.svg"
+    "image": "web/assets/spots/uni/北京航空航天大学.jpg"
   },
   {
     "id": 5005,
@@ -2337,7 +2337,7 @@
     "type": "university",
     "spot_id": 206,
     "description": "北京理工大学，北京知名高等学府。",
-    "image": "web/assets/spots/uni/北京理工大学.svg"
+    "image": "web/assets/spots/uni/北京理工大学.jpg"
   },
   {
     "id": 5006,
@@ -2347,7 +2347,7 @@
     "type": "university",
     "spot_id": 207,
     "description": "中国农业大学，北京知名高等学府。",
-    "image": "web/assets/spots/uni/中国农业大学.svg"
+    "image": "web/assets/spots/uni/中国农业大学.jpg"
   },
   {
     "id": 5007,
@@ -2357,7 +2357,7 @@
     "type": "university",
     "spot_id": 208,
     "description": "中央民族大学，北京知名高等学府。",
-    "image": "web/assets/spots/uni/中央民族大学.svg"
+    "image": "web/assets/spots/uni/中央民族大学.jpg"
   },
   {
     "id": 5008,
@@ -2367,7 +2367,7 @@
     "type": "university",
     "spot_id": 209,
     "description": "北京科技大学，北京知名高等学府。",
-    "image": "web/assets/spots/uni/北京科技大学.svg"
+    "image": "web/assets/spots/uni/北京科技大学.jpg"
   },
   {
     "id": 5009,
@@ -2377,7 +2377,7 @@
     "type": "university",
     "spot_id": 210,
     "description": "北京交通大学，北京知名高等学府。",
-    "image": "web/assets/spots/uni/北京交通大学.svg"
+    "image": "web/assets/spots/uni/北京交通大学.jpg"
   },
   {
     "id": 5010,
@@ -2387,7 +2387,7 @@
     "type": "university",
     "spot_id": 211,
     "description": "北京邮电大学，北京知名高等学府。",
-    "image": "web/assets/spots/uni/北京邮电大学.svg"
+    "image": "web/assets/spots/uni/北京邮电大学.jpg"
   },
   {
     "id": 5011,
@@ -2397,7 +2397,7 @@
     "type": "university",
     "spot_id": 212,
     "description": "北京化工大学，北京知名高等学府。",
-    "image": "web/assets/spots/uni/北京化工大学.svg"
+    "image": "web/assets/spots/uni/北京化工大学.jpg"
   },
   {
     "id": 5012,
@@ -2427,7 +2427,7 @@
     "type": "university",
     "spot_id": 215,
     "description": "北京中医药大学，北京知名高等学府。",
-    "image": "web/assets/spots/uni/北京中医药大学.svg"
+    "image": "web/assets/spots/uni/北京中医药大学.jpg"
   },
   {
     "id": 5015,
@@ -2437,7 +2437,7 @@
     "type": "university",
     "spot_id": 216,
     "description": "北京外国语大学，北京知名高等学府。",
-    "image": "web/assets/spots/uni/北京外国语大学.svg"
+    "image": "web/assets/spots/uni/北京外国语大学.jpg"
   },
   {
     "id": 5016,
@@ -2447,7 +2447,7 @@
     "type": "university",
     "spot_id": 217,
     "description": "北京语言大学，北京知名高等学府。",
-    "image": "web/assets/spots/uni/北京语言大学.svg"
+    "image": "web/assets/spots/uni/北京语言大学.jpg"
   },
   {
     "id": 5017,
@@ -2457,7 +2457,7 @@
     "type": "university",
     "spot_id": 218,
     "description": "中国传媒大学，北京知名高等学府。",
-    "image": "web/assets/spots/uni/中国传媒大学.svg"
+    "image": "web/assets/spots/uni/中国传媒大学.jpg"
   },
   {
     "id": 5018,
@@ -2477,7 +2477,7 @@
     "type": "university",
     "spot_id": 220,
     "description": "对外经济贸易大学，北京知名高等学府。",
-    "image": "web/assets/spots/uni/对外经济贸易大学.svg"
+    "image": "web/assets/spots/uni/对外经济贸易大学.jpg"
   },
   {
     "id": 5020,
@@ -2487,7 +2487,7 @@
     "type": "university",
     "spot_id": 221,
     "description": "中国政法大学，北京知名高等学府。",
-    "image": "web/assets/spots/uni/中国政法大学.svg"
+    "image": "web/assets/spots/uni/中国政法大学.jpg"
   },
   {
     "id": 5021,
@@ -2497,7 +2497,7 @@
     "type": "university",
     "spot_id": 222,
     "description": "北京体育大学，北京知名高等学府。",
-    "image": "web/assets/spots/uni/北京体育大学.svg"
+    "image": "web/assets/spots/uni/北京体育大学.jpg"
   },
   {
     "id": 5022,
@@ -2507,7 +2507,7 @@
     "type": "university",
     "spot_id": 223,
     "description": "中国石油大学（北京），北京知名高等学府。",
-    "image": "web/assets/spots/uni/中国石油大学（北京）.svg"
+    "image": "web/assets/spots/uni/中国石油大学（北京）.jpg"
   },
   {
     "id": 5023,
@@ -2517,7 +2517,7 @@
     "type": "university",
     "spot_id": 224,
     "description": "中国地质大学（北京），北京知名高等学府。",
-    "image": "web/assets/spots/uni/中国地质大学（北京）.svg"
+    "image": "web/assets/spots/uni/中国地质大学（北京）.jpg"
   },
   {
     "id": 5024,
@@ -2547,7 +2547,7 @@
     "type": "university",
     "spot_id": 227,
     "description": "首都师范大学，北京知名高等学府。",
-    "image": "web/assets/spots/uni/首都师范大学.svg"
+    "image": "web/assets/spots/uni/首都师范大学.jpg"
   },
   {
     "id": 5027,
@@ -2557,7 +2557,7 @@
     "type": "university",
     "spot_id": 228,
     "description": "首都医科大学，北京知名高等学府。",
-    "image": "web/assets/spots/uni/首都医科大学.svg"
+    "image": "web/assets/spots/uni/首都医科大学.jpg"
   },
   {
     "id": 5028,
@@ -2567,7 +2567,7 @@
     "type": "university",
     "spot_id": 229,
     "description": "首都经济贸易大学，北京知名高等学府。",
-    "image": "web/assets/spots/uni/首都经济贸易大学.svg"
+    "image": "web/assets/spots/uni/首都经济贸易大学.jpg"
   },
   {
     "id": 5029,
@@ -2577,7 +2577,7 @@
     "type": "university",
     "spot_id": 230,
     "description": "北京工商大学，北京知名高等学府。",
-    "image": "web/assets/spots/uni/北京工商大学.svg"
+    "image": "web/assets/spots/uni/北京工商大学.jpg"
   },
   {
     "id": 5030,
@@ -2587,7 +2587,7 @@
     "type": "university",
     "spot_id": 231,
     "description": "北京建筑大学，北京知名高等学府。",
-    "image": "web/assets/spots/uni/北京建筑大学.svg"
+    "image": "web/assets/spots/uni/北京建筑大学.jpg"
   },
   {
     "id": 5031,
@@ -2597,7 +2597,7 @@
     "type": "university",
     "spot_id": 232,
     "description": "北京信息科技大学，北京知名高等学府。",
-    "image": "web/assets/spots/uni/北京信息科技大学.svg"
+    "image": "web/assets/spots/uni/北京信息科技大学.jpg"
   },
   {
     "id": 5032,
@@ -2617,7 +2617,7 @@
     "type": "university",
     "spot_id": 234,
     "description": "北京联合大学，北京知名高等学府。",
-    "image": "web/assets/spots/uni/北京联合大学.svg"
+    "image": "web/assets/spots/uni/北京联合大学.jpg"
   },
   {
     "id": 5034,
@@ -2627,7 +2627,7 @@
     "type": "university",
     "spot_id": 235,
     "description": "中央美术学院，北京知名高等学府。",
-    "image": "web/assets/spots/uni/中央美术学院.svg"
+    "image": "web/assets/spots/uni/中央美术学院.jpg"
   },
   {
     "id": 5035,
@@ -2637,7 +2637,7 @@
     "type": "university",
     "spot_id": 236,
     "description": "北京电影学院，北京知名高等学府。",
-    "image": "web/assets/spots/uni/北京电影学院.svg"
+    "image": "web/assets/spots/uni/北京电影学院.jpg"
   },
   {
     "id": 5036,
@@ -2657,7 +2657,7 @@
     "type": "university",
     "spot_id": 238,
     "description": "中央音乐学院，北京知名高等学府。",
-    "image": "web/assets/spots/uni/中央音乐学院.svg"
+    "image": "web/assets/spots/uni/中央音乐学院.jpg"
   },
   {
     "id": 5038,
@@ -2667,7 +2667,7 @@
     "type": "university",
     "spot_id": 239,
     "description": "中国音乐学院，北京知名高等学府。",
-    "image": "web/assets/spots/uni/中国音乐学院.svg"
+    "image": "web/assets/spots/uni/中国音乐学院.jpg"
   },
   {
     "id": 5039,
@@ -2687,7 +2687,7 @@
     "type": "university",
     "spot_id": 241,
     "description": "中国戏曲学院，北京知名高等学府。",
-    "image": "web/assets/spots/uni/中国戏曲学院.svg"
+    "image": "web/assets/spots/uni/中国戏曲学院.jpg"
   },
   {
     "id": 5041,
@@ -2717,7 +2717,7 @@
     "type": "university",
     "spot_id": 244,
     "description": "中国科学院大学，北京知名高等学府。",
-    "image": "web/assets/spots/uni/中国科学院大学.svg"
+    "image": "web/assets/spots/uni/中国科学院大学.jpg"
   },
   {
     "id": 5044,
@@ -2727,7 +2727,7 @@
     "type": "university",
     "spot_id": 245,
     "description": "中国社会科学院大学，北京知名高等学府。",
-    "image": "web/assets/spots/uni/中国社会科学院大学.svg"
+    "image": "web/assets/spots/uni/中国社会科学院大学.jpg"
   },
   {
     "id": 5045,
@@ -2737,7 +2737,7 @@
     "type": "university",
     "spot_id": 246,
     "description": "外交学院，北京知名高等学府。",
-    "image": "web/assets/spots/uni/外交学院.svg"
+    "image": "web/assets/spots/uni/外交学院.jpg"
   },
   {
     "id": 5046,
@@ -2747,7 +2747,7 @@
     "type": "university",
     "spot_id": 247,
     "description": "国际关系学院，北京知名高等学府。",
-    "image": "web/assets/spots/uni/国际关系学院.svg"
+    "image": "web/assets/spots/uni/国际关系学院.jpg"
   },
   {
     "id": 5047,
@@ -2757,7 +2757,7 @@
     "type": "university",
     "spot_id": 248,
     "description": "北京第二外国语学院，北京知名高等学府。",
-    "image": "web/assets/spots/uni/北京第二外国语学院.svg"
+    "image": "web/assets/spots/uni/北京第二外国语学院.jpg"
   },
   {
     "id": 5048,
@@ -2777,7 +2777,7 @@
     "type": "university",
     "spot_id": 250,
     "description": "北京农学院，北京知名高等学府。",
-    "image": "web/assets/spots/uni/北京农学院.svg"
+    "image": "web/assets/spots/uni/北京农学院.jpg"
   },
   {
     "id": 5050,

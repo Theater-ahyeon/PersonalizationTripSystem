@@ -15,22 +15,22 @@ const LANDSCAPE_IMAGE = "./assets/spots/real/long-corridor.jpg";
 const ROUTE_STRATEGIES = {
   distance: {
     label: "最短距离",
-    algorithm: "Dijkstra 以道路长度作为边权",
+    algorithm: "以道路长度作为边权计算最短路径",
     color: "#e35d3f"
   },
   time: {
     label: "最短时间",
-    algorithm: "Dijkstra 以理想速度换算时间作为边权",
+    algorithm: "以理想速度换算时间作为边权",
     color: "#fd8b00"
   },
   congestion: {
     label: "拥挤度时间",
-    algorithm: "Dijkstra 以 拥挤度 * 理想速度 换算真实时间",
+    algorithm: "结合拥挤度与理想速度换算实际通行时间",
     color: "#008733"
   },
   transport: {
     label: "交通工具策略",
-    algorithm: "Dijkstra 自动在步行/骑行可达边中选择时间更短的交通方式",
+    algorithm: "自动在步行/骑行可达边中选择时间更短的交通方式",
     color: "#0058bc"
   }
 };
@@ -808,10 +808,10 @@ function renderRecommendationCards(results, meta = {}) {
   const note = byId("recommendAlgorithmNote");
   if (note) {
     note.innerHTML = `
-      <span>LSH 兴趣候选 ${meta.lshBucketCount || 0}/${meta.totalCount || 0}</span>
+      <span>兴趣候选 ${meta.lshBucketCount || 0}/${meta.totalCount || 0}</span>
       <span>${meta.category ? `分类过滤后 ${meta.candidateCount || 0} 条` : `候选参与评分 ${meta.candidateCount || 0} 条`}</span>
       <span>${meta.keyword ? "名称/类别/关键字查询" : "个性化推荐"}</span>
-      <span>${recommendSortLabel(meta.sortMode)} · 固定容量最小堆保留 Top-10</span>
+      <span>${recommendSortLabel(meta.sortMode)} · 智能推荐 Top-10 目的地</span>
     `;
   }
   container.innerHTML = "";
@@ -826,7 +826,7 @@ function renderRecommendationCards(results, meta = {}) {
     card.className = "result-card";
     card.innerHTML = `
       <img class="card-media" src="${image}" alt="${escapeHtml(item.spot.name)}">
-      <p class="eyebrow">推荐 ${index + 1} · Top-K</p>
+      <p class="eyebrow">推荐 ${index + 1}</p>
       <h3>${escapeHtml(item.spot.name)}</h3>
       <small>${escapeHtml(item.spot.category)} · ${escapeHtml(item.spot.tags)}</small>
       <div class="score-row">
@@ -864,7 +864,7 @@ function runMultiStopRoute() {
     return;
   }
   if (targets.length > 12) {
-    summarize("目标节点超过 12 个，状态压缩 DP 演示建议控制在 12 个以内。");
+    summarize("目标节点超过 12 个，多点游览建议控制在 12 个以内。");
     return;
   }
 
@@ -1261,14 +1261,14 @@ function renderDiaryList() {
   const container = byId("diaryResults");
   const note = byId("diaryAlgorithmNote");
   if (note) {
-    const searchLabel = mode === "title" ? "标题 HashMap 精确查找" : mode === "destination" ? "目的地 KMP 筛选" : "KMP 全文检索";
+    const searchLabel = mode === "title" ? "标题精确查找" : mode === "destination" ? "目的地筛选" : "全文检索";
     const averageCompression = results.length
       ? results.reduce((total, item) => total + diaryCompressionRatio(item.diary), 0) / results.length
       : 0;
     note.innerHTML = `
       <span>${searchLabel}</span>
-      <span>${sort === "interest" ? `LSH 日记候选 ${lshCandidates.length}/${state.diaries.length}` : "热度/评分排序"}</span>
-      <span>结果平均 Huffman 压缩率 ${(averageCompression * 100).toFixed(0)}%</span>
+      <span>${sort === "interest" ? `日记候选 ${lshCandidates.length}/${state.diaries.length}` : "热度/评分排序"}</span>
+      <span>日记平均压缩率 ${(averageCompression * 100).toFixed(0)}%</span>
     `;
   }
   container.innerHTML = "";
@@ -1357,7 +1357,7 @@ function createDiaryEntry() {
   byId("diaryTagsInput").value = "";
   byId("diaryMediaInput").value = "";
   byId("diaryMediaFileInput").value = "";
-  byId("aigcStoryboard").innerHTML = `<strong>日记已保存</strong><p>${escapeHtml(title)} 已加入统一日记列表，Huffman 压缩率 ${(diaryCompressionRatio(diary) * 100).toFixed(0)}%。</p>`;
+  byId("aigcStoryboard").innerHTML = `<strong>日记已保存</strong><p>${escapeHtml(title)} 已加入统一日记列表，压缩率 ${(diaryCompressionRatio(diary) * 100).toFixed(0)}%。</p>`;
   renderDiaryList();
 }
 
@@ -1468,7 +1468,7 @@ function renderFoodCards(results, meta = {}) {
     note.innerHTML = `
       <span>模糊查找候选 ${meta.candidateCount || 0}/${meta.totalCount || 0}</span>
       <span>${foodSortLabel(meta.sortMode)}</span>
-      <span>固定容量最小堆输出 Top-10 美食</span>
+      <span>智能推荐 Top-10 美食</span>
     `;
   }
   container.innerHTML = "";
@@ -1532,9 +1532,9 @@ function summarizeRoute(title, result) {
 function summarizeMultiRoute(order, tsp) {
   const strategy = routeStrategyInfo(tsp.strategy);
   byId("route-summary").innerHTML = `
-    <p class="eyebrow">TSP-DP 多点游览顺序</p>
+    <p class="eyebrow">多点游览顺序</p>
     <h3>${state.mode === "bike" ? "骑行" : "步行"} · 总距离 ${tsp.totalDistance.toFixed(1)} 米 · 约 ${tsp.totalMinutes.toFixed(1)} 分钟</h3>
-    <p>${escapeHtml(strategy.algorithm)}，状态压缩 DP 比较策略权重，平均拥挤度 ${(tsp.averageCongestion * 100).toFixed(0)}%。</p>
+    <p>${escapeHtml(strategy.algorithm)}，智能比较策略权重，平均拥挤度 ${(tsp.averageCongestion * 100).toFixed(0)}%。</p>
     <ol>${order.map((leg) => {
       const from = findNode(leg.from)?.name || leg.from;
       const to = findNode(leg.to)?.name || leg.to;
