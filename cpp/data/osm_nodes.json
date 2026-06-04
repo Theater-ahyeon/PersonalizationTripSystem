@@ -2280,6 +2280,1406 @@
     "image": "web/assets/spots/museum.svg"
   },
   {
+    "id": 229,
+    "name": "中关村一桥路口",
+    "lat": 39.984,
+    "lon": 116.314,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京中关村一桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 230,
+    "name": "中关村二桥路口",
+    "lat": 39.98,
+    "lon": 116.318,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京中关村二桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 231,
+    "name": "海淀黄庄路口",
+    "lat": 39.976,
+    "lon": 116.317,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京海淀黄庄道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 232,
+    "name": "四通桥路口",
+    "lat": 39.968,
+    "lon": 116.318,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京四通桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 233,
+    "name": "白石桥路口",
+    "lat": 39.95,
+    "lon": 116.323,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京白石桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 234,
+    "name": "苏州桥路口",
+    "lat": 39.96,
+    "lon": 116.303,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京苏州桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 235,
+    "name": "学院桥路口",
+    "lat": 39.988,
+    "lon": 116.348,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京学院桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 236,
+    "name": "六道口路口",
+    "lat": 40.01,
+    "lon": 116.35,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京六道口道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 237,
+    "name": "成府路口路口",
+    "lat": 39.996,
+    "lon": 116.348,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京成府路口道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 238,
+    "name": "志新桥路口",
+    "lat": 39.992,
+    "lon": 116.358,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京志新桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 239,
+    "name": "健翔桥路口",
+    "lat": 39.989,
+    "lon": 116.37,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京健翔桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 240,
+    "name": "北太平庄路口",
+    "lat": 39.966,
+    "lon": 116.36,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京北太平庄道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 241,
+    "name": "马甸桥路口",
+    "lat": 39.969,
+    "lon": 116.382,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京马甸桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 242,
+    "name": "大钟寺路口",
+    "lat": 39.966,
+    "lon": 116.34,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京大钟寺道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 243,
+    "name": "知春里路口",
+    "lat": 39.977,
+    "lon": 116.325,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京知春里道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 244,
+    "name": "学知桥路口",
+    "lat": 39.978,
+    "lon": 116.338,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京学知桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 245,
+    "name": "保福寺桥路口",
+    "lat": 39.99,
+    "lon": 116.332,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京保福寺桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 246,
+    "name": "五道口路口",
+    "lat": 39.993,
+    "lon": 116.338,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京五道口道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 247,
+    "name": "清华西门路口",
+    "lat": 39.998,
+    "lon": 116.318,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京清华西门道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 248,
+    "name": "清华东门路口",
+    "lat": 40.001,
+    "lon": 116.331,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京清华东门道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 249,
+    "name": "西苑路口",
+    "lat": 40.002,
+    "lon": 116.294,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京西苑道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 250,
+    "name": "颐和园东门路口",
+    "lat": 39.999,
+    "lon": 116.28,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京颐和园东门道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 251,
+    "name": "海淀桥路口",
+    "lat": 39.99,
+    "lon": 116.295,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京海淀桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 252,
+    "name": "巴沟路口",
+    "lat": 39.975,
+    "lon": 116.293,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京巴沟道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 253,
+    "name": "小西天路口",
+    "lat": 39.953,
+    "lon": 116.364,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京小西天道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 254,
+    "name": "明光桥路口",
+    "lat": 39.958,
+    "lon": 116.346,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京明光桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 255,
+    "name": "蓟门桥路口",
+    "lat": 39.966,
+    "lon": 116.35,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京蓟门桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 256,
+    "name": "牡丹园路口",
+    "lat": 39.973,
+    "lon": 116.368,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京牡丹园道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 257,
+    "name": "安贞桥路口",
+    "lat": 39.972,
+    "lon": 116.403,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京安贞桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 258,
+    "name": "惠新西街路口",
+    "lat": 39.978,
+    "lon": 116.416,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京惠新西街道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 259,
+    "name": "望京西路口",
+    "lat": 39.99,
+    "lon": 116.454,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京望京西道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 260,
+    "name": "双榆树路口",
+    "lat": 39.972,
+    "lon": 116.324,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京双榆树道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 261,
+    "name": "人民大学路口",
+    "lat": 39.97,
+    "lon": 116.316,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京人民大学道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 262,
+    "name": "魏公村路口",
+    "lat": 39.954,
+    "lon": 116.326,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京魏公村道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 263,
+    "name": "国家图书馆路口",
+    "lat": 39.945,
+    "lon": 116.327,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京国家图书馆道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 264,
+    "name": "中关村一桥路口",
+    "lat": 39.984,
+    "lon": 116.314,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京中关村一桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 265,
+    "name": "中关村二桥路口",
+    "lat": 39.98,
+    "lon": 116.318,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京中关村二桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 266,
+    "name": "海淀黄庄路口",
+    "lat": 39.976,
+    "lon": 116.317,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京海淀黄庄道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 267,
+    "name": "四通桥路口",
+    "lat": 39.968,
+    "lon": 116.318,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京四通桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 268,
+    "name": "白石桥路口",
+    "lat": 39.95,
+    "lon": 116.323,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京白石桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 269,
+    "name": "苏州桥路口",
+    "lat": 39.96,
+    "lon": 116.303,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京苏州桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 270,
+    "name": "学院桥路口",
+    "lat": 39.988,
+    "lon": 116.348,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京学院桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 271,
+    "name": "六道口路口",
+    "lat": 40.01,
+    "lon": 116.35,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京六道口道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 272,
+    "name": "成府路口路口",
+    "lat": 39.996,
+    "lon": 116.348,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京成府路口道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 273,
+    "name": "志新桥路口",
+    "lat": 39.992,
+    "lon": 116.358,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京志新桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 274,
+    "name": "健翔桥路口",
+    "lat": 39.989,
+    "lon": 116.37,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京健翔桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 275,
+    "name": "北太平庄路口",
+    "lat": 39.966,
+    "lon": 116.36,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京北太平庄道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 276,
+    "name": "马甸桥路口",
+    "lat": 39.969,
+    "lon": 116.382,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京马甸桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 277,
+    "name": "大钟寺路口",
+    "lat": 39.966,
+    "lon": 116.34,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京大钟寺道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 278,
+    "name": "知春里路口",
+    "lat": 39.977,
+    "lon": 116.325,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京知春里道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 279,
+    "name": "学知桥路口",
+    "lat": 39.978,
+    "lon": 116.338,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京学知桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 280,
+    "name": "保福寺桥路口",
+    "lat": 39.99,
+    "lon": 116.332,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京保福寺桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 281,
+    "name": "五道口路口",
+    "lat": 39.993,
+    "lon": 116.338,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京五道口道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 282,
+    "name": "清华西门路口",
+    "lat": 39.998,
+    "lon": 116.318,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京清华西门道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 283,
+    "name": "清华东门路口",
+    "lat": 40.001,
+    "lon": 116.331,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京清华东门道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 284,
+    "name": "西苑路口",
+    "lat": 40.002,
+    "lon": 116.294,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京西苑道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 285,
+    "name": "颐和园东门路口",
+    "lat": 39.999,
+    "lon": 116.28,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京颐和园东门道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 286,
+    "name": "海淀桥路口",
+    "lat": 39.99,
+    "lon": 116.295,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京海淀桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 287,
+    "name": "巴沟路口",
+    "lat": 39.975,
+    "lon": 116.293,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京巴沟道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 288,
+    "name": "小西天路口",
+    "lat": 39.953,
+    "lon": 116.364,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京小西天道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 289,
+    "name": "明光桥路口",
+    "lat": 39.958,
+    "lon": 116.346,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京明光桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 290,
+    "name": "蓟门桥路口",
+    "lat": 39.966,
+    "lon": 116.35,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京蓟门桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 291,
+    "name": "牡丹园路口",
+    "lat": 39.973,
+    "lon": 116.368,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京牡丹园道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 292,
+    "name": "安贞桥路口",
+    "lat": 39.972,
+    "lon": 116.403,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京安贞桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 293,
+    "name": "惠新西街路口",
+    "lat": 39.978,
+    "lon": 116.416,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京惠新西街道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 294,
+    "name": "望京西路口",
+    "lat": 39.99,
+    "lon": 116.454,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京望京西道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 295,
+    "name": "双榆树路口",
+    "lat": 39.972,
+    "lon": 116.324,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京双榆树道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 296,
+    "name": "人民大学路口",
+    "lat": 39.97,
+    "lon": 116.316,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京人民大学道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 297,
+    "name": "魏公村路口",
+    "lat": 39.954,
+    "lon": 116.326,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京魏公村道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 298,
+    "name": "国家图书馆路口",
+    "lat": 39.945,
+    "lon": 116.327,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京国家图书馆道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 299,
+    "name": "中关村一桥路口",
+    "lat": 39.984,
+    "lon": 116.314,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京中关村一桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 300,
+    "name": "中关村二桥路口",
+    "lat": 39.98,
+    "lon": 116.318,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京中关村二桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 301,
+    "name": "海淀黄庄路口",
+    "lat": 39.976,
+    "lon": 116.317,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京海淀黄庄道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 302,
+    "name": "四通桥路口",
+    "lat": 39.968,
+    "lon": 116.318,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京四通桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 303,
+    "name": "白石桥路口",
+    "lat": 39.95,
+    "lon": 116.323,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京白石桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 304,
+    "name": "苏州桥路口",
+    "lat": 39.96,
+    "lon": 116.303,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京苏州桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 305,
+    "name": "学院桥路口",
+    "lat": 39.988,
+    "lon": 116.348,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京学院桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 306,
+    "name": "六道口路口",
+    "lat": 40.01,
+    "lon": 116.35,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京六道口道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 307,
+    "name": "成府路口路口",
+    "lat": 39.996,
+    "lon": 116.348,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京成府路口道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 308,
+    "name": "志新桥路口",
+    "lat": 39.992,
+    "lon": 116.358,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京志新桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 309,
+    "name": "健翔桥路口",
+    "lat": 39.989,
+    "lon": 116.37,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京健翔桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 310,
+    "name": "北太平庄路口",
+    "lat": 39.966,
+    "lon": 116.36,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京北太平庄道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 311,
+    "name": "马甸桥路口",
+    "lat": 39.969,
+    "lon": 116.382,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京马甸桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 312,
+    "name": "大钟寺路口",
+    "lat": 39.966,
+    "lon": 116.34,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京大钟寺道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 313,
+    "name": "知春里路口",
+    "lat": 39.977,
+    "lon": 116.325,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京知春里道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 314,
+    "name": "学知桥路口",
+    "lat": 39.978,
+    "lon": 116.338,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京学知桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 315,
+    "name": "保福寺桥路口",
+    "lat": 39.99,
+    "lon": 116.332,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京保福寺桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 316,
+    "name": "五道口路口",
+    "lat": 39.993,
+    "lon": 116.338,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京五道口道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 317,
+    "name": "清华西门路口",
+    "lat": 39.998,
+    "lon": 116.318,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京清华西门道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 318,
+    "name": "清华东门路口",
+    "lat": 40.001,
+    "lon": 116.331,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京清华东门道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 319,
+    "name": "西苑路口",
+    "lat": 40.002,
+    "lon": 116.294,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京西苑道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 320,
+    "name": "颐和园东门路口",
+    "lat": 39.999,
+    "lon": 116.28,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京颐和园东门道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 321,
+    "name": "海淀桥路口",
+    "lat": 39.99,
+    "lon": 116.295,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京海淀桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 322,
+    "name": "巴沟路口",
+    "lat": 39.975,
+    "lon": 116.293,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京巴沟道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 323,
+    "name": "小西天路口",
+    "lat": 39.953,
+    "lon": 116.364,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京小西天道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 324,
+    "name": "明光桥路口",
+    "lat": 39.958,
+    "lon": 116.346,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京明光桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 325,
+    "name": "蓟门桥路口",
+    "lat": 39.966,
+    "lon": 116.35,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京蓟门桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 326,
+    "name": "牡丹园路口",
+    "lat": 39.973,
+    "lon": 116.368,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京牡丹园道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 327,
+    "name": "安贞桥路口",
+    "lat": 39.972,
+    "lon": 116.403,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京安贞桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 328,
+    "name": "惠新西街路口",
+    "lat": 39.978,
+    "lon": 116.416,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京惠新西街道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 329,
+    "name": "望京西路口",
+    "lat": 39.99,
+    "lon": 116.454,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京望京西道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 330,
+    "name": "双榆树路口",
+    "lat": 39.972,
+    "lon": 116.324,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京双榆树道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 331,
+    "name": "人民大学路口",
+    "lat": 39.97,
+    "lon": 116.316,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京人民大学道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 332,
+    "name": "魏公村路口",
+    "lat": 39.954,
+    "lon": 116.326,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京魏公村道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 333,
+    "name": "国家图书馆路口",
+    "lat": 39.945,
+    "lon": 116.327,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京国家图书馆道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 334,
+    "name": "中关村一桥路口",
+    "lat": 39.984,
+    "lon": 116.314,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京中关村一桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 335,
+    "name": "中关村二桥路口",
+    "lat": 39.98,
+    "lon": 116.318,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京中关村二桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 336,
+    "name": "海淀黄庄路口",
+    "lat": 39.976,
+    "lon": 116.317,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京海淀黄庄道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 337,
+    "name": "四通桥路口",
+    "lat": 39.968,
+    "lon": 116.318,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京四通桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 338,
+    "name": "白石桥路口",
+    "lat": 39.95,
+    "lon": 116.323,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京白石桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 339,
+    "name": "苏州桥路口",
+    "lat": 39.96,
+    "lon": 116.303,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京苏州桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 340,
+    "name": "学院桥路口",
+    "lat": 39.988,
+    "lon": 116.348,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京学院桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 341,
+    "name": "六道口路口",
+    "lat": 40.01,
+    "lon": 116.35,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京六道口道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 342,
+    "name": "成府路口路口",
+    "lat": 39.996,
+    "lon": 116.348,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京成府路口道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 343,
+    "name": "志新桥路口",
+    "lat": 39.992,
+    "lon": 116.358,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京志新桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 344,
+    "name": "健翔桥路口",
+    "lat": 39.989,
+    "lon": 116.37,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京健翔桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 345,
+    "name": "北太平庄路口",
+    "lat": 39.966,
+    "lon": 116.36,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京北太平庄道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 346,
+    "name": "马甸桥路口",
+    "lat": 39.969,
+    "lon": 116.382,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京马甸桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 347,
+    "name": "大钟寺路口",
+    "lat": 39.966,
+    "lon": 116.34,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京大钟寺道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 348,
+    "name": "知春里路口",
+    "lat": 39.977,
+    "lon": 116.325,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京知春里道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 349,
+    "name": "学知桥路口",
+    "lat": 39.978,
+    "lon": 116.338,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京学知桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 350,
+    "name": "保福寺桥路口",
+    "lat": 39.99,
+    "lon": 116.332,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京保福寺桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 351,
+    "name": "五道口路口",
+    "lat": 39.993,
+    "lon": 116.338,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京五道口道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 352,
+    "name": "清华西门路口",
+    "lat": 39.998,
+    "lon": 116.318,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京清华西门道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 353,
+    "name": "清华东门路口",
+    "lat": 40.001,
+    "lon": 116.331,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京清华东门道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 354,
+    "name": "西苑路口",
+    "lat": 40.002,
+    "lon": 116.294,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京西苑道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 355,
+    "name": "颐和园东门路口",
+    "lat": 39.999,
+    "lon": 116.28,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京颐和园东门道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 356,
+    "name": "海淀桥路口",
+    "lat": 39.99,
+    "lon": 116.295,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京海淀桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 357,
+    "name": "巴沟路口",
+    "lat": 39.975,
+    "lon": 116.293,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京巴沟道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 358,
+    "name": "小西天路口",
+    "lat": 39.953,
+    "lon": 116.364,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京小西天道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 359,
+    "name": "明光桥路口",
+    "lat": 39.958,
+    "lon": 116.346,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京明光桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 360,
+    "name": "蓟门桥路口",
+    "lat": 39.966,
+    "lon": 116.35,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京蓟门桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 361,
+    "name": "牡丹园路口",
+    "lat": 39.973,
+    "lon": 116.368,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京牡丹园道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 362,
+    "name": "安贞桥路口",
+    "lat": 39.972,
+    "lon": 116.403,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京安贞桥道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 363,
+    "name": "惠新西街路口",
+    "lat": 39.978,
+    "lon": 116.416,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京惠新西街道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 364,
+    "name": "望京西路口",
+    "lat": 39.99,
+    "lon": 116.454,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京望京西道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 365,
+    "name": "双榆树路口",
+    "lat": 39.972,
+    "lon": 116.324,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京双榆树道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 366,
+    "name": "人民大学路口",
+    "lat": 39.97,
+    "lon": 116.316,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京人民大学道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 367,
+    "name": "魏公村路口",
+    "lat": 39.954,
+    "lon": 116.326,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京魏公村道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 368,
+    "name": "国家图书馆路口",
+    "lat": 39.945,
+    "lon": 116.327,
+    "type": "road_intersection",
+    "spot_id": 0,
+    "description": "北京国家图书馆道路交叉口",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
     "id": 5000,
     "name": "清华大学主校门",
     "lat": 39.9997,
@@ -2808,5 +4208,525 @@
     "spot_id": 253,
     "description": "中国青年政治学院，北京知名高等学府。",
     "image": "web/assets/spots/uni/中国青年政治学院.svg"
+  },
+  {
+    "id": 5053,
+    "name": "复旦大学",
+    "lat": 31.2983,
+    "lon": 121.4997,
+    "type": "university",
+    "spot_id": 141,
+    "description": "复旦大学，重点高校。",
+    "image": "web/assets/spots/uni/复旦大学.svg"
+  },
+  {
+    "id": 5054,
+    "name": "上海交通大学",
+    "lat": 31.2008,
+    "lon": 121.4301,
+    "type": "university",
+    "spot_id": 142,
+    "description": "上海交通大学，重点高校。",
+    "image": "web/assets/spots/uni/上海交通大学.svg"
+  },
+  {
+    "id": 5055,
+    "name": "同济大学",
+    "lat": 31.282,
+    "lon": 121.5028,
+    "type": "university",
+    "spot_id": 143,
+    "description": "同济大学，重点高校。",
+    "image": "web/assets/spots/uni/同济大学.svg"
+  },
+  {
+    "id": 5056,
+    "name": "华东师范大学",
+    "lat": 31.2286,
+    "lon": 121.4046,
+    "type": "university",
+    "spot_id": 144,
+    "description": "华东师范大学，重点高校。",
+    "image": "web/assets/spots/uni/华东师范大学.svg"
+  },
+  {
+    "id": 5057,
+    "name": "南京大学",
+    "lat": 32.0593,
+    "lon": 118.7764,
+    "type": "university",
+    "spot_id": 145,
+    "description": "南京大学，重点高校。",
+    "image": "web/assets/spots/uni/南京大学.svg"
+  },
+  {
+    "id": 5058,
+    "name": "东南大学",
+    "lat": 32.0584,
+    "lon": 118.7966,
+    "type": "university",
+    "spot_id": 146,
+    "description": "东南大学，重点高校。",
+    "image": "web/assets/spots/uni/东南大学.svg"
+  },
+  {
+    "id": 5059,
+    "name": "河海大学",
+    "lat": 32.0597,
+    "lon": 118.7554,
+    "type": "university",
+    "spot_id": 147,
+    "description": "河海大学，重点高校。",
+    "image": "web/assets/spots/uni/河海大学.svg"
+  },
+  {
+    "id": 5060,
+    "name": "浙江大学紫金港校区",
+    "lat": 30.3058,
+    "lon": 120.0858,
+    "type": "university",
+    "spot_id": 148,
+    "description": "浙江大学紫金港校区，重点高校。",
+    "image": "web/assets/spots/uni/浙江大学紫金港校区.svg"
+  },
+  {
+    "id": 5061,
+    "name": "中国美术学院象山校区",
+    "lat": 30.2292,
+    "lon": 120.0745,
+    "type": "university",
+    "spot_id": 149,
+    "description": "中国美术学院象山校区，重点高校。",
+    "image": "web/assets/spots/uni/中国美术学院象山校区.svg"
+  },
+  {
+    "id": 5062,
+    "name": "厦门大学",
+    "lat": 24.438,
+    "lon": 118.0897,
+    "type": "university",
+    "spot_id": 150,
+    "description": "厦门大学，重点高校。",
+    "image": "web/assets/spots/uni/厦门大学.svg"
+  },
+  {
+    "id": 5063,
+    "name": "福州大学",
+    "lat": 26.0745,
+    "lon": 119.1963,
+    "type": "university",
+    "spot_id": 151,
+    "description": "福州大学，重点高校。",
+    "image": "web/assets/spots/uni/福州大学.svg"
+  },
+  {
+    "id": 5064,
+    "name": "武汉大学",
+    "lat": 30.5427,
+    "lon": 114.3642,
+    "type": "university",
+    "spot_id": 152,
+    "description": "武汉大学，重点高校。",
+    "image": "web/assets/spots/uni/武汉大学.svg"
+  },
+  {
+    "id": 5065,
+    "name": "华中科技大学",
+    "lat": 30.5136,
+    "lon": 114.4173,
+    "type": "university",
+    "spot_id": 153,
+    "description": "华中科技大学，重点高校。",
+    "image": "web/assets/spots/uni/华中科技大学.svg"
+  },
+  {
+    "id": 5066,
+    "name": "中南财经政法大学",
+    "lat": 30.479,
+    "lon": 114.3478,
+    "type": "university",
+    "spot_id": 154,
+    "description": "中南财经政法大学，重点高校。",
+    "image": "web/assets/spots/uni/中南财经政法大学.svg"
+  },
+  {
+    "id": 5067,
+    "name": "中山大学广州校区",
+    "lat": 23.0976,
+    "lon": 113.2995,
+    "type": "university",
+    "spot_id": 155,
+    "description": "中山大学广州校区，重点高校。",
+    "image": "web/assets/spots/uni/中山大学广州校区.svg"
+  },
+  {
+    "id": 5068,
+    "name": "华南理工大学",
+    "lat": 23.1483,
+    "lon": 113.3473,
+    "type": "university",
+    "spot_id": 156,
+    "description": "华南理工大学，重点高校。",
+    "image": "web/assets/spots/uni/华南理工大学.svg"
+  },
+  {
+    "id": 5069,
+    "name": "暨南大学",
+    "lat": 23.1276,
+    "lon": 113.3476,
+    "type": "university",
+    "spot_id": 157,
+    "description": "暨南大学，重点高校。",
+    "image": "web/assets/spots/uni/暨南大学.svg"
+  },
+  {
+    "id": 5070,
+    "name": "深圳大学",
+    "lat": 22.5348,
+    "lon": 113.9376,
+    "type": "university",
+    "spot_id": 158,
+    "description": "深圳大学，重点高校。",
+    "image": "web/assets/spots/uni/深圳大学.svg"
+  },
+  {
+    "id": 5071,
+    "name": "香港中文大学深圳",
+    "lat": 22.7004,
+    "lon": 114.207,
+    "type": "university",
+    "spot_id": 159,
+    "description": "香港中文大学深圳，重点高校。",
+    "image": "web/assets/spots/uni/香港中文大学深圳.svg"
+  },
+  {
+    "id": 5072,
+    "name": "四川大学望江校区",
+    "lat": 30.6307,
+    "lon": 104.0786,
+    "type": "university",
+    "spot_id": 160,
+    "description": "四川大学望江校区，重点高校。",
+    "image": "web/assets/spots/uni/四川大学望江校区.svg"
+  },
+  {
+    "id": 5073,
+    "name": "电子科技大学清水河校区",
+    "lat": 30.7523,
+    "lon": 103.9287,
+    "type": "university",
+    "spot_id": 161,
+    "description": "电子科技大学清水河校区，重点高校。",
+    "image": "web/assets/spots/uni/电子科技大学清水河校区.svg"
+  },
+  {
+    "id": 5074,
+    "name": "重庆大学",
+    "lat": 29.5701,
+    "lon": 106.4756,
+    "type": "university",
+    "spot_id": 162,
+    "description": "重庆大学，重点高校。",
+    "image": "web/assets/spots/uni/重庆大学.svg"
+  },
+  {
+    "id": 5075,
+    "name": "西南大学",
+    "lat": 29.8177,
+    "lon": 106.4143,
+    "type": "university",
+    "spot_id": 163,
+    "description": "西南大学，重点高校。",
+    "image": "web/assets/spots/uni/西南大学.svg"
+  },
+  {
+    "id": 5076,
+    "name": "西安交通大学兴庆校区",
+    "lat": 34.2442,
+    "lon": 108.9831,
+    "type": "university",
+    "spot_id": 164,
+    "description": "西安交通大学兴庆校区，重点高校。",
+    "image": "web/assets/spots/uni/西安交通大学兴庆校区.svg"
+  },
+  {
+    "id": 5077,
+    "name": "西北工业大学",
+    "lat": 34.2444,
+    "lon": 108.9127,
+    "type": "university",
+    "spot_id": 165,
+    "description": "西北工业大学，重点高校。",
+    "image": "web/assets/spots/uni/西北工业大学.svg"
+  },
+  {
+    "id": 5078,
+    "name": "兰州大学",
+    "lat": 36.0466,
+    "lon": 103.8569,
+    "type": "university",
+    "spot_id": 167,
+    "description": "兰州大学，重点高校。",
+    "image": "web/assets/spots/uni/兰州大学.svg"
+  },
+  {
+    "id": 5079,
+    "name": "哈尔滨工业大学",
+    "lat": 45.7437,
+    "lon": 126.6305,
+    "type": "university",
+    "spot_id": 168,
+    "description": "哈尔滨工业大学，重点高校。",
+    "image": "web/assets/spots/uni/哈尔滨工业大学.svg"
+  },
+  {
+    "id": 5080,
+    "name": "吉林大学",
+    "lat": 43.88,
+    "lon": 125.3017,
+    "type": "university",
+    "spot_id": 169,
+    "description": "吉林大学，重点高校。",
+    "image": "web/assets/spots/uni/吉林大学.svg"
+  },
+  {
+    "id": 5081,
+    "name": "大连理工大学",
+    "lat": 38.88,
+    "lon": 121.5307,
+    "type": "university",
+    "spot_id": 171,
+    "description": "大连理工大学，重点高校。",
+    "image": "web/assets/spots/uni/大连理工大学.svg"
+  },
+  {
+    "id": 5082,
+    "name": "山东大学中心校区",
+    "lat": 36.6711,
+    "lon": 117.0544,
+    "type": "university",
+    "spot_id": 172,
+    "description": "山东大学中心校区，重点高校。",
+    "image": "web/assets/spots/uni/山东大学中心校区.svg"
+  },
+  {
+    "id": 5083,
+    "name": "中国海洋大学鱼山校区",
+    "lat": 36.065,
+    "lon": 120.3304,
+    "type": "university",
+    "spot_id": 173,
+    "description": "中国海洋大学鱼山校区，重点高校。",
+    "image": "web/assets/spots/uni/中国海洋大学鱼山校区.svg"
+  },
+  {
+    "id": 5084,
+    "name": "南开大学",
+    "lat": 39.1001,
+    "lon": 117.1635,
+    "type": "university",
+    "spot_id": 174,
+    "description": "南开大学，重点高校。",
+    "image": "web/assets/spots/uni/南开大学.svg"
+  },
+  {
+    "id": 5085,
+    "name": "天津大学",
+    "lat": 39.1034,
+    "lon": 117.1738,
+    "type": "university",
+    "spot_id": 175,
+    "description": "天津大学，重点高校。",
+    "image": "web/assets/spots/uni/天津大学.svg"
+  },
+  {
+    "id": 5086,
+    "name": "郑州大学",
+    "lat": 34.8171,
+    "lon": 113.5383,
+    "type": "university",
+    "spot_id": 176,
+    "description": "郑州大学，重点高校。",
+    "image": "web/assets/spots/uni/郑州大学.svg"
+  },
+  {
+    "id": 5087,
+    "name": "河南大学明伦校区",
+    "lat": 34.8108,
+    "lon": 114.3625,
+    "type": "university",
+    "spot_id": 177,
+    "description": "河南大学明伦校区，重点高校。",
+    "image": "web/assets/spots/uni/河南大学明伦校区.svg"
+  },
+  {
+    "id": 5088,
+    "name": "湖南大学",
+    "lat": 28.1816,
+    "lon": 112.9348,
+    "type": "university",
+    "spot_id": 178,
+    "description": "湖南大学，重点高校。",
+    "image": "web/assets/spots/uni/湖南大学.svg"
+  },
+  {
+    "id": 5089,
+    "name": "中南大学",
+    "lat": 28.1631,
+    "lon": 112.932,
+    "type": "university",
+    "spot_id": 179,
+    "description": "中南大学，重点高校。",
+    "image": "web/assets/spots/uni/中南大学.svg"
+  },
+  {
+    "id": 5090,
+    "name": "广西大学",
+    "lat": 22.8386,
+    "lon": 108.2911,
+    "type": "university",
+    "spot_id": 180,
+    "description": "广西大学，重点高校。",
+    "image": "web/assets/spots/uni/广西大学.svg"
+  },
+  {
+    "id": 5091,
+    "name": "云南大学",
+    "lat": 25.0586,
+    "lon": 102.7025,
+    "type": "university",
+    "spot_id": 181,
+    "description": "云南大学，重点高校。",
+    "image": "web/assets/spots/uni/云南大学.svg"
+  },
+  {
+    "id": 5092,
+    "name": "贵州大学",
+    "lat": 26.4403,
+    "lon": 106.6637,
+    "type": "university",
+    "spot_id": 182,
+    "description": "贵州大学，重点高校。",
+    "image": "web/assets/spots/uni/贵州大学.svg"
+  },
+  {
+    "id": 5093,
+    "name": "海南大学",
+    "lat": 20.0572,
+    "lon": 110.3275,
+    "type": "university",
+    "spot_id": 183,
+    "description": "海南大学，重点高校。",
+    "image": "web/assets/spots/uni/海南大学.svg"
+  },
+  {
+    "id": 5094,
+    "name": "内蒙古大学",
+    "lat": 40.8181,
+    "lon": 111.7001,
+    "type": "university",
+    "spot_id": 184,
+    "description": "内蒙古大学，重点高校。",
+    "image": "web/assets/spots/uni/内蒙古大学.svg"
+  },
+  {
+    "id": 5095,
+    "name": "新疆大学",
+    "lat": 43.771,
+    "lon": 87.6179,
+    "type": "university",
+    "spot_id": 185,
+    "description": "新疆大学，重点高校。",
+    "image": "web/assets/spots/uni/新疆大学.svg"
+  },
+  {
+    "id": 5096,
+    "name": "西藏大学",
+    "lat": 29.6522,
+    "lon": 91.1274,
+    "type": "university",
+    "spot_id": 186,
+    "description": "西藏大学，重点高校。",
+    "image": "web/assets/spots/uni/西藏大学.svg"
+  },
+  {
+    "id": 5097,
+    "name": "宁夏大学",
+    "lat": 38.496,
+    "lon": 106.1328,
+    "type": "university",
+    "spot_id": 187,
+    "description": "宁夏大学，重点高校。",
+    "image": "web/assets/spots/uni/宁夏大学.svg"
+  },
+  {
+    "id": 5098,
+    "name": "青海大学",
+    "lat": 36.6227,
+    "lon": 101.7441,
+    "type": "university",
+    "spot_id": 188,
+    "description": "青海大学，重点高校。",
+    "image": "web/assets/spots/uni/青海大学.svg"
+  },
+  {
+    "id": 5099,
+    "name": "中国科学技术大学",
+    "lat": 31.8322,
+    "lon": 117.2813,
+    "type": "university",
+    "spot_id": 189,
+    "description": "中国科学技术大学，重点高校。",
+    "image": "web/assets/spots/uni/中国科学技术大学.svg"
+  },
+  {
+    "id": 5100,
+    "name": "合肥工业大学",
+    "lat": 31.839,
+    "lon": 117.2967,
+    "type": "university",
+    "spot_id": 190,
+    "description": "合肥工业大学，重点高校。",
+    "image": "web/assets/spots/uni/合肥工业大学.svg"
+  },
+  {
+    "id": 5101,
+    "name": "南昌大学",
+    "lat": 28.678,
+    "lon": 115.8545,
+    "type": "university",
+    "spot_id": 191,
+    "description": "南昌大学，重点高校。",
+    "image": "web/assets/spots/uni/南昌大学.svg"
+  },
+  {
+    "id": 5102,
+    "name": "江西财经大学",
+    "lat": 28.6862,
+    "lon": 115.8288,
+    "type": "university",
+    "spot_id": 192,
+    "description": "江西财经大学，重点高校。",
+    "image": "web/assets/spots/uni/江西财经大学.svg"
+  },
+  {
+    "id": 5103,
+    "name": "华侨大学",
+    "lat": 24.8761,
+    "lon": 118.6167,
+    "type": "university",
+    "spot_id": 193,
+    "description": "华侨大学，重点高校。",
+    "image": "web/assets/spots/uni/华侨大学.svg"
+  },
+  {
+    "id": 5104,
+    "name": "河北工业大学",
+    "lat": 39.2367,
+    "lon": 117.0669,
+    "type": "university",
+    "spot_id": 194,
+    "description": "河北工业大学，重点高校。",
+    "image": "web/assets/spots/uni/河北工业大学.svg"
   }
 ]

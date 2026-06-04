@@ -46,22 +46,102 @@ const MAP_REGIONS = {
   wuhan: { center: [30.5928, 114.3055], zoom: 11 },
   chongqing: { center: [29.563, 106.5516], zoom: 10 }
 };
-const INDOOR_NODES = [
-  { id: "gate", name: "文昌院大门", floor: "1F" },
-  { id: "lobby", name: "前厅导览台", floor: "1F" },
-  { id: "elevator1", name: "一层电梯厅", floor: "1F" },
-  { id: "elevator2", name: "二层电梯厅", floor: "2F" },
-  { id: "gallery", name: "文物展厅", floor: "2F" },
-  { id: "room", name: "数字展映室", floor: "2F" }
-];
-const INDOOR_EDGES = [
-  ["gate", "lobby", 18],
-  ["lobby", "elevator1", 12],
-  ["elevator1", "elevator2", 8],
-  ["elevator2", "gallery", 16],
-  ["gallery", "room", 14],
-  ["lobby", "gallery", 42]
-];
+const INDOOR_BUILDINGS = {
+  "wenchang": {
+    name: "文昌院",
+    nodes: [
+      { id: "wc_gate", name: "文昌院大门", floor: "1F" },
+      { id: "wc_lobby", name: "前厅导览台", floor: "1F" },
+      { id: "wc_ele1", name: "一层电梯厅", floor: "1F" },
+      { id: "wc_ele2", name: "二层电梯厅", floor: "2F" },
+      { id: "wc_gallery", name: "文物展厅", floor: "2F" },
+      { id: "wc_room", name: "数字展映室", floor: "2F" }
+    ],
+    edges: [
+      ["wc_gate", "wc_lobby", 18], ["wc_lobby", "wc_ele1", 12],
+      ["wc_ele1", "wc_ele2", 8], ["wc_ele2", "wc_gallery", 16],
+      ["wc_gallery", "wc_room", 14], ["wc_lobby", "wc_gallery", 42]
+    ]
+  },
+  "foxiangge": {
+    name: "佛香阁建筑群",
+    nodes: [
+      { id: "fxg_entrance", name: "佛香阁入口", floor: "1F" },
+      { id: "fxg_hall", name: "佛香阁大殿", floor: "1F" },
+      { id: "fxg_platform", name: "观景平台", floor: "2F" },
+      { id: "fxg_bell", name: "钟楼", floor: "1F" },
+      { id: "fxg_drum", name: "鼓楼", floor: "1F" },
+      { id: "fxg_corridor", name: "回廊", floor: "2F" }
+    ],
+    edges: [
+      ["fxg_entrance", "fxg_hall", 22], ["fxg_entrance", "fxg_bell", 15],
+      ["fxg_entrance", "fxg_drum", 15], ["fxg_hall", "fxg_platform", 12],
+      ["fxg_platform", "fxg_corridor", 18], ["fxg_bell", "fxg_corridor", 20],
+      ["fxg_drum", "fxg_corridor", 20], ["fxg_hall", "fxg_bell", 8]
+    ]
+  },
+  "renshoudian": {
+    name: "仁寿殿区",
+    nodes: [
+      { id: "rsd_gate", name: "仁寿门", floor: "1F" },
+      { id: "rsd_main", name: "仁寿殿正殿", floor: "1F" },
+      { id: "rsd_east", name: "东配殿", floor: "1F" },
+      { id: "rsd_west", name: "西配殿", floor: "1F" },
+      { id: "rsd_rear", name: "后殿", floor: "1F" }
+    ],
+    edges: [
+      ["rsd_gate", "rsd_main", 20], ["rsd_main", "rsd_east", 10],
+      ["rsd_main", "rsd_west", 10], ["rsd_main", "rsd_rear", 14],
+      ["rsd_east", "rsd_rear", 12], ["rsd_west", "rsd_rear", 12]
+    ]
+  },
+  "paiyundian": {
+    name: "排云殿区",
+    nodes: [
+      { id: "pyd_gate", name: "排云门", floor: "1F" },
+      { id: "pyd_hall", name: "排云殿正殿", floor: "1F" },
+      { id: "pyd_east_wing", name: "东廊房", floor: "1F" },
+      { id: "pyd_west_wing", name: "西廊房", floor: "1F" },
+      { id: "pyd_dehua", name: "德晖殿", floor: "2F" }
+    ],
+    edges: [
+      ["pyd_gate", "pyd_hall", 24], ["pyd_hall", "pyd_east_wing", 8],
+      ["pyd_hall", "pyd_west_wing", 8], ["pyd_hall", "pyd_dehua", 16],
+      ["pyd_east_wing", "pyd_dehua", 14], ["pyd_west_wing", "pyd_dehua", 14]
+    ]
+  },
+  "museum": {
+    name: "颐和园博物馆",
+    nodes: [
+      { id: "mus_entrance", name: "博物馆入口", floor: "1F" },
+      { id: "mus_lobby", name: "大堂", floor: "1F" },
+      { id: "mus_hall_a", name: "常设展厅A", floor: "1F" },
+      { id: "mus_hall_b", name: "常设展厅B", floor: "1F" },
+      { id: "mus_hall_c", name: "特展厅", floor: "2F" },
+      { id: "mus_storage", name: "文物库房", floor: "B1" }
+    ],
+    edges: [
+      ["mus_entrance", "mus_lobby", 10], ["mus_lobby", "mus_hall_a", 14],
+      ["mus_lobby", "mus_hall_b", 14], ["mus_lobby", "mus_hall_c", 12],
+      ["mus_hall_a", "mus_hall_b", 8], ["mus_hall_c", "mus_storage", 20]
+    ]
+  },
+  "deheyuan": {
+    name: "德和园区",
+    nodes: [
+      { id: "dhy_gate", name: "德和园大门", floor: "1F" },
+      { id: "dhy_stage", name: "大戏楼", floor: "1F" },
+      { id: "dhy_view", name: "观戏厅", floor: "1F" },
+      { id: "dhy_backstage", name: "后台化妆间", floor: "2F" },
+      { id: "dhy_garden", name: "园中庭院", floor: "1F" }
+    ],
+    edges: [
+      ["dhy_gate", "dhy_stage", 16], ["dhy_stage", "dhy_view", 8],
+      ["dhy_stage", "dhy_backstage", 10], ["dhy_view", "dhy_garden", 14],
+      ["dhy_gate", "dhy_garden", 12], ["dhy_backstage", "dhy_garden", 18]
+    ]
+  }
+};
 
 const state = {
   map: null,
@@ -526,40 +606,66 @@ function fillCuisineSelect() {
 }
 
 function fillIndoorSelects() {
+  const buildingSelect = byId("indoorBuildingSelect");
+  buildingSelect.innerHTML = "";
+  Object.entries(INDOOR_BUILDINGS).forEach(([key, bld]) => {
+    const option = document.createElement("option");
+    option.value = key;
+    option.textContent = bld.name;
+    buildingSelect.appendChild(option);
+  });
+  buildingSelect.addEventListener("change", () => {
+    const bld = INDOOR_BUILDINGS[buildingSelect.value];
+    if (!bld) return;
+    fillIndoorNodeSelects(bld);
+  });
+  // Initialize with first building
+  const firstBld = INDOOR_BUILDINGS[Object.keys(INDOOR_BUILDINGS)[0]];
+  fillIndoorNodeSelects(firstBld);
+}
+
+function fillIndoorNodeSelects(bld) {
   const start = byId("indoorStartSelect");
   const goal = byId("indoorGoalSelect");
   [start, goal].forEach((select) => {
     select.innerHTML = "";
-    INDOOR_NODES.forEach((node) => {
+    bld.nodes.forEach((node) => {
       const option = document.createElement("option");
       option.value = node.id;
       option.textContent = `${node.name} · ${node.floor}`;
       select.appendChild(option);
     });
   });
-  start.value = "gate";
-  goal.value = "room";
+  start.value = bld.nodes[0].id;
+  goal.value = bld.nodes[bld.nodes.length - 1].id;
+}
+
+function currentIndoorBuilding() {
+  const select = byId("indoorBuildingSelect");
+  const key = select ? select.value : Object.keys(INDOOR_BUILDINGS)[0];
+  return INDOOR_BUILDINGS[key] || INDOOR_BUILDINGS[Object.keys(INDOOR_BUILDINGS)[0]];
 }
 
 function runIndoorRoute() {
+  const bld = currentIndoorBuilding();
   const start = byId("indoorStartSelect").value;
   const goal = byId("indoorGoalSelect").value;
-  const result = shortestIndoorPath(start, goal);
+  const result = shortestIndoorPath(start, goal, bld.nodes, bld.edges);
   const container = byId("indoorRouteResult");
   if (!result) {
     container.textContent = "当前室内节点不可达。";
     return;
   }
   container.innerHTML = `
-    <strong>室内最短路径 ${result.distance}m</strong>
+    <strong>${bld.name} 室内最短路径 ${result.distance}m</strong>
     <ol>${result.path.map((id) => {
-      const node = INDOOR_NODES.find((item) => item.id === id);
+      const node = bld.nodes.find((item) => item.id === id);
       return `<li>${escapeHtml(node.name)} · ${escapeHtml(node.floor)}</li>`;
     }).join("")}</ol>
   `;
 }
 
-function shortestIndoorPath(start, goal) {
+function shortestIndoorPath(start, goal, nodes, edges) {
   const dist = new Map([[start, 0]]);
   const prev = new Map();
   const queue = [{ node: start, distance: 0 }];
@@ -568,7 +674,7 @@ function shortestIndoorPath(start, goal) {
     const current = queue.shift();
     if (current.distance !== dist.get(current.node)) continue;
     if (current.node === goal) break;
-    indoorNeighbors(current.node).forEach(([next, weight]) => {
+    indoorNeighbors(current.node, edges).forEach(([next, weight]) => {
       const nextDistance = current.distance + weight;
       if (!dist.has(next) || nextDistance < dist.get(next)) {
         dist.set(next, nextDistance);
@@ -587,9 +693,9 @@ function shortestIndoorPath(start, goal) {
   return { path, distance: dist.get(goal) };
 }
 
-function indoorNeighbors(id) {
+function indoorNeighbors(id, edges) {
   const neighbors = [];
-  INDOOR_EDGES.forEach(([from, to, weight]) => {
+  edges.forEach(([from, to, weight]) => {
     if (from === id) neighbors.push([to, weight]);
     if (to === id) neighbors.push([from, weight]);
   });
