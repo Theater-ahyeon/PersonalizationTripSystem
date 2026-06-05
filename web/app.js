@@ -166,6 +166,8 @@ async function loadOptionalJson(paths, fallback) {
 }
 
 function bindStaticControls() {
+  document.addEventListener("click", handleGlobalResultAction);
+
   document.querySelectorAll("[data-view]").forEach((trigger) => {
     trigger.addEventListener("click", (event) => {
       event.preventDefault();
@@ -265,6 +267,40 @@ function handleDiarySearchClick() {
 function handleFoodRecommendClick() {
   recommendFood();
   focusResultRegion("foodResults");
+}
+
+function handleGlobalResultAction(event) {
+  const focusButton = event.target.closest("[data-focus-node]");
+  if (focusButton) {
+    event.preventDefault();
+    handleFocusNodeAction(Number(focusButton.dataset.focusNode));
+    return;
+  }
+
+  const routeButton = event.target.closest("[data-route-goal]");
+  if (routeButton) {
+    event.preventDefault();
+    handleRouteGoalAction(Number(routeButton.dataset.routeGoal));
+  }
+}
+
+function handleFocusNodeAction(nodeId) {
+  if (!Number.isFinite(nodeId)) return;
+  switchView("routeView");
+  setTimeout(() => {
+    focusNode(nodeId);
+    byId("map")?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, 120);
+}
+
+function handleRouteGoalAction(nodeId) {
+  if (!Number.isFinite(nodeId)) return;
+  byId("goalSelect").value = String(nodeId);
+  switchView("routeView");
+  setTimeout(() => {
+    runShortestPath();
+    byId("map")?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, 120);
 }
 
 function focusResultRegion(id) {
@@ -661,7 +697,10 @@ function openModal(id) {
   const modal = byId(id);
   if (!modal) return;
   if (id === "accountModal") {
-    if (modal.hidden) byId("accountFeedback").textContent = "";
+    if (modal.hidden) {
+      byId("accountFeedback").textContent = "";
+      switchAccountTab("overviewPanel");
+    }
     renderAccountModal();
   }
   modal.hidden = false;
@@ -689,7 +728,7 @@ function normalizeUser(user, local = Boolean(user.local)) {
     ...user,
     id,
     name,
-    email: user.email || `traveler${id}@vagabond.local`,
+    email: isGeneratedLocalEmail(user.email) ? "" : (user.email || ""),
     password: user.password || "demo123",
     home_city: user.home_city || user.city || "北京",
     bio: user.bio || "喜欢把路线、风景和当天的心情一起记录下来。",
@@ -738,30 +777,38 @@ function logoutCurrentUser() {
   const fallback = state.users.find((user) => !user.local) || state.users[0];
   if (fallback) setCurrentUser(fallback.id);
   byId("accountFeedback").textContent = "已退出当前账号。";
-  switchAccountTab("loginPanel");
+  switchAccountTab("switchPanel");
 }
 
 function renderAccountModal() {
   fillLoginUserSelect();
   const user = selectedUser();
+  const email = publicUserEmail(user);
   const profileColor = user?.avatar_color || "#0058bc";
   byId("accountAvatarLarge").textContent = avatarText(user);
   byId("accountAvatarLarge").style.background = profileColor;
   byId("accountNameDisplay").textContent = user?.name || "未登录";
-  byId("accountEmailDisplay").textContent = user ? `${user.email || "未绑定邮箱"} · ${user.home_city || "未填写城市"}` : "登录后，资料会保存在当前浏览器。";
+  byId("accountEmailDisplay").textContent = user ? `${email || "未绑定邮箱"} · ${user.home_city || "未填写城市"}` : "登录后，资料会保存在当前浏览器。";
   byId("accountBioDisplay").textContent = user?.bio || "把这里当成你的旅行首页。";
   byId("accountIdBadge").textContent = user ? `ID ${user.id}` : "ID --";
   byId("profileIdInput").value = user?.id || "";
   byId("profileNameInput").value = user?.name || "";
-  byId("profileEmailInput").value = user?.email || "";
+  byId("profileEmailInput").value = email;
   byId("profileHomeCityInput").value = user?.home_city || "";
   byId("profileBioInput").value = user?.bio || "";
   byId("profileTagsInput").value = (user?.preference_tags || []).join(", ");
   byId("profileRouteModeSelect").value = user?.route_mode || "walk";
   byId("profileAvatarColorSelect").value = user?.avatar_color || "#0058bc";
-  byId("profileDiaryCount").textContent = state.diaries.filter((diary) => Number(diary.user_id) === Number(user?.id)).length;
-  byId("profileCommentCount").textContent = state.diaries.reduce((total, diary) => total + (diary.comments || []).filter((comment) => Number(comment.user_id) === Number(user?.id)).length, 0);
-  byId("profilePreferenceCount").textContent = (user?.preference_tags || []).length;
+  const diaryCount = state.diaries.filter((diary) => Number(diary.user_id) === Number(user?.id)).length;
+  const commentCount = state.diaries.reduce((total, diary) => total + (diary.comments || []).filter((comment) => Number(comment.user_id) === Number(user?.id)).length, 0);
+  const preferenceCount = (user?.preference_tags || []).length;
+  byId("profileDiaryCount").textContent = diaryCount;
+  byId("profileCommentCount").textContent = commentCount;
+  byId("profilePreferenceCount").textContent = preferenceCount;
+  byId("overviewAccountLabel").textContent = user?.name || "游客账号";
+  byId("overviewAccountMeta").textContent = email ? `${email} · ID ${user?.id || "-"}` : `ID ${user?.id || "-"} · 当前浏览器本地保存`;
+  byId("overviewPreferenceLabel").textContent = (user?.preference_tags || []).slice(0, 3).join(" / ") || "暂未设置";
+  byId("overviewRouteLabel").textContent = user?.route_mode === "bike" ? "骑行" : "步行";
   if (!byId("loginIdentifierInput").value) fillLoginCredentialsFromSelect();
 }
 
@@ -781,6 +828,15 @@ function avatarText(user) {
   return String(user?.name || "游").trim().slice(0, 1) || "游";
 }
 
+function publicUserEmail(user) {
+  const email = String(user?.email || "").trim();
+  return isGeneratedLocalEmail(email) ? "" : email;
+}
+
+function isGeneratedLocalEmail(email) {
+  return /@vagabond\.local$/i.test(String(email || ""));
+}
+
 function switchAccountTab(panelId) {
   document.querySelectorAll("[data-account-tab]").forEach((button) => {
     button.classList.toggle("active", button.dataset.accountTab === panelId);
@@ -794,7 +850,7 @@ function fillLoginCredentialsFromSelect() {
   const selectedId = Number(byId("loginUserSelect")?.value);
   const user = state.users.find((item) => Number(item.id) === selectedId);
   if (!user) return;
-  byId("loginIdentifierInput").value = user.email || String(user.id);
+  byId("loginIdentifierInput").value = publicUserEmail(user) || String(user.id);
   byId("loginPasswordInput").value = "";
 }
 
@@ -814,7 +870,7 @@ function loginWithCredentials() {
   }
   setCurrentUser(user.id);
   byId("accountFeedback").textContent = `欢迎回来，${user.name}。`;
-  switchAccountTab("profilePanel");
+  switchAccountTab("overviewPanel");
 }
 
 function quickLoginSelectedUser() {
@@ -823,7 +879,7 @@ function quickLoginSelectedUser() {
   if (!user) return;
   setCurrentUser(user.id);
   byId("accountFeedback").textContent = `已切换到 ${user.name}。`;
-  switchAccountTab("profilePanel");
+  switchAccountTab("overviewPanel");
 }
 
 function createLocalAccount() {
@@ -874,7 +930,7 @@ function createLocalAccount() {
   byId("signupHomeCityInput").value = "";
   byId("signupTagsInput").value = "";
   byId("accountFeedback").textContent = "新账号已创建并登录。";
-  switchAccountTab("profilePanel");
+  switchAccountTab("overviewPanel");
   renderAccountModal();
 }
 
@@ -1309,13 +1365,14 @@ function recommendSpots() {
   const user = selectedUser();
   const category = byId("recommendCategory").value;
   const sortMode = byId("recommendSort").value;
-  const preferenceInput = byId("preferenceInput").value.trim().toLowerCase();
-  const keywordInput = byId("recommendKeyword").value.trim().toLowerCase();
+  const preferenceInput = byId("preferenceInput").value.trim();
+  const keywordInput = byId("recommendKeyword").value.trim();
   const keyword = keywordInput;
   const preference = `${preferenceInput} ${(user?.preference_tags || []).join(" ")}`.trim();
   const categoryPreference = (user?.preferred_categories || []).join(" ");
+  const activeIntent = `${preferenceInput} ${keywordInput}`.trim();
   const maxHeat = Math.max(...state.spots.map((spot) => Number(spot.heat) || 0), 1);
-  const lshCandidates = getLshCandidates(state.spotLshIndex, keyword || preference || categoryPreference, state.spots, 36);
+  const lshCandidates = getLshCandidates(state.spotLshIndex, activeIntent || preference || categoryPreference, state.spots, 36);
   let scopedCandidates = lshCandidates
     .filter((spot) => (!category || spot.category === category) && matchesSpotSearch(spot, keyword));
   if (scopedCandidates.length < 10) {
@@ -1323,10 +1380,14 @@ function recommendSpots() {
   }
   const scored = scopedCandidates
     .map((spot) => {
-      const match = spotInterestScore(spot, preference, categoryPreference);
+      const profileMatch = spotInterestScore(spot, preference, categoryPreference);
+      const intentMatch = activeIntent ? recommendationIntentScore(spot, activeIntent) : profileMatch;
+      const match = activeIntent ? clamp(0.78 * intentMatch + 0.22 * profileMatch, 0.18, 0.99) : profileMatch;
       const ratingScore = Number(spot.rating) / 5;
       const heatScore = Number(spot.heat) / maxHeat;
-      const score = 0.34 * ratingScore + 0.28 * heatScore + 0.38 * match;
+      const score = activeIntent
+        ? 0.58 * match + 0.22 * ratingScore + 0.14 * heatScore + 0.06 * profileMatch
+        : 0.34 * ratingScore + 0.28 * heatScore + 0.38 * match;
       return { spot, score, match, ratingScore, heatScore, sortScore: spotSortScore(sortMode, score, ratingScore, heatScore, match) };
     });
   const results = topK(scored, 10, (item) => item.sortScore);
@@ -1337,6 +1398,7 @@ function recommendSpots() {
     lshBucketCount: lshCandidates.length,
     category,
     keyword,
+    intent: activeIntent,
     sortMode
   });
 }
@@ -1346,7 +1408,7 @@ function renderRecommendationCards(results, meta = {}) {
   const note = byId("recommendAlgorithmNote");
   if (note) {
     note.innerHTML = `
-      <span>${meta.keyword ? "已按关键词筛选" : "已按你的偏好筛选"}</span>
+      <span>${meta.intent ? `已按「${escapeHtml(meta.intent)}」重新推荐` : "已按你的偏好筛选"}</span>
       <span>${meta.category ? `当前分类 ${escapeHtml(meta.category)}` : "全部分类"}</span>
       <span>${recommendSortLabel(meta.sortMode)}</span>
       <span>显示 ${results.length} 个更适合出发的地点</span>
@@ -2354,15 +2416,9 @@ function setMultiStopChecked(id, checked) {
 }
 
 function bindResultButtons(container) {
-  container.querySelectorAll("[data-focus-node]").forEach((button) => {
-    button.addEventListener("click", () => focusNode(Number(button.dataset.focusNode)));
-  });
-  container.querySelectorAll("[data-route-goal]").forEach((button) => {
-    button.addEventListener("click", () => {
-      byId("goalSelect").value = button.dataset.routeGoal;
-      switchView("routeView");
-      runShortestPath();
-    });
+  if (!container) return;
+  container.querySelectorAll("[data-focus-node], [data-route-goal]").forEach((button) => {
+    button.dataset.actionReady = "true";
   });
 }
 
@@ -2608,6 +2664,24 @@ function spotInterestScore(spot, preference, categoryPreference = "") {
     : 0.48;
 
   return clamp(0.72 * directScore + 0.18 * categoryScore + 0.1 * categoryEcho, 0.24, 0.98);
+}
+
+function recommendationIntentScore(spot, query) {
+  const tokens = tokenizeInterest(query);
+  if (!tokens.length) return 0.55;
+  const text = spotSearchText(spot);
+  const exactHits = tokens.filter((token) => text.includes(token)).length;
+  const partialHits = tokens.filter((token) =>
+    String(spot.name || "").toLowerCase().includes(token)
+    || String(spot.category || "").toLowerCase().includes(token)
+    || String(spot.tags || "").toLowerCase().includes(token)
+  ).length;
+  const relatedHits = tokens.reduce((total, token) => total + relatedInterestHit(token, text), 0);
+  const exactRatio = exactHits / tokens.length;
+  const partialRatio = partialHits / tokens.length;
+  const relatedRatio = relatedHits / tokens.length;
+  const texture = stableFraction(`${spot.id}|${query}`) * 0.04;
+  return clamp(0.2 + 0.46 * exactRatio + 0.22 * partialRatio + 0.12 * relatedRatio + texture, 0.16, 0.99);
 }
 
 function tagScore(text, preference) {

@@ -6,7 +6,7 @@
   <title>Vagabond 个性化旅行</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23f9f9ff'/%3E%3Ccircle cx='22' cy='32' r='10' fill='%230058bc'/%3E%3Cpath d='M28 42c9-18 18-25 30-26-5 15-15 27-30 26Z' fill='%23008733'/%3E%3Ccircle cx='46' cy='19' r='6' fill='%23fd8b00'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="./vendor/leaflet.css">
-  <link rel="stylesheet" href="./styles.css?v=20260605-account-full">
+  <link rel="stylesheet" href="./styles.css?v=20260605-account-center">
 </head>
 <body>
   <div class="app-shell">
@@ -287,7 +287,7 @@
       <div class="footer-inner">
         <div class="footer-brand">
           <strong>Vagabond</strong>
-          <p>© 2024 Vagabond Travel. Boundless Possibility.</p>
+          <p>© 2026 Vagabond Travel. Boundless Possibility.</p>
         </div>
         <nav class="footer-links" aria-label="辅助链接">
           <a href="#recommendView" data-view="recommendView">About Us</a>
@@ -359,80 +359,122 @@
           <span><strong id="profileCommentCount">0</strong>评论</span>
           <span><strong id="profilePreferenceCount">0</strong>偏好</span>
         </div>
-        <nav class="account-tabbar" aria-label="账号功能">
-          <button class="account-tab-button active" type="button" data-account-tab="loginPanel">登录</button>
-          <button class="account-tab-button" type="button" data-account-tab="signupPanel">注册</button>
-          <button class="account-tab-button" type="button" data-account-tab="profilePanel">资料</button>
-          <button class="account-tab-button" type="button" data-account-tab="securityPanel">安全</button>
-          <button class="account-tab-button" type="button" data-account-tab="preferencePanel">偏好</button>
-        </nav>
-        <div class="account-panels">
-          <section id="loginPanel" class="account-section active" data-account-panel>
-            <h3>登录已有账号</h3>
-            <div class="form-grid">
-              <label>账号 ID 或邮箱<input id="loginIdentifierInput" type="text" autocomplete="username" placeholder="例如：1001 或 you@example.com"></label>
-              <label>密码<input id="loginPasswordInput" type="password" autocomplete="current-password" placeholder="演示账号默认 demo123"></label>
-            </div>
-            <label>快速选择演示账号<select id="loginUserSelect"></select></label>
-            <div class="account-actions">
-              <button id="loginButton" class="primary-button" type="button">登录</button>
-              <button id="quickLoginButton" class="secondary-button" type="button">使用所选账号</button>
-            </div>
-          </section>
-          <section id="signupPanel" class="account-section" data-account-panel>
-            <h3>创建新账号</h3>
-            <div class="form-grid">
-              <label>昵称<input id="signupNameInput" type="text" autocomplete="name" placeholder="例如：颐和园探索者"></label>
-              <label>邮箱<input id="signupEmailInput" type="email" autocomplete="email" placeholder="new@example.com"></label>
-            </div>
-            <div class="form-grid">
-              <label>密码<input id="signupPasswordInput" type="password" autocomplete="new-password" placeholder="至少 6 位"></label>
-              <label>所在城市<input id="signupHomeCityInput" type="text" placeholder="例如：北京"></label>
-            </div>
-            <label>偏好标签<input id="signupTagsInput" type="text" placeholder="建筑, 湖景, 美食"></label>
-            <button id="signupButton" class="secondary-button full" type="button">创建并登录</button>
-          </section>
-          <section id="profilePanel" class="account-section" data-account-panel>
-            <h3>编辑资料</h3>
-            <div class="form-grid">
-              <label>账号 ID<input id="profileIdInput" type="number" min="1" step="1" placeholder="可改为容易记住的数字 ID"></label>
-              <label>昵称<input id="profileNameInput" type="text" placeholder="例如：湖边漫游者"></label>
-            </div>
-            <div class="form-grid">
-              <label>邮箱<input id="profileEmailInput" type="email" placeholder="you@example.com"></label>
-              <label>所在城市<input id="profileHomeCityInput" type="text" placeholder="例如：北京"></label>
-            </div>
-            <label>个人简介<textarea id="profileBioInput" rows="3" placeholder="写一句你喜欢怎样旅行"></textarea></label>
-            <div class="account-actions">
-              <button id="saveProfileButton" class="primary-button" type="button">保存资料</button>
-              <button id="logoutButton" class="secondary-button" type="button">退出登录</button>
-            </div>
-          </section>
-          <section id="securityPanel" class="account-section" data-account-panel>
-            <h3>账号安全</h3>
-            <div class="form-grid">
-              <label>当前密码<input id="currentPasswordInput" type="password" autocomplete="current-password" placeholder="演示账号默认 demo123"></label>
-              <label>新密码<input id="newPasswordInput" type="password" autocomplete="new-password" placeholder="至少 6 位"></label>
-            </div>
-            <button id="savePasswordButton" class="primary-button" type="button">更新密码</button>
-          </section>
-          <section id="preferencePanel" class="account-section" data-account-panel>
-            <h3>旅行偏好</h3>
-            <label>旅行偏好<input id="profileTagsInput" type="text" placeholder="湖景, 摄影, 安静"></label>
-            <div class="form-grid">
-              <label>默认出行方式<select id="profileRouteModeSelect">
-                <option value="walk">步行</option>
-                <option value="bike">骑行</option>
-              </select></label>
-              <label>头像颜色<select id="profileAvatarColorSelect">
-                <option value="#0058bc">海湾蓝</option>
-                <option value="#008733">庭院绿</option>
-                <option value="#fd8b00">日落橙</option>
-                <option value="#7c3aed">花影紫</option>
-              </select></label>
-            </div>
-            <button id="savePreferenceButton" class="primary-button full" type="button">保存偏好</button>
-          </section>
+        <div class="account-workspace">
+          <aside class="account-sidebar" aria-label="账号中心导航">
+            <button class="account-tab-button active" type="button" data-account-tab="overviewPanel">概览</button>
+            <button class="account-tab-button" type="button" data-account-tab="profilePanel">个人资料</button>
+            <button class="account-tab-button" type="button" data-account-tab="preferencePanel">旅行偏好</button>
+            <button class="account-tab-button" type="button" data-account-tab="securityPanel">账号安全</button>
+            <button class="account-tab-button" type="button" data-account-tab="switchPanel">切换账号</button>
+          </aside>
+          <div class="account-panels">
+            <section id="overviewPanel" class="account-section active" data-account-panel>
+              <div class="account-section-title">
+                <h3>账号概览</h3>
+                <p>你的旅行资料会影响推荐、路线默认方式和日记互动身份。</p>
+              </div>
+              <div class="account-overview-grid">
+                <article>
+                  <span>账号身份</span>
+                  <strong id="overviewAccountLabel">游客账号</strong>
+                  <p id="overviewAccountMeta">当前浏览器本地保存</p>
+                </article>
+                <article>
+                  <span>默认偏好</span>
+                  <strong id="overviewPreferenceLabel">历史 / 建筑</strong>
+                  <p>用于探索页的个性化排序</p>
+                </article>
+                <article>
+                  <span>出行方式</span>
+                  <strong id="overviewRouteLabel">步行</strong>
+                  <p>路线页会优先使用该方式</p>
+                </article>
+              </div>
+              <div class="account-actions">
+                <button class="primary-button" type="button" data-account-tab="profilePanel">编辑资料</button>
+                <button class="secondary-button" type="button" data-account-tab="preferencePanel">调整偏好</button>
+              </div>
+            </section>
+            <section id="profilePanel" class="account-section" data-account-panel>
+              <div class="account-section-title">
+                <h3>个人资料</h3>
+                <p>这些信息会展示在你的日记、评论和个人化推荐中。</p>
+              </div>
+              <div class="form-grid">
+                <label>账号 ID<input id="profileIdInput" type="number" min="1" step="1" placeholder="可改为容易记住的数字 ID"></label>
+                <label>昵称<input id="profileNameInput" type="text" placeholder="例如：湖边漫游者"></label>
+              </div>
+              <div class="form-grid">
+                <label>邮箱<input id="profileEmailInput" type="email" placeholder="you@example.com"></label>
+                <label>所在城市<input id="profileHomeCityInput" type="text" placeholder="例如：北京"></label>
+              </div>
+              <label>个人简介<textarea id="profileBioInput" rows="3" placeholder="写一句你喜欢怎样旅行"></textarea></label>
+              <div class="account-actions">
+                <button id="saveProfileButton" class="primary-button" type="button">保存资料</button>
+                <button id="logoutButton" class="secondary-button" type="button">退出登录</button>
+              </div>
+            </section>
+            <section id="preferencePanel" class="account-section" data-account-panel>
+              <div class="account-section-title">
+                <h3>旅行偏好</h3>
+                <p>系统会根据这些偏好调整目的地、日记和路线体验。</p>
+              </div>
+              <label>兴趣标签<input id="profileTagsInput" type="text" placeholder="湖景, 摄影, 安静"></label>
+              <div class="form-grid">
+                <label>默认出行方式<select id="profileRouteModeSelect">
+                  <option value="walk">步行</option>
+                  <option value="bike">骑行</option>
+                </select></label>
+                <label>头像颜色<select id="profileAvatarColorSelect">
+                  <option value="#0058bc">海湾蓝</option>
+                  <option value="#008733">庭院绿</option>
+                  <option value="#fd8b00">日落橙</option>
+                  <option value="#7c3aed">花影紫</option>
+                </select></label>
+              </div>
+              <button id="savePreferenceButton" class="primary-button full" type="button">保存偏好</button>
+            </section>
+            <section id="securityPanel" class="account-section" data-account-panel>
+              <div class="account-section-title">
+                <h3>账号安全</h3>
+                <p>这是本地演示账号密码，只保存在当前浏览器中。</p>
+              </div>
+              <div class="form-grid">
+                <label>当前密码<input id="currentPasswordInput" type="password" autocomplete="current-password" placeholder="演示账号默认 demo123"></label>
+                <label>新密码<input id="newPasswordInput" type="password" autocomplete="new-password" placeholder="至少 6 位"></label>
+              </div>
+              <button id="savePasswordButton" class="primary-button" type="button">更新密码</button>
+            </section>
+            <section id="switchPanel" class="account-section" data-account-panel>
+              <div class="account-section-title">
+                <h3>切换或创建账号</h3>
+                <p>可以使用演示账号快速切换，也可以创建一个新的本地旅行身份。</p>
+              </div>
+              <div class="account-auth-grid">
+                <div class="account-auth-card">
+                  <h4>登录已有账号</h4>
+                  <label>账号 ID 或邮箱<input id="loginIdentifierInput" type="text" autocomplete="username" placeholder="例如：1 或 you@example.com"></label>
+                  <label>密码<input id="loginPasswordInput" type="password" autocomplete="current-password" placeholder="演示账号默认 demo123"></label>
+                  <label>快速选择演示账号<select id="loginUserSelect"></select></label>
+                  <div class="account-actions">
+                    <button id="loginButton" class="primary-button" type="button">登录</button>
+                    <button id="quickLoginButton" class="secondary-button" type="button">使用所选账号</button>
+                  </div>
+                </div>
+                <div class="account-auth-card">
+                  <h4>创建新账号</h4>
+                  <label>昵称<input id="signupNameInput" type="text" autocomplete="name" placeholder="例如：颐和园探索者"></label>
+                  <label>邮箱<input id="signupEmailInput" type="email" autocomplete="email" placeholder="new@example.com"></label>
+                  <div class="form-grid">
+                    <label>密码<input id="signupPasswordInput" type="password" autocomplete="new-password" placeholder="至少 6 位"></label>
+                    <label>城市<input id="signupHomeCityInput" type="text" placeholder="例如：北京"></label>
+                  </div>
+                  <label>偏好标签<input id="signupTagsInput" type="text" placeholder="建筑, 湖景, 美食"></label>
+                  <button id="signupButton" class="secondary-button full" type="button">创建并登录</button>
+                </div>
+              </div>
+            </section>
+          </div>
         </div>
         <p id="accountFeedback" class="modal-feedback" aria-live="polite"></p>
       </article>
@@ -494,6 +536,6 @@
   </div>
 
   <script src="./vendor/leaflet.js"></script>
-  <script src="./app.js?v=20260605-account-full"></script>
+  <script src="./app.js?v=20260605-account-center"></script>
 </body>
 </html>
