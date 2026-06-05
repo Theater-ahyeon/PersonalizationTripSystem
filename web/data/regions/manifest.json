@@ -6,13 +6,13 @@
     "status": "active",
     "map_region": "dataset",
     "description": "颐和园旅行区域，包含可选目的地、真实路网过渡节点、设施、美食和日记数据。",
-    "nodes_path": "../cpp/data/osm_nodes.json",
-    "edges_path": "../cpp/data/osm_edges.json",
-    "spots_path": "../cpp/data/spots.json",
-    "roads_path": "../cpp/data/roads.json",
-    "facilities_path": "../cpp/data/facilities.json",
-    "restaurants_path": "../cpp/data/restaurants.json",
-    "diaries_path": "../cpp/data/diaries/index.json"
+    "nodes_path": "./data/osm_nodes.json",
+    "edges_path": "./data/osm_edges.json",
+    "spots_path": "./data/spots.json",
+    "roads_path": "./data/roads.json",
+    "facilities_path": "./data/facilities.json",
+    "restaurants_path": "./data/restaurants.json",
+    "diaries_path": "./data/diaries/index.json"
   },
   {
     "id": "tsinghua_campus",
@@ -21,12 +21,12 @@
     "status": "active",
     "map_region": "dataset",
     "description": "清华大学旅行区域，包含可选目的地、真实路网过渡节点、设施、美食和日记数据。",
-    "nodes_path": "../cpp/data/regions/tsinghua_campus/osm_nodes.json",
-    "edges_path": "../cpp/data/regions/tsinghua_campus/osm_edges.json",
-    "spots_path": "../cpp/data/regions/tsinghua_campus/spots.json",
-    "roads_path": "../cpp/data/regions/tsinghua_campus/roads.json",
-    "facilities_path": "../cpp/data/regions/tsinghua_campus/facilities.json",
-    "restaurants_path": "../cpp/data/regions/tsinghua_campus/restaurants.json",
-    "diaries_path": "../cpp/data/regions/tsinghua_campus/diaries/index.json"
+    "nodes_path": "./data/regions/tsinghua_campus/osm_nodes.json",
+    "edges_path": "./data/regions/tsinghua_campus/osm_edges.json",
+    "spots_path": "./data/regions/tsinghua_campus/spots.json",
+    "roads_path": "./data/regions/tsinghua_campus/roads.json",
+    "facilities_path": "./data/regions/tsinghua_campus/facilities.json",
+    "restaurants_path": "./data/regions/tsinghua_campus/restaurants.json",
+    "diaries_path": "./data/regions/tsinghua_campus/diaries/index.json"
   }
 ]

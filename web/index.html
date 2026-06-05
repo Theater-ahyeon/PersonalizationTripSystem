@@ -3,22 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>个性化旅游系统</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23f9f9ff'/%3E%3Cpath d='M22 10c-8 0-14 6.2-14 14 0 11 14 25 14 25s14-14 14-25c0-7.8-6-14-14-14Z' fill='%230058bc'/%3E%3Ccircle cx='22' cy='24' r='5' fill='%23f9f9ff'/%3E%3Cpath d='M29 44c6-4 12-5 18-3 4 1 8 0 10-3' fill='none' stroke='%23008733' stroke-width='5' stroke-linecap='round'/%3E%3Ccircle cx='50' cy='34' r='5' fill='%23fd8b00'/%3E%3C/svg%3E">
+  <title>岚迹 LumaTrail</title>
+  <link rel="icon" href="./assets/brand/lumatrail-logo.svg">
   <link rel="stylesheet" href="./vendor/leaflet.css">
-  <link rel="stylesheet" href="./styles.css?v=20260605-account-center">
+  <link rel="stylesheet" href="./styles.css?v=20260606-brand-lumatrail">
 </head>
 <body>
   <div class="app-shell">
     <header class="top-nav">
-      <a class="brand-mark" href="#recommendView" data-view="recommendView" aria-label="返回探索页">
-        <svg class="brand-logo" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
-          <path d="M22 10c-8 0-14 6.2-14 14 0 11 14 25 14 25s14-14 14-25c0-7.8-6-14-14-14Z" fill="currentColor"></path>
-          <circle cx="22" cy="24" r="5" fill="#f9f9ff"></circle>
-          <path d="M29 44c6-4 12-5 18-3 4 1 8 0 10-3" fill="none" stroke="#008733" stroke-width="5" stroke-linecap="round"></path>
-          <circle cx="50" cy="34" r="5" fill="#fd8b00"></circle>
-        </svg>
-        <span>个性化旅游系统</span>
+      <a class="brand-mark" href="#recommendView" data-view="recommendView" aria-label="返回岚迹首页">
+        <img class="brand-logo" src="./assets/brand/lumatrail-logo.svg" alt="" aria-hidden="true">
+        <span class="brand-wordmark">
+          <strong>岚迹</strong>
+          <small>LumaTrail</small>
+        </span>
       </a>
       <nav id="tourTabs" class="tour-tabs" aria-label="功能切换">
         <button type="button" class="tab-button active" data-view="recommendView">探索</button>
@@ -133,6 +131,7 @@
 
             <div class="planner-card glass-panel">
               <p class="eyebrow">室内导航策略</p>
+              <label>室内建筑<select id="indoorBuildingSelect"></select></label>
               <div class="form-grid">
                 <label>室内起点<select id="indoorStartSelect"></select></label>
                 <label>室内终点<select id="indoorGoalSelect"></select></label>
@@ -297,8 +296,8 @@
     <footer class="site-footer" aria-label="全局页脚">
       <div class="footer-inner">
         <div class="footer-brand">
-          <strong>个性化旅游系统</strong>
-          <p>© 2026 个性化旅游系统. 按你的方式探索下一段旅程。</p>
+          <strong>岚迹 LumaTrail</strong>
+          <p>© 2026 岚迹 LumaTrail. 按你的方式探索下一段旅程。</p>
         </div>
         <nav class="footer-links" aria-label="辅助链接">
           <a href="#recommendView" data-view="recommendView">About Us</a>
@@ -353,7 +352,7 @@
         <div class="modal-heading account-heading">
           <div>
             <p class="eyebrow">Account</p>
-            <h2 id="accountModalTitle">我的个性化旅游系统</h2>
+            <h2 id="accountModalTitle">我的岚迹账号</h2>
           </div>
           <span id="accountIdBadge" class="account-id-badge">ID --</span>
         </div>
@@ -541,6 +540,18 @@
       </article>
     </div>
 
+    <div id="indoorMapModal" class="app-modal indoor-map-modal" hidden role="dialog" aria-modal="true" aria-labelledby="indoorMapModalTitle">
+      <div class="app-modal-backdrop" data-modal-close="indoorMapModal"></div>
+      <article class="app-modal-card indoor-map-modal-card" tabindex="-1">
+        <button class="diary-modal-close" type="button" data-modal-close="indoorMapModal" aria-label="关闭室内路径图">×</button>
+        <div class="modal-heading">
+          <p class="eyebrow">Indoor Navigation</p>
+          <h2 id="indoorMapModalTitle">室内路径图</h2>
+        </div>
+        <div id="indoorMapModalBody"></div>
+      </article>
+    </div>
+
     <nav class="mobile-nav" aria-label="移动端功能切换">
       <button type="button" class="mobile-tab active" data-view="recommendView">探索</button>
       <button type="button" class="mobile-tab" data-view="routeView">路线</button>
@@ -551,6 +562,6 @@
   </div>
 
   <script src="./vendor/leaflet.js"></script>
-  <script src="./app.js?v=20260605-account-center"></script>
+  <script src="./app.js?v=20260606-indoor-navigation"></script>
 </body>
 </html>

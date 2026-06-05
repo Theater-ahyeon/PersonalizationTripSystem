@@ -67,6 +67,200 @@ const INDOOR_EDGES = [
   ["gallery", "room", 14],
   ["lobby", "gallery", 42]
 ];
+const INDOOR_BUILDINGS = [
+  {
+    id: "wenchang",
+    name: "颐和园文昌院",
+    source: "课程模拟楼层图，可替换为授权平面图",
+    nodes: [
+      { id: "gate", name: "文昌院大门", floor: "1F", x: 14, y: 72 },
+      { id: "lobby", name: "前厅导览台", floor: "1F", x: 34, y: 72 },
+      { id: "elevator1", name: "一层电梯厅", floor: "1F", x: 52, y: 72 },
+      { id: "elevator2", name: "二层电梯厅", floor: "2F", x: 52, y: 30 },
+      { id: "gallery", name: "文物展厅", floor: "2F", x: 72, y: 30 },
+      { id: "room", name: "数字展映室", floor: "2F", x: 88, y: 30 }
+    ],
+    edges: [
+      ["gate", "lobby", 18],
+      ["lobby", "elevator1", 12],
+      ["elevator1", "elevator2", 8],
+      ["elevator2", "gallery", 16],
+      ["gallery", "room", 14],
+      ["lobby", "gallery", 42]
+    ]
+  },
+  {
+    id: "tsinghua_hospital",
+    name: "清华大学校医院",
+    source: "参考清华大学校医院公开导览信息抽象为演示节点",
+    nodes: [
+      { id: "entrance", name: "入口大厅", floor: "1F", x: 12, y: 70 },
+      { id: "registration", name: "挂号收费", floor: "1F", x: 30, y: 70 },
+      { id: "pharmacy", name: "药房", floor: "1F", x: 50, y: 70 },
+      { id: "stairs1", name: "楼梯/电梯", floor: "1F", x: 68, y: 70 },
+      { id: "stairs2", name: "二层楼梯/电梯", floor: "2F", x: 68, y: 32 },
+      { id: "clinic", name: "内科诊室", floor: "2F", x: 48, y: 32 },
+      { id: "emergency", name: "急诊观察", floor: "1F", x: 86, y: 70 }
+    ],
+    edges: [
+      ["entrance", "registration", 14],
+      ["registration", "pharmacy", 16],
+      ["pharmacy", "stairs1", 12],
+      ["stairs1", "stairs2", 9],
+      ["stairs2", "clinic", 18],
+      ["stairs1", "emergency", 16],
+      ["registration", "clinic", 45]
+    ]
+  },
+  {
+    id: "tsinghua_service",
+    name: "清华学生服务中心",
+    source: "课程模拟服务中心室内节点，可替换为公开授权图",
+    nodes: [
+      { id: "door", name: "南侧入口", floor: "1F", x: 14, y: 68 },
+      { id: "desk", name: "咨询台", floor: "1F", x: 34, y: 68 },
+      { id: "cards", name: "校园卡窗口", floor: "1F", x: 56, y: 68 },
+      { id: "stairs1", name: "楼梯", floor: "1F", x: 76, y: 68 },
+      { id: "stairs2", name: "二层楼梯", floor: "2F", x: 76, y: 30 },
+      { id: "visa", name: "事务办理区", floor: "2F", x: 50, y: 30 },
+      { id: "meeting", name: "自助打印区", floor: "2F", x: 26, y: 30 }
+    ],
+    edges: [
+      ["door", "desk", 12],
+      ["desk", "cards", 18],
+      ["cards", "stairs1", 14],
+      ["stairs1", "stairs2", 8],
+      ["stairs2", "visa", 15],
+      ["visa", "meeting", 20],
+      ["desk", "meeting", 48]
+    ]
+  }
+];
+
+INDOOR_BUILDINGS.splice(0, INDOOR_BUILDINGS.length, ...[
+  {
+    id: "wenchang",
+    name: "颐和园文昌院展厅",
+    source: "基于景区文昌院展陈空间进行抽象建模，后续可替换为授权平面图。",
+    sourceUrl: "https://www.summerpalace-china.com/",
+    floors: ["2F", "1F"],
+    nodes: [
+      { id: "gate", name: "文昌院入口", floor: "1F", x: 12, y: 74 },
+      { id: "lobby", name: "序厅导览台", floor: "1F", x: 30, y: 74 },
+      { id: "court", name: "中庭过厅", floor: "1F", x: 48, y: 74 },
+      { id: "stair1", name: "楼梯/电梯", floor: "1F", x: 66, y: 74 },
+      { id: "stair2", name: "二层连廊", floor: "2F", x: 66, y: 30 },
+      { id: "gallery", name: "文物展厅", floor: "2F", x: 46, y: 30 },
+      { id: "digital", name: "数字展映室", floor: "2F", x: 24, y: 30 },
+      { id: "exit", name: "庭院出口", floor: "1F", x: 86, y: 74 }
+    ],
+    edges: [
+      ["gate", "lobby", 18],
+      ["lobby", "court", 14],
+      ["court", "stair1", 12],
+      ["stair1", "stair2", 9],
+      ["stair2", "gallery", 16],
+      ["gallery", "digital", 14],
+      ["stair1", "exit", 15],
+      ["lobby", "gallery", 44]
+    ]
+  },
+  {
+    id: "tsinghua_hospital",
+    name: "清华大学医院",
+    source: "参考清华大学医院官方医院示意图建模，含南楼与北楼功能分布。",
+    sourceUrl: "https://xyy.tsinghua.edu.cn/yugs/yysyt.htm",
+    floors: ["4F", "3F", "2F", "1F"],
+    nodes: [
+      { id: "entrance", name: "入口服务台", floor: "1F", x: 10, y: 82 },
+      { id: "registration", name: "挂号收费处", floor: "1F", x: 28, y: 82 },
+      { id: "pharmacy", name: "药剂科/药房", floor: "1F", x: 48, y: 82 },
+      { id: "emergency", name: "内外科急诊", floor: "1F", x: 70, y: 82 },
+      { id: "lift1", name: "南楼电梯厅", floor: "1F", x: 88, y: 82 },
+      { id: "lift2", name: "二层电梯厅", floor: "2F", x: 88, y: 58 },
+      { id: "clinic", name: "内科门诊", floor: "2F", x: 64, y: 58 },
+      { id: "tcm", name: "中医科/理疗室", floor: "2F", x: 42, y: 58 },
+      { id: "health", name: "健康管理中心", floor: "2F", x: 20, y: 58 },
+      { id: "exam", name: "体检中心", floor: "3F", x: 34, y: 34 },
+      { id: "eye", name: "眼科/耳鼻喉", floor: "4F", x: 60, y: 14 },
+      { id: "surgery", name: "手术室", floor: "4F", x: 82, y: 14 }
+    ],
+    edges: [
+      ["entrance", "registration", 14],
+      ["registration", "pharmacy", 16],
+      ["pharmacy", "emergency", 18],
+      ["emergency", "lift1", 14],
+      ["lift1", "lift2", 10],
+      ["lift2", "clinic", 16],
+      ["clinic", "tcm", 18],
+      ["tcm", "health", 16],
+      ["lift2", "exam", 28],
+      ["exam", "eye", 30],
+      ["eye", "surgery", 14],
+      ["registration", "clinic", 48]
+    ]
+  },
+  {
+    id: "pku_library",
+    name: "北京大学图书馆",
+    source: "参考北京大学图书馆官方平面图与馆藏空间分布建模，覆盖咨询、借还、自助、阅览与楼层交通。",
+    sourceUrl: "https://www.lib.pku.edu.cn/3wxbz/index.htm",
+    floors: ["4F", "3F", "2F", "1F"],
+    nodes: [
+      { id: "east_gate", name: "东门咨询台", floor: "1F", x: 12, y: 82 },
+      { id: "service", name: "借还总台", floor: "1F", x: 30, y: 82 },
+      { id: "cards", name: "证卡处", floor: "1F", x: 48, y: 82 },
+      { id: "lift1", name: "电梯/楼梯", floor: "1F", x: 68, y: 82 },
+      { id: "lift2", name: "二层交通核", floor: "2F", x: 68, y: 58 },
+      { id: "science", name: "自然科学阅览厅", floor: "2F", x: 42, y: 58 },
+      { id: "philosophy", name: "哲学阅览室", floor: "2F", x: 20, y: 58 },
+      { id: "lift3", name: "三层交通核", floor: "3F", x: 68, y: 34 },
+      { id: "literature", name: "文学阅览室", floor: "3F", x: 42, y: 34 },
+      { id: "lift4", name: "四层交通核", floor: "4F", x: 68, y: 14 },
+      { id: "rare_books", name: "古籍阅览区", floor: "4F", x: 38, y: 14 }
+    ],
+    edges: [
+      ["east_gate", "service", 12],
+      ["service", "cards", 12],
+      ["cards", "lift1", 14],
+      ["lift1", "lift2", 9],
+      ["lift2", "science", 16],
+      ["science", "philosophy", 18],
+      ["lift2", "lift3", 9],
+      ["lift3", "literature", 16],
+      ["lift3", "lift4", 9],
+      ["lift4", "rare_books", 18],
+      ["service", "science", 42]
+    ]
+  },
+  {
+    id: "palace_route",
+    name: "故宫博物院开放区",
+    source: "参考故宫博物院官方导览页的开放区域与自南向北参观动线建模，用于景点室内/半室内路线演示。",
+    sourceUrl: "https://www.dpm.org.cn/Visit.html",
+    floors: ["北区", "中区", "南区"],
+    nodes: [
+      { id: "wumen", name: "午门入口", floor: "南区", x: 12, y: 82 },
+      { id: "taihemen", name: "太和门", floor: "南区", x: 30, y: 82 },
+      { id: "taihedian", name: "太和殿", floor: "中区", x: 45, y: 58 },
+      { id: "zhonghe", name: "中和殿", floor: "中区", x: 60, y: 58 },
+      { id: "baohe", name: "保和殿", floor: "中区", x: 75, y: 58 },
+      { id: "qianqing", name: "乾清宫", floor: "北区", x: 56, y: 28 },
+      { id: "jiaotai", name: "交泰殿", floor: "北区", x: 72, y: 28 },
+      { id: "shenwu", name: "神武门出口", floor: "北区", x: 88, y: 28 }
+    ],
+    edges: [
+      ["wumen", "taihemen", 18],
+      ["taihemen", "taihedian", 20],
+      ["taihedian", "zhonghe", 12],
+      ["zhonghe", "baohe", 12],
+      ["baohe", "qianqing", 22],
+      ["qianqing", "jiaotai", 12],
+      ["jiaotai", "shenwu", 14],
+      ["taihemen", "qianqing", 56]
+    ]
+  }
+]);
 
 const state = {
   map: null,
@@ -122,6 +316,9 @@ const state = {
     videoUrl: ""
   }
 };
+
+let lastIndoorRoute = null;
+let lastIndoorBuilding = null;
 
 const byId = (id) => document.getElementById(id);
 
@@ -207,6 +404,19 @@ function bindStaticControls() {
     const keyword = event.target.value.trim().toLowerCase();
     const filtered = selectableRouteNodes().filter((node) => textOfNode(node).toLowerCase().includes(keyword));
     renderNodeList(filtered);
+    const exactNode = findNodeBySearch(keyword, filtered);
+    if (exactNode) focusNode(exactNode.id);
+  });
+  byId("nodeSearchInput").addEventListener("keydown", (event) => {
+    if (event.key !== "Enter") return;
+    const keyword = event.target.value.trim().toLowerCase();
+    const candidates = selectableRouteNodes().filter((node) => textOfNode(node).toLowerCase().includes(keyword));
+    const target = findNodeBySearch(keyword, candidates) || candidates[0];
+    if (target) {
+      event.preventDefault();
+      renderNodeList(candidates);
+      focusNode(target.id);
+    }
   });
   byId("regionPackSelect").addEventListener("change", (event) => {
     selectRegionPack(event.target.value);
@@ -240,6 +450,7 @@ function bindStaticControls() {
   byId("routeButton").addEventListener("click", runShortestPath);
   byId("routeStrategySelect").addEventListener("change", (event) => {
     state.routeStrategy = event.target.value;
+    runShortestPath();
   });
   const clearRouteButton = byId("clearRouteButton");
   if (clearRouteButton) clearRouteButton.addEventListener("click", clearRouteLayers);
@@ -275,6 +486,10 @@ function bindStaticControls() {
   byId("diarySearchMode").addEventListener("change", renderDiaryListFromFirstPage);
   byId("diaryCreateButton").addEventListener("click", createDiaryEntry);
   byId("diaryExportButton").addEventListener("click", exportDiariesJson);
+  byId("indoorBuildingSelect")?.addEventListener("change", () => {
+    fillIndoorSelects();
+    renderIndoorBuildingIntro();
+  });
   byId("indoorRouteButton").addEventListener("click", runIndoorRoute);
   byId("aigcDraftButton").addEventListener("click", generateDiaryDraft);
   byId("aigcAnimationButton").addEventListener("click", () => generateAigcStoryboard({ useApi: true }));
@@ -324,6 +539,13 @@ function handleGlobalResultAction(event) {
   if (routeButton) {
     event.preventDefault();
     handleRouteGoalAction(Number(routeButton.dataset.routeGoal));
+    return;
+  }
+
+  const indoorExpandButton = event.target.closest("[data-indoor-expand]");
+  if (indoorExpandButton) {
+    event.preventDefault();
+    openIndoorMapModal();
   }
 }
 
@@ -1239,40 +1461,156 @@ function fillCuisineSelect() {
 }
 
 function fillIndoorSelects() {
+  const buildingSelect = byId("indoorBuildingSelect");
+  if (buildingSelect && !buildingSelect.options.length) {
+    INDOOR_BUILDINGS.forEach((building) => {
+      const option = document.createElement("option");
+      option.value = building.id;
+      option.textContent = building.name;
+      buildingSelect.appendChild(option);
+    });
+  }
+  const building = currentIndoorBuilding();
   const start = byId("indoorStartSelect");
   const goal = byId("indoorGoalSelect");
   [start, goal].forEach((select) => {
     select.innerHTML = "";
-    INDOOR_NODES.forEach((node) => {
+    building.nodes.forEach((node) => {
       const option = document.createElement("option");
       option.value = node.id;
       option.textContent = `${node.name} · ${node.floor}`;
       select.appendChild(option);
     });
   });
-  start.value = "gate";
-  goal.value = "room";
+  start.value = building.nodes[0]?.id || "";
+  goal.value = building.nodes[building.nodes.length - 1]?.id || "";
+  renderIndoorBuildingIntro();
 }
 
 function runIndoorRoute() {
+  const building = currentIndoorBuilding();
   const start = byId("indoorStartSelect").value;
   const goal = byId("indoorGoalSelect").value;
-  const result = shortestIndoorPath(start, goal);
+  const result = shortestIndoorPath(start, goal, building);
   const container = byId("indoorRouteResult");
   if (!result) {
+    lastIndoorRoute = null;
+    lastIndoorBuilding = building;
     container.textContent = "当前室内节点不可达。";
     return;
   }
+  lastIndoorRoute = result;
+  lastIndoorBuilding = building;
   container.innerHTML = `
     <strong>室内最短路径 ${result.distance}m</strong>
+    ${renderIndoorSource(building, true)}
+    ${renderIndoorPlan(result, building)}
+    <button class="link-button indoor-expand-button" type="button" data-indoor-expand>展开平面图</button>
     <ol>${result.path.map((id) => {
-      const node = INDOOR_NODES.find((item) => item.id === id);
+      const node = building.nodes.find((item) => item.id === id);
       return `<li>${escapeHtml(node.name)} · ${escapeHtml(node.floor)}</li>`;
     }).join("")}</ol>
   `;
 }
 
-function shortestIndoorPath(start, goal) {
+function currentIndoorBuilding() {
+  const selected = byId("indoorBuildingSelect")?.value;
+  return INDOOR_BUILDINGS.find((building) => building.id === selected) || INDOOR_BUILDINGS[0];
+}
+
+function renderIndoorBuildingIntro() {
+  const container = byId("indoorRouteResult");
+  if (!container) return;
+  const building = currentIndoorBuilding();
+  lastIndoorRoute = { path: [], distance: 0 };
+  lastIndoorBuilding = building;
+  container.innerHTML = `
+    <strong>${escapeHtml(building.name)}</strong>
+    ${renderIndoorSource(building, false)}
+    ${renderIndoorPlan({ path: [], distance: 0 }, building)}
+    <button class="link-button indoor-expand-button" type="button" data-indoor-expand>展开平面图</button>
+  `;
+}
+
+function renderIndoorPlan(result, building = currentIndoorBuilding()) {
+  const pathSet = new Set(result.path);
+  const nodes = building.nodes.map((node) => {
+    const left = Number(node.x || 50);
+    const top = Number(node.y || 50);
+    const active = pathSet.has(node.id) ? " active" : "";
+    return `<span class="indoor-node${active}" style="left:${left}%;top:${top}%">${escapeHtml(node.name)}</span>`;
+  }).join("");
+  const lines = building.edges.map(([from, to]) => {
+    const a = building.nodes.find((node) => node.id === from);
+    const b = building.nodes.find((node) => node.id === to);
+    if (!a || !b) return "";
+    const active = pathHasIndoorEdge(result.path, from, to) ? " active" : "";
+    const x1 = Number(a.x || 0);
+    const y1 = Number(a.y || 0);
+    const x2 = Number(b.x || 0);
+    const y2 = Number(b.y || 0);
+    const length = Math.hypot(x2 - x1, y2 - y1);
+    const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+    return `<span class="indoor-edge${active}" style="left:${x1}%;top:${y1}%;width:${length}%;transform:rotate(${angle}deg)"></span>`;
+  }).join("");
+  const floors = (building.floors && building.floors.length ? building.floors : unique(building.nodes.map((node) => node.floor))).slice(0, 5);
+  const floorLabels = floors.map((floor, index) => {
+    const top = floors.length === 1 ? 50 : 10 + (index * (80 / (floors.length - 1)));
+    return `<span class="indoor-floor" style="top:${top}%">${escapeHtml(floor)}</span>`;
+  }).join("");
+  return `
+    <div class="indoor-plan indoor-plan-preview" aria-label="indoor route plan" data-indoor-expand>
+      ${floorLabels}
+      ${lines}
+      ${nodes}
+    </div>
+  `;
+}
+
+function renderIndoorSource(building, includeBuildingName = false) {
+  const sourceText = `${includeBuildingName ? `${building.name} · ` : ""}${building.source || ""}`;
+  const sourceLink = building.sourceUrl
+    ? `<a href="${escapeHtml(building.sourceUrl)}" target="_blank" rel="noreferrer">公开导览来源</a>`
+    : "";
+  return `<p class="indoor-source">${escapeHtml(sourceText)}${sourceLink ? ` · ${sourceLink}` : ""}</p>`;
+}
+
+function openIndoorMapModal() {
+  const building = lastIndoorBuilding || currentIndoorBuilding();
+  const result = lastIndoorRoute || { path: [], distance: 0 };
+  const modalTitle = byId("indoorMapModalTitle");
+  const modalBody = byId("indoorMapModalBody");
+  if (!modalTitle || !modalBody) return;
+  modalTitle.textContent = `${building.name} 室内路径图`;
+  const pathList = result.path?.length
+    ? `<ol class="indoor-modal-steps">${result.path.map((id) => {
+      const node = building.nodes.find((item) => item.id === id);
+      return node ? `<li>${escapeHtml(node.name)} · ${escapeHtml(node.floor)}</li>` : "";
+    }).join("")}</ol>`
+    : `<p class="indoor-modal-empty">请选择起点和终点生成路径，或先查看该建筑的室内节点分布。</p>`;
+  modalBody.innerHTML = `
+    ${renderIndoorSource(building, true)}
+    <div class="indoor-modal-layout">
+      ${renderIndoorPlan(result, building)}
+      <div class="indoor-modal-side">
+        <strong>${result.path?.length ? `路径距离 ${result.distance}m` : "可交互室内图"}</strong>
+        ${pathList}
+      </div>
+    </div>
+  `;
+  openModal("indoorMapModal");
+}
+
+function pathHasIndoorEdge(path, from, to) {
+  for (let index = 1; index < path.length; index += 1) {
+    const a = path[index - 1];
+    const b = path[index];
+    if ((a === from && b === to) || (a === to && b === from)) return true;
+  }
+  return false;
+}
+
+function shortestIndoorPath(start, goal, building = currentIndoorBuilding()) {
   const dist = new Map([[start, 0]]);
   const prev = new Map();
   const queue = [{ node: start, distance: 0 }];
@@ -1281,7 +1619,7 @@ function shortestIndoorPath(start, goal) {
     const current = queue.shift();
     if (current.distance !== dist.get(current.node)) continue;
     if (current.node === goal) break;
-    indoorNeighbors(current.node).forEach(([next, weight]) => {
+    indoorNeighbors(current.node, building).forEach(([next, weight]) => {
       const nextDistance = current.distance + weight;
       if (!dist.has(next) || nextDistance < dist.get(next)) {
         dist.set(next, nextDistance);
@@ -1300,9 +1638,9 @@ function shortestIndoorPath(start, goal) {
   return { path, distance: dist.get(goal) };
 }
 
-function indoorNeighbors(id) {
+function indoorNeighbors(id, building = currentIndoorBuilding()) {
   const neighbors = [];
-  INDOOR_EDGES.forEach(([from, to, weight]) => {
+  building.edges.forEach(([from, to, weight]) => {
     if (from === id) neighbors.push([to, weight]);
     if (to === id) neighbors.push([from, weight]);
   });
@@ -1338,6 +1676,13 @@ function renderNodeList(nodes) {
     item.append(left, add);
     container.appendChild(item);
   });
+}
+
+function findNodeBySearch(keyword, candidates = selectableRouteNodes()) {
+  if (!keyword || keyword.length < 2) return null;
+  const normalized = keyword.toLowerCase();
+  return candidates.find((node) => String(node.name || "").toLowerCase() === normalized)
+    || candidates.find((node) => String(node.name || "").toLowerCase().includes(normalized));
 }
 
 function renderMultiStopList() {
@@ -1526,6 +1871,7 @@ function renderRecommendationCards(results, meta = {}) {
     const match = clamp(item.match || 0, 0, 1);
     const card = document.createElement("article");
     card.className = "result-card";
+    if (shouldTightCropRecommendation(item.spot, image)) card.classList.add("tight-image-crop");
     card.innerHTML = `
       <div class="card-image-wrap">
         <img class="card-media" src="${image}" alt="${escapeHtml(item.spot.name)}">
@@ -1552,6 +1898,11 @@ function renderRecommendationCards(results, meta = {}) {
     container.appendChild(card);
   });
   bindResultButtons(container);
+}
+
+function shouldTightCropRecommendation(spot, image) {
+  const text = `${spot?.name || ""} ${spot?.category || ""} ${spot?.tags || ""} ${image || ""}`;
+  return /乐寿堂|Leshoutang|建筑|历史|室内/.test(text);
 }
 
 function spotReviewSnippets(spot) {
@@ -1741,7 +2092,10 @@ function shortestPath(start, goal, mode, strategy = state.routeStrategy) {
     });
   }
 
-  if (!dist.has(goal)) return null;
+  if (!dist.has(goal)) {
+    if (strategy === "congestion") return shortestPath(start, goal, mode, "time");
+    return null;
+  }
   const path = [];
   const segments = [];
   for (let node = goal; node !== undefined; node = prev.get(node)) {
@@ -1792,17 +2146,23 @@ function neighborsOf(id, mode, strategy = state.routeStrategy) {
 
 function edgeSupportsMode(edge, mode, strategy = state.routeStrategy) {
   if (strategy === "transport") return ["both", "walk", "bike"].includes(edge.mode);
+  if (strategy === "congestion" && edgeCongestion(edge) < 0.72) return false;
   return edge.mode === "both" || edge.mode === mode;
 }
 
 function edgeWeight(edge, mode, strategy = state.routeStrategy) {
   const distance = Number(edge.distance) || 0;
   const travelMode = strategy === "transport" && (edge.mode === "bike" || edge.mode === "both") ? "bike" : mode;
-  const idealSpeed = travelMode === "bike" ? 12 : 4.5;
-  const congestion = strategy === "time" ? 1 : edgeCongestion(edge);
+  const speedFactor = 0.55 + stableFraction(`${edge.road_name || ""}:${edge.from}:${edge.to}:speed`) * 1.1;
+  const idealSpeed = (travelMode === "bike" ? 12 : 4.5) * speedFactor;
+  const congestion = edgeCongestion(edge);
   const realSpeed = Math.max(1, idealSpeed * congestion);
   const minutes = distance / (realSpeed * 1000 / 60);
-  const cost = strategy === "distance" ? distance : minutes;
+  const comfortPenalty = (1 - congestion) * 20 + (travelMode === "bike" ? 0.35 : 0);
+  let cost = distance;
+  if (strategy === "time") cost = minutes;
+  if (strategy === "congestion") cost = minutes + comfortPenalty;
+  if (strategy === "transport") cost = minutes + (travelMode === "bike" ? 0 : 0.65);
   return { cost, distance, minutes, congestion, travelMode };
 }
 
@@ -2519,13 +2879,34 @@ function renderAigcPanel({ title, hint, bodyHtml = "", storyboard = null, videoU
   const videoHtml = videoUrl
     ? `<div class="aigc-video-wrap"><video class="aigc-video-player" controls playsinline src="${escapeHtml(videoUrl)}"></video></div>`
     : "";
+  const motionHtml = storyboard?.frames?.length ? renderAigcMotion(storyboard) : "";
   container.innerHTML = `
     <strong>${escapeHtml(title || "AIGC 输出")}</strong>
     ${hint ? `<p class="storyboard-hint">${escapeHtml(hint)}</p>` : ""}
     ${storyboard?.summary ? `<p>${escapeHtml(storyboard.summary)}</p>` : ""}
+    ${motionHtml}
     ${framesHtml}
     ${videoHtml}
     ${bodyHtml}
+  `;
+}
+
+function renderAigcMotion(storyboard) {
+  const frames = (storyboard.frames || []).slice(0, 5);
+  const points = frames.map((frame, index) => {
+    const left = 10 + (index * (80 / Math.max(1, frames.length - 1)));
+    const top = index % 2 ? 62 : 34;
+    return `<span class="aigc-motion-point" style="left:${left}%;top:${top}%;animation-delay:${(index * 0.35).toFixed(2)}s">${index + 1}</span>`;
+  }).join("");
+  const labels = frames.map((frame, index) => `<li><span>${index + 1}</span>${escapeHtml(frame.title || `Frame ${index + 1}`)}</li>`).join("");
+  return `
+    <div class="aigc-motion-stage" aria-label="AIGC travel animation preview">
+      <div class="aigc-motion-map">
+        <span class="aigc-motion-line"></span>
+        ${points}
+      </div>
+      <ol class="aigc-motion-steps">${labels}</ol>
+    </div>
   `;
 }
 

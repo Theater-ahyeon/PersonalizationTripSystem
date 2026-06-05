@@ -237,7 +237,7 @@ foreach ($Needle in @("fixed-map-region", "regionPackSelect", "selectableRouteNo
     throw "Frontend missing expected dual-region hook: $Needle"
   }
 }
-foreach ($Needle in @("spotReviewSnippets", "spot-review-list", "diaryScopeSelect", "vagabond.diaryScope", "vagabond.aigcConfig", "loadAigcConfig", "callAigcStoryboardApi", "spotInvertedIndex", "diaryInvertedIndex", "routeConsistencyCheck")) {
+foreach ($Needle in @("spotReviewSnippets", "spot-review-list", "diaryScopeSelect", "vagabond.diaryScope", "vagabond.aigcConfig", "loadAigcConfig", "callAigcApi", "generateAigcStoryboard", "renderAigcMotion", "aigc-motion-stage", "spotInvertedIndex", "diaryInvertedIndex", "routeConsistencyCheck")) {
   if ($IndexText -notlike "*$Needle*" -and $AppText -notlike "*$Needle*" -and $StyleText -notlike "*$Needle*") {
     throw "Frontend missing planned optimization hook: $Needle"
   }
