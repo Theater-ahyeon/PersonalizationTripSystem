@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 namespace tripsystem {
 
@@ -48,9 +49,19 @@ struct Restaurant {
     int heat = 0;
 };
 
+struct User {
+    int id = 0;
+    std::string name;
+    std::vector<std::string> preferenceTags;
+    std::vector<std::string> preferredCategories;
+    std::string routeMode = "walk";
+    std::vector<int> historySpotIds;
+};
+
 struct Diary {
     int id = 0;
     std::string title;
+    int userId = 1;
     double rating = 0;
     int heat = 0;
     std::string createdAt;

@@ -7,7 +7,7 @@
     "type": "gate",
     "spot_id": 1,
     "description": "颐和园东宫门是游客入园和路线规划的主要起点，适合连接仁寿殿、德和园和昆明湖东堤。",
-    "image": "web/assets/spots/real/tower-buddhist-incense.jpg"
+    "image": "web/assets/spots/real/summer-palace/east-palace-gate.jpg"
   },
   {
     "id": 2,
@@ -17,7 +17,7 @@
     "type": "building",
     "spot_id": 2,
     "description": "仁寿殿是清代皇家园林的政务活动空间，适合文化类推荐和室内参观。",
-    "image": "web/assets/spots/real/tower-buddhist-incense.jpg"
+    "image": "web/assets/spots/real/summer-palace/renshou-hall.jpg"
   },
   {
     "id": 3,
@@ -27,7 +27,7 @@
     "type": "building",
     "spot_id": 3,
     "description": "德和园以戏楼和园林院落著称，适合对戏曲、建筑和历史感兴趣的游客。",
-    "image": "web/assets/spots/real/tower-buddhist-incense.jpg"
+    "image": "web/assets/spots/real/summer-palace/deheyuan.jpg"
   },
   {
     "id": 4,
@@ -37,7 +37,7 @@
     "type": "path",
     "spot_id": 4,
     "description": "长廊连接东部建筑群和万寿山前景区，是步行游览的核心通道。",
-    "image": "web/assets/spots/real/summer-long-corridor-commons.jpg"
+    "image": "web/assets/spots/real/summer-palace/long-corridor-east.jpg"
   },
   {
     "id": 5,
@@ -47,7 +47,7 @@
     "type": "junction",
     "spot_id": 5,
     "description": "排云门位于万寿山中轴线上，是前往佛香阁和昆明湖的重要节点。",
-    "image": "web/assets/spots/real/tower-buddhist-incense.jpg"
+    "image": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Summer%20Palace%20at%20Beijing%2015.jpg?width=1280"
   },
   {
     "id": 6,
@@ -67,7 +67,7 @@
     "type": "landmark",
     "spot_id": 7,
     "description": "石舫位于昆明湖北岸，适合拍照、休息和湖岸路线衔接。",
-    "image": "web/assets/spots/real/summer-long-corridor-commons.jpg"
+    "image": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Barco%20de%20marmol%20palacio%20verano%20pekin.jpg?width=1280"
   },
   {
     "id": 8,
@@ -77,7 +77,7 @@
     "type": "poi",
     "spot_id": 8,
     "description": "苏州街入口连接后湖商业街区，适合文化体验、美食和文创购物推荐。",
-    "image": "web/assets/spots/folk-street.svg"
+    "image": "web/assets/spots/real/summer-palace/suzhou-street.jpg"
   },
   {
     "id": 9,
@@ -87,7 +87,7 @@
     "type": "gate",
     "spot_id": 9,
     "description": "北宫门靠近地铁和外部服务区，适合作为返程或多点游览终点。",
-    "image": "web/assets/spots/visitor-center.svg"
+    "image": "web/assets/spots/real/summer-palace/north-palace-gate.jpg"
   },
   {
     "id": 10,
@@ -97,7 +97,7 @@
     "type": "waterfront",
     "spot_id": 10,
     "description": "后湖区域较安静，适合避开高峰人流的休闲路线。",
-    "image": "web/assets/spots/wetland.svg"
+    "image": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Summer%20Palace%20Beijing%20creek.jpg?width=1280"
   },
   {
     "id": 11,
@@ -107,7 +107,7 @@
     "type": "path",
     "spot_id": 11,
     "description": "昆明湖东堤视野开阔，适合拍照、骑行和湖岸观景。",
-    "image": "web/assets/spots/real/summer-seventeen-arch-bridge.jpg"
+    "image": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Kunming%20Lake%20of%20Summer%20Palace.JPG?width=1280"
   },
   {
     "id": 12,
@@ -117,7 +117,7 @@
     "type": "landmark",
     "spot_id": 12,
     "description": "知春亭临近昆明湖，是连接东宫门和湖岸景观的轻量停留点。",
-    "image": "web/assets/spots/wetland.svg"
+    "image": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Summer%20Palace%20Panorama.jpg?width=1280"
   },
   {
     "id": 13,
@@ -137,7 +137,7 @@
     "type": "island",
     "spot_id": 14,
     "description": "南湖岛通过十七孔桥与东堤相连，适合安排湖区环线。",
-    "image": "web/assets/spots/real/summer-seventeen-arch-bridge.jpg"
+    "image": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Yiheyuan%20South%20Lake%20Island.jpg?width=1280"
   },
   {
     "id": 15,
@@ -147,7 +147,7 @@
     "type": "path",
     "spot_id": 15,
     "description": "西堤横贯昆明湖西侧，适合长距离步行和低拥挤度路线。",
-    "image": "web/assets/spots/bamboo.svg"
+    "image": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Bridge%20at%20Summer%20Palace%20in%20Beijing.jpg?width=1280"
   },
   {
     "id": 16,
@@ -157,7 +157,7 @@
     "type": "garden",
     "spot_id": 16,
     "description": "谐趣园有江南园林风格，适合文化、建筑和安静游览偏好。",
-    "image": "web/assets/spots/bamboo.svg"
+    "image": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Summer%20Palace%20at%20Beijing%2020.jpg?width=1280"
   },
   {
     "id": 17,
@@ -167,7 +167,7 @@
     "type": "building",
     "spot_id": 17,
     "description": "乐寿堂靠近核心建筑群，适合和仁寿殿、德和园一起推荐。",
-    "image": "web/assets/spots/real/tower-buddhist-incense.jpg"
+    "image": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Beijing%20Summer%20Palace%20Leshoutang.jpg?width=1280"
   },
   {
     "id": 18,
@@ -177,7 +177,7 @@
     "type": "museum",
     "spot_id": 18,
     "description": "文昌院适合室内展陈、文物和雨天备选路线。",
-    "image": "web/assets/spots/bookstore.svg"
+    "image": "https://commons.wikimedia.org/wiki/Special:Redirect/file/20090530%20Beijing%20Summer%20Palace%208467.jpg?width=1280"
   },
   {
     "id": 19,
@@ -187,7 +187,7 @@
     "type": "square",
     "spot_id": 19,
     "description": "铜牛广场位于湖区东南侧，可作为十七孔桥和东堤之间的休息点。",
-    "image": "web/assets/spots/real/summer-seventeen-arch-bridge.jpg"
+    "image": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Bronze%20Ox%2C%20Summer%20Palace%2C%20Beijing%20%2824569731336%29.jpg?width=1280"
   },
   {
     "id": 20,
@@ -197,7 +197,7 @@
     "type": "gate",
     "spot_id": 20,
     "description": "新建宫门临近外部交通与服务设施，适合作为南侧入园起点。",
-    "image": "web/assets/spots/visitor-center.svg"
+    "image": "https://commons.wikimedia.org/wiki/Special:Redirect/file/New%20Gate%20of%20the%20Summer%20Palace%20%2820201222164832%29.jpg?width=1280"
   },
   {
     "id": 21,

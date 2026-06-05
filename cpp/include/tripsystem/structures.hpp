@@ -198,10 +198,8 @@ public:
         }
     }
 
-    std::vector<Road> neighbors(int id) const {
-        const auto* list = adj_.get(id);
-        if (!list) return {};
-        return *list;
+    const std::vector<Road>* neighbors(int id) const {
+        return adj_.get(id);
     }
 
     const Road* edgeBetween(int from, int to) const {

@@ -110,6 +110,32 @@ inline double jsonNumber(const std::string& obj, const std::string& key, double 
     return def;
 }
 
+inline std::vector<std::string> jsonStringArray(const std::string& obj, const std::string& key) {
+    std::regex arrayRe("\\\"" + key + "\\\"\\s*:\\s*\\[([^\\]]*)\\]");
+    std::smatch m;
+    if (!std::regex_search(obj, m, arrayRe)) return {};
+    std::vector<std::string> values;
+    std::string body = m[1];
+    std::regex itemRe("\\\"((?:\\\\.|[^\\\"])*)\\\"");
+    for (auto it = std::sregex_iterator(body.begin(), body.end(), itemRe); it != std::sregex_iterator(); ++it) {
+        values.push_back(unescapeJson((*it)[1]));
+    }
+    return values;
+}
+
+inline std::vector<int> jsonNumberArray(const std::string& obj, const std::string& key) {
+    std::regex arrayRe("\\\"" + key + "\\\"\\s*:\\s*\\[([^\\]]*)\\]");
+    std::smatch m;
+    if (!std::regex_search(obj, m, arrayRe)) return {};
+    std::vector<int> values;
+    std::string body = m[1];
+    std::regex itemRe("-?[0-9]+");
+    for (auto it = std::sregex_iterator(body.begin(), body.end(), itemRe); it != std::sregex_iterator(); ++it) {
+        values.push_back(std::stoi((*it).str()));
+    }
+    return values;
+}
+
 inline std::vector<int> kmpTable(const std::string& pat) {
     std::vector<int> next(pat.size(), 0);
     for (size_t i = 1, j = 0; i < pat.size(); ++i) {

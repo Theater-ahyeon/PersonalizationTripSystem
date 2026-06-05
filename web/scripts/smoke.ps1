@@ -145,8 +145,17 @@ function Assert-RegionDataPack {
     }
   }
 
+  foreach ($Poi in @($PoiNodes)) {
+    $PoiImage = [string]$Poi.image
+    if (-not $PoiImage) { throw "$Label POI must include an image: $($Poi.name)" }
+    if ($Label -like "*Summer Palace*" -and $PoiImage -like "*.svg") {
+      throw "$Label POI must use a real photo instead of SVG placeholder: $($Poi.name) -> $PoiImage"
+    }
+  }
+
   $ImagePaths = @($Nodes | ForEach-Object { $_.image } | Sort-Object -Unique)
   foreach ($ImagePath in $ImagePaths) {
+    if ([string]$ImagePath -match '^https?://') { continue }
     $LocalImage = Join-Path $RepoRoot $ImagePath
     if (-not (Test-Path -LiteralPath $LocalImage)) { throw "$Label references missing image asset: $ImagePath" }
   }
@@ -180,6 +189,40 @@ Assert-RegionDataPack -DataDir $WebData -Label "web/data Summer Palace" -Expecte
 Assert-RegionDataPack -DataDir (Join-Path $CppData "regions\tsinghua_campus") -Label "cpp/data Tsinghua" -ExpectedPoi 14 -ExpectedSpots 14 -MinEdges 800 -MinFacilities 8 -MinRestaurants 6 -MinDiaries 10 -Routes @(@(1, 4), @(14, 10), @(3, 8))
 Assert-RegionDataPack -DataDir (Join-Path $WebData "regions\tsinghua_campus") -Label "web/data Tsinghua" -ExpectedPoi 14 -ExpectedSpots 14 -MinEdges 800 -MinFacilities 8 -MinRestaurants 6 -MinDiaries 10 -Routes @(@(1, 4), @(14, 10), @(3, 8))
 
+$CppFacilitiesRaw = Get-Content -Raw -Encoding UTF8 -Path (Join-Path $CppData "facilities.json")
+$WebFacilitiesRaw = Get-Content -Raw -Encoding UTF8 -Path (Join-Path $WebData "facilities.json")
+if ($CppFacilitiesRaw -ne $WebFacilitiesRaw) { throw "Summer Palace facilities must be byte-identical between cpp/data and web/data." }
+$SummerFacilities = $CppFacilitiesRaw | ConvertFrom-Json
+$SummerSpots = Read-Json (Join-Path $CppData "spots.json")
+$SummerSpotIds = @{}
+foreach ($Spot in @($SummerSpots)) { $SummerSpotIds[[int]$Spot.id] = $true }
+$FacilityTypes = @{}
+$PlaceholderRecommendPoint = New-Text @(25512, 33616, 28857)
+$PlaceholderServiceFacility = New-Text @(26381, 21153, 35774, 26045)
+foreach ($Facility in @($SummerFacilities)) {
+  if (-not $SummerSpotIds.ContainsKey([int]$Facility.near_spot_id)) { throw "Facility references missing spot id: $($Facility.name)" }
+  if ([double]$Facility.lat -lt 39.9850 -or [double]$Facility.lat -gt 40.0120 -or [double]$Facility.lon -lt 116.2550 -or [double]$Facility.lon -gt 116.3050) {
+    throw "Facility outside Summer Palace bbox: $($Facility.name)"
+  }
+  if ([string]$Facility.name -match '\d+$') { throw "Facility name must not keep generated numeric suffix: $($Facility.name)" }
+  if ([string]$Facility.name -like "*$PlaceholderRecommendPoint*" -or [string]$Facility.name -like "*$PlaceholderServiceFacility*") { throw "Facility name must be realistic, found placeholder wording: $($Facility.name)" }
+  $FacilityTypes[[string]$Facility.type] = $true
+}
+$RequiredFacilityTypes = @(
+  (New-Text @(21355, 29983, 38388)),
+  (New-Text @(28216, 23458, 26381, 21153)),
+  (New-Text @(21806, 31080, 22788)),
+  (New-Text @(39278, 27700, 28857)),
+  (New-Text @(24613, 25937, 28857)),
+  (New-Text @(20572, 36710, 22330)),
+  (New-Text @(22320, 38081, 31449)),
+  (New-Text @(21830, 24215)),
+  (New-Text @(35266, 26223, 21488))
+)
+foreach ($RequiredType in $RequiredFacilityTypes) {
+  if (-not $FacilityTypes.ContainsKey($RequiredType)) { throw "Summer Palace facilities missing type: $RequiredType" }
+}
+
 $IndexText = Get-Content -Raw -Encoding UTF8 -Path $Index
 $StyleText = Get-Content -Raw -Encoding UTF8 -Path $Styles
 $AppText = Get-Content -Raw -Encoding UTF8 -Path $App
@@ -192,6 +235,11 @@ foreach ($Needle in @("mapRegionSelect", "datasetMapButton", "MAP_REGIONS", "全
 foreach ($Needle in @("fixed-map-region", "regionPackSelect", "selectableRouteNodes", "renderRoadNetwork", "route-summary", "diaries_path")) {
   if ($IndexText -notlike "*$Needle*" -and $AppText -notlike "*$Needle*" -and $StyleText -notlike "*$Needle*") {
     throw "Frontend missing expected dual-region hook: $Needle"
+  }
+}
+foreach ($Needle in @("spotReviewSnippets", "spot-review-list", "diaryScopeSelect", "vagabond.diaryScope", "vagabond.aigcConfig", "loadAigcConfig", "callAigcStoryboardApi", "spotInvertedIndex", "diaryInvertedIndex", "routeConsistencyCheck")) {
+  if ($IndexText -notlike "*$Needle*" -and $AppText -notlike "*$Needle*" -and $StyleText -notlike "*$Needle*") {
+    throw "Frontend missing planned optimization hook: $Needle"
   }
 }
 if ($IndexText -like "*数据集*" -or $IndexText -like "*数据包*") {

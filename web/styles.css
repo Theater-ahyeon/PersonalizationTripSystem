@@ -532,6 +532,32 @@ textarea {
   column-count: 3;
 }
 
+.diary-pager {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  min-height: 42px;
+  margin: 0 0 16px;
+  color: #414755;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.diary-pager:empty {
+  display: none;
+}
+
+.diary-pager .secondary-button {
+  min-height: 36px;
+  padding: 8px 14px;
+}
+
+.diary-pager .secondary-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
 .diary-card-media {
   width: 100%;
   aspect-ratio: 4 / 3;
@@ -3433,5 +3459,69 @@ textarea {
 
   .account-section {
     min-height: 0;
+  }
+}
+
+/* Optimization pass: recommendation reviews and roomier route planning layout. */
+.spot-review-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.spot-review {
+  margin: 0;
+  padding: 10px 12px;
+  border-left: 3px solid #7aa7ff;
+  background: rgba(232, 240, 255, 0.72);
+  border-radius: 6px;
+}
+
+.spot-review span {
+  color: #0058bc;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.spot-review p {
+  margin: 4px 0;
+  color: #263245;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.spot-review cite {
+  color: #647085;
+  font-size: 12px;
+  font-style: normal;
+}
+
+.route-shell {
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 400px);
+}
+
+.route-sidebar {
+  padding: 24px;
+}
+
+.route-sidebar h1 {
+  font-size: 26px;
+  line-height: 1.18;
+}
+
+@media (max-width: 1020px) {
+  .route-shell {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+
+  .route-sidebar {
+    border-left: 0;
+    border-top: 1px solid rgba(193, 198, 215, 0.65);
+    padding: 22px;
+  }
+
+  .map-panel {
+    height: 64vh;
   }
 }

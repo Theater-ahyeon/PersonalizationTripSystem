@@ -19,3 +19,10 @@ Images in `web/assets/spots/real/` are used for the local course demo. SVG icons
 - `summer-long-corridor-commons.jpg`: Wikimedia Commons, `The_Long_Corridor,_Beijing_Summer_Palace_(50600265678).jpg`, author Hugh Llewelyn, CC BY-SA 2.0.
 - `summer-seventeen-arch-bridge.jpg`: Wikimedia Commons, `Seventeen-Arch_Bridge.JPG`, author Herenthere, public domain.
 - `long-corridor.jpg` and `tower-buddhist-incense.jpg`: existing project demo photos retained from the previous Summer Palace data.
+- `summer-palace/east-palace-gate.jpg`: Wikimedia Commons, `SV101392.JPG`, Main Eastern Gate of the Summer Palace.
+- `summer-palace/renshou-hall.jpg`: Wikimedia Commons, `Summer Palace at Beijing 41.jpg`, Hall of Benevolence and Longevity.
+- `summer-palace/deheyuan.jpg`: Wikimedia Commons, `20090530 Beijing Summer Palace 8617.jpg`, Garden of Virtue and Harmony.
+- `summer-palace/long-corridor-east.jpg`: Wikimedia Commons, `100 0388.JPG`, Long Corridor at the Summer Palace.
+- `summer-palace/suzhou-street.jpg`: Wikimedia Commons, `Suzhou-Strasse Sommerpalast.jpg`, Suzhou Street at the Summer Palace.
+- `summer-palace/north-palace-gate.jpg`: Wikimedia Commons, `Summer palace01.jpg`, North Gate of the Summer Palace.
+- Remote Wikimedia Commons image URLs used by Summer Palace spot data: `Summer Palace at Beijing 15.jpg`, `Barco de marmol palacio verano pekin.jpg`, `Summer Palace Beijing creek.jpg`, `Kunming Lake of Summer Palace.JPG`, `Summer Palace Panorama.jpg`, `Yiheyuan South Lake Island.jpg`, `Bridge at Summer Palace in Beijing.jpg`, `Summer Palace at Beijing 20.jpg`, `Beijing Summer Palace Leshoutang.jpg`, `20090530 Beijing Summer Palace 8467.jpg`, `Bronze Ox, Summer Palace, Beijing (24569731336).jpg`, and `New Gate of the Summer Palace (20201222164832).jpg`. Files are available from Wikimedia Commons under the licenses shown on their individual file pages.

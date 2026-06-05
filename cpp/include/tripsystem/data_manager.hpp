@@ -54,7 +54,9 @@ public:
     std::vector<OsmNode> osmNodes;
     std::vector<OsmEdge> osmEdges;
     std::vector<Restaurant> restaurants;
+    std::vector<User> users;
     std::vector<Diary> diaries;
+    int currentUserId = 1;
     HashMap<int, size_t> spotById;
     HashMap<int, size_t> osmNodeById;
     HashMap<int, std::vector<OsmEdge>> osmAdj;
@@ -81,6 +83,12 @@ public:
         loadRoads();
         loadOsm();
         loadRestaurants();
+        loadUsers();
+        if (users.empty()) {
+            generateSampleUsers();
+            saveUsers();
+        }
+        if (!findUser(currentUserId) && !users.empty()) currentUserId = users.front().id;
         loadDiaries();
         if (diaries.empty()) {
             generateSampleDiaries();
@@ -100,6 +108,7 @@ public:
         saveRoads();
         saveOsm();
         saveRestaurants();
+        saveUsers();
     }
 
     Spot* findSpot(int id) {
@@ -130,6 +139,68 @@ public:
         return mx + 1;
     }
 
+    int nextUserId() const {
+        int mx = 0;
+        for (const auto& u : users) mx = std::max(mx, u.id);
+        return std::max(10, mx) + 1;
+    }
+
+    User* findUser(int id) {
+        for (auto& user : users) {
+            if (user.id == id) return &user;
+        }
+        return nullptr;
+    }
+
+    const User* findUser(int id) const {
+        for (const auto& user : users) {
+            if (user.id == id) return &user;
+        }
+        return nullptr;
+    }
+
+    const User* currentUser() const {
+        return findUser(currentUserId);
+    }
+
+    std::string currentUserLabel() const {
+        const User* user = currentUser();
+        if (!user) return "Guest (ID 1)";
+        return user->name + " (ID " + std::to_string(user->id) + ")";
+    }
+
+    bool setCurrentUser(int id) {
+        if (!findUser(id)) return false;
+        currentUserId = id;
+        return true;
+    }
+
+    User registerUser(const std::string& name, const std::vector<std::string>& tags, const std::string& routeMode) {
+        User user;
+        user.id = nextUserId();
+        user.name = trim(name).empty() ? ("User" + std::to_string(user.id)) : trim(name);
+        user.preferenceTags = tags.empty() ? std::vector<std::string>{"history", "photo"} : tags;
+        user.preferredCategories = user.preferenceTags;
+        if (user.preferredCategories.size() > 2) user.preferredCategories.resize(2);
+        user.routeMode = (routeMode == "bike") ? "bike" : "walk";
+        users.push_back(user);
+        currentUserId = user.id;
+        saveUsers();
+        return user;
+    }
+
+    bool deleteDiary(int diaryId) {
+        for (auto it = diaries.begin(); it != diaries.end(); ++it) {
+            if (it->id != diaryId) continue;
+            if (it->userId != currentUserId) return false;
+            fs::remove(dataDir_ / "diaries" / (std::to_string(diaryId) + ".json"));
+            fs::remove(dataDir_ / "diaries" / (std::to_string(diaryId) + ".bin"));
+            diaries.erase(it);
+            return true;
+        }
+        return false;
+    }
+
     void writeDiary(const Diary& diary) {
         std::vector<std::pair<int, std::string>> codes;
         int bitLength = 0;
@@ -144,6 +215,7 @@ public:
         js << "{\n";
         js << "  \"id\": " << diary.id << ",\n";
         js << "  \"title\": \"" << escapeJson(diary.title) << "\",\n";
+        js << "  \"user_id\": " << diary.userId << ",\n";
         js << "  \"rating\": " << diary.rating << ",\n";
         js << "  \"heat\": " << diary.heat << ",\n";
         js << "  \"created_at\": \"" << escapeJson(diary.createdAt) << "\",\n";
@@ -1090,14 +1162,30 @@ private:
         };
     }
 
+    void generateSampleUsers() {
+        users = {
+            {1, "游客01", {"历史", "建筑", "室内"}, {"历史", "建筑"}, "walk", {1, 9, 16}},
+            {2, "游客02", {"湖景", "拍照", "夕阳"}, {"湖景", "拍照"}, "bike", {2, 10, 17}},
+            {3, "游客03", {"安静", "园林", "低拥挤"}, {"安静", "园林"}, "walk", {3, 11, 18}},
+            {4, "游客04", {"亲子", "服务", "轻松"}, {"亲子", "服务"}, "walk", {4, 12, 19}},
+            {5, "游客05", {"美食", "购物", "文化"}, {"美食", "购物"}, "bike", {5, 13, 16}},
+            {6, "游客06", {"徒步", "路线", "登高"}, {"徒步", "路线"}, "walk", {6, 14, 17}},
+            {7, "游客07", {"展陈", "文物", "讲解"}, {"展陈", "文物"}, "walk", {7, 15, 18}},
+            {8, "游客08", {"骑行", "湖岸", "效率"}, {"骑行", "湖岸"}, "bike", {8, 9, 19}},
+            {9, "游客09", {"地标", "打卡", "热门"}, {"地标", "打卡"}, "walk", {1, 10, 16}},
+            {10, "游客10", {"自然", "树荫", "休闲"}, {"自然", "树荫"}, "walk", {2, 11, 17}}
+        };
+        currentUserId = 1;
+    }
+
     void generateSampleDiaries() {
         fs::create_directories(dataDir_ / "diaries");
         std::vector<Diary> summerPalaceSamples = {
-            {1, "东宫门到长廊半日路线", 4.8, 18, "2026-05-10 09:00:00",
+            {1, "东宫门到长廊半日路线", 1, 4.8, 18, "2026-05-10 09:00:00",
              "从颐和园东宫门入园，先看仁寿殿和德和园，再沿长廊走到排云门，适合第一次来颐和园的游客。", true, ""},
-            {2, "佛香阁登高记录", 4.7, 15, "2026-05-11 10:20:00",
+            {2, "佛香阁登高记录", 2, 4.7, 15, "2026-05-11 10:20:00",
              "佛香阁视野很好，可以俯瞰昆明湖。路线不长但有台阶，推荐给喜欢建筑、观景和拍照的游客。", true, ""},
-            {3, "苏州街慢游体验", 4.6, 14, "2026-05-12 15:30:00",
+            {3, "苏州街慢游体验", 3, 4.6, 14, "2026-05-12 15:30:00",
              "从石舫走到苏州街入口，后湖一带比前山更安静，适合把美食和文创购物放在返程前。", true, ""}
         };
         for (const auto& d : summerPalaceSamples) {
@@ -1109,11 +1197,11 @@ private:
         }
         return;
         std::vector<Diary> samples = {
-            {1, "湖边散步记录", 4.8, 12, "2026-04-30 09:00:00",
+            {1, "湖边散步记录", 1, 4.8, 12, "2026-04-30 09:00:00",
              "今天从游客中心出发，沿着太湖广场慢慢走到湖边，风很舒服，适合拍照和休息。", true, ""},
-            {2, "樱花大道游记", 4.6, 8, "2026-04-30 10:30:00",
+            {2, "樱花大道游记", 2, 4.6, 8, "2026-04-30 10:30:00",
              "樱花大道人不算多，花海和步道都很适合散步，后面可以和历史博物馆安排在同一条路线。", true, ""},
-            {3, "夜晚音乐喷泉", 4.9, 18, "2026-04-30 19:40:00",
+            {3, "夜晚音乐喷泉", 3, 4.9, 18, "2026-04-30 19:40:00",
              "晚上看了音乐喷泉，灯光和水幕效果很好，附近的夜宵也方便，适合放在一天行程的最后。", true, ""}
         };
         for (const auto& d : samples) {
@@ -1166,6 +1254,20 @@ private:
         }
     }
 
+    void loadUsers() {
+        users.clear();
+        for (const auto& obj : jsonObjects(readText(dataDir_ / "users.json"))) {
+            User user;
+            user.id = static_cast<int>(jsonNumber(obj, "id"));
+            user.name = jsonString(obj, "name");
+            user.preferenceTags = jsonStringArray(obj, "preference_tags");
+            user.preferredCategories = jsonStringArray(obj, "preferred_categories");
+            user.routeMode = jsonString(obj, "route_mode", "walk");
+            user.historySpotIds = jsonNumberArray(obj, "history_spot_ids");
+            if (user.id > 0 && !user.name.empty()) users.push_back(user);
+        }
+    }
+
     void loadDiaries() {
         diaries.clear();
         fs::path dir = dataDir_ / "diaries";
@@ -1177,6 +1279,7 @@ private:
             Diary d;
             d.id = static_cast<int>(jsonNumber(obj, "id"));
             d.title = jsonString(obj, "title");
+            d.userId = static_cast<int>(jsonNumber(obj, "user_id", 1));
             d.rating = jsonNumber(obj, "rating");
             d.heat = static_cast<int>(jsonNumber(obj, "heat"));
             d.createdAt = jsonString(obj, "created_at");
@@ -1288,6 +1391,46 @@ private:
         }
         out << "]\n";
         writeText(dataDir_ / "restaurants.json", out.str());
+    }
+
+    void saveUsers() const {
+        std::ostringstream out;
+        out << "[\n";
+        for (size_t i = 0; i < users.size(); ++i) {
+            const auto& u = users[i];
+            out << "  {\n"
+                << "    \"id\": " << u.id << ",\n"
+                << "    \"name\": \"" << escapeJson(u.name) << "\",\n"
+                << "    \"preference_tags\": ";
+            writeStringArray(out, u.preferenceTags);
+            out << ",\n    \"preferred_categories\": ";
+            writeStringArray(out, u.preferredCategories);
+            out << ",\n    \"route_mode\": \"" << escapeJson(u.routeMode.empty() ? "walk" : u.routeMode) << "\",\n"
+                << "    \"history_spot_ids\": ";
+            writeNumberArray(out, u.historySpotIds);
+            out << "\n  }";
+            out << (i + 1 == users.size() ? "\n" : ",\n");
+        }
+        out << "]\n";
+        writeText(dataDir_ / "users.json", out.str());
+    }
+
+    static void writeStringArray(std::ostream& out, const std::vector<std::string>& values) {
+        out << "[";
+        for (size_t i = 0; i < values.size(); ++i) {
+            if (i) out << ", ";
+            out << "\"" << escapeJson(values[i]) << "\"";
+        }
+        out << "]";
+    }
+
+    static void writeNumberArray(std::ostream& out, const std::vector<int>& values) {
+        out << "[";
+        for (size_t i = 0; i < values.size(); ++i) {
+            if (i) out << ", ";
+            out << values[i];
+        }
+        out << "]";
     }
 
     static std::vector<unsigned char> encodeHuffman(const std::string& text, std::vector<std::pair<int, std::string>>& codes, int& bitLength) {

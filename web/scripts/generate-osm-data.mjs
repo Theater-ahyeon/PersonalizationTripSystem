@@ -25,10 +25,97 @@ const IMAGE_POOL = [
 ];
 
 const REAL_IMAGES = {
+  eastPalaceGate: "web/assets/spots/real/summer-palace/east-palace-gate.jpg",
+  renshouHall: "web/assets/spots/real/summer-palace/renshou-hall.jpg",
+  deheyuan: "web/assets/spots/real/summer-palace/deheyuan.jpg",
+  longCorridor: "web/assets/spots/real/summer-palace/long-corridor-east.jpg",
+  paiyunGate: commonsImage("Summer Palace at Beijing 15.jpg"),
+  foxiangge: "web/assets/spots/real/tower-buddhist-incense.jpg",
+  marbleBoat: commonsImage("Barco de marmol palacio verano pekin.jpg"),
+  suzhouStreet: "web/assets/spots/real/summer-palace/suzhou-street.jpg",
+  northPalaceGate: "web/assets/spots/real/summer-palace/north-palace-gate.jpg",
+  backLake: commonsImage("Summer Palace Beijing creek.jpg"),
+  kunmingLakeEastDike: commonsImage("Kunming Lake of Summer Palace.JPG"),
+  zhichunPavilion: commonsImage("Summer Palace Panorama.jpg"),
+  seventeenArchBridge: "web/assets/spots/real/summer-seventeen-arch-bridge.jpg",
+  nanhuIsland: commonsImage("Yiheyuan South Lake Island.jpg"),
+  westDike: commonsImage("Bridge at Summer Palace in Beijing.jpg"),
+  harmoniousInterestsGarden: commonsImage("Summer Palace at Beijing 20.jpg"),
+  leshouHall: commonsImage("Beijing Summer Palace Leshoutang.jpg"),
+  wenchangGallery: commonsImage("20090530 Beijing Summer Palace 8467.jpg"),
+  bronzeOx: commonsImage("Bronze Ox, Summer Palace, Beijing (24569731336).jpg"),
+  newPalaceGate: commonsImage("New Gate of the Summer Palace (20201222164832).jpg"),
   summerTower: "web/assets/spots/real/tower-buddhist-incense.jpg",
   summerBridge: "web/assets/spots/real/summer-seventeen-arch-bridge.jpg",
   summerCorridor: "web/assets/spots/real/summer-long-corridor-commons.jpg"
 };
+
+function commonsImage(file) {
+  return `https://commons.wikimedia.org/wiki/Special:Redirect/file/${encodeURIComponent(file)}?width=1280`;
+}
+
+const SUMMER_PALACE_FACILITY_FALLBACKS = [
+  facility("颐和园东宫门卫生间", "卫生间", 1, 39.99732, 116.27548),
+  facility("仁寿殿东侧卫生间", "卫生间", 2, 39.99955, 116.27422),
+  facility("长廊东口卫生间", "卫生间", 4, 39.99832, 116.26952),
+  facility("排云殿东侧卫生间", "卫生间", 5, 39.99916, 116.26672),
+  facility("石舫码头卫生间", "卫生间", 7, 40.00062, 116.26318),
+  facility("北宫门内卫生间", "卫生间", 9, 40.00602, 116.26386),
+  facility("南湖岛卫生间", "卫生间", 14, 39.98912, 116.27512),
+  facility("新建宫门外卫生间", "卫生间", 20, 39.99055, 116.28158),
+  facility("西堤南口卫生间", "卫生间", 15, 39.99256, 116.26098),
+  facility("谐趣园北侧卫生间", "卫生间", 16, 40.00218, 116.27068),
+  facility("东宫门游客服务中心", "游客服务", 1, 39.99726, 116.27568),
+  facility("北宫门游客服务中心", "游客服务", 9, 40.00618, 116.26372),
+  facility("新建宫门游客服务中心", "游客服务", 20, 39.99042, 116.28196),
+  facility("苏州街咨询服务点", "游客服务", 8, 40.00454, 116.26396),
+  facility("文昌院导览服务台", "游客服务", 18, 39.99666, 116.27702),
+  facility("十七孔桥东堤游客咨询点", "游客服务", 13, 39.98886, 116.27738),
+  facility("东宫门售票处", "售票处", 1, 39.99716, 116.27586),
+  facility("北宫门售票处", "售票处", 9, 40.00626, 116.26356),
+  facility("新建宫门售票处", "售票处", 20, 39.99028, 116.28212),
+  facility("苏州街售票处", "售票处", 8, 40.00442, 116.26372),
+  facility("德和园联票处", "售票处", 3, 39.99876, 116.27218),
+  facility("游船码头票务亭", "售票处", 19, 39.99118, 116.27762),
+  facility("仁寿殿饮水点", "饮水点", 2, 39.99938, 116.27418),
+  facility("长廊东口饮水点", "饮水点", 4, 39.99818, 116.26958),
+  facility("排云门饮水点", "饮水点", 5, 39.99902, 116.26644),
+  facility("佛香阁下饮水点", "饮水点", 6, 39.99962, 116.26622),
+  facility("石舫饮水点", "饮水点", 7, 40.00074, 116.26306),
+  facility("十七孔桥东饮水点", "饮水点", 13, 39.98878, 116.27708),
+  facility("东宫门医疗救护点", "急救点", 1, 39.99708, 116.27542),
+  facility("北宫门急救点", "急救点", 9, 40.00608, 116.26342),
+  facility("佛香阁急救联系点", "急救点", 6, 39.99948, 116.26608),
+  facility("十七孔桥急救联系点", "急救点", 13, 39.98862, 116.27728),
+  facility("新建宫门医疗服务点", "急救点", 20, 39.99066, 116.28184),
+  facility("东宫门停车场", "停车场", 1, 39.99768, 116.27638),
+  facility("新建宫门停车场", "停车场", 20, 39.99072, 116.28258),
+  facility("北宫门停车场", "停车场", 9, 40.00648, 116.26332),
+  facility("西苑停车场", "停车场", 1, 39.99792, 116.27966),
+  facility("颐和园路临时落客区", "停车场", 18, 39.99634, 116.27802),
+  facility("地铁4号线西苑站C2口", "地铁站", 1, 39.99804, 116.29074),
+  facility("地铁4号线西苑站A口", "地铁站", 1, 39.99826, 116.29022),
+  facility("地铁4号线北宫门站D口", "地铁站", 9, 40.00682, 116.27712),
+  facility("地铁4号线北宫门站A1口", "地铁站", 9, 40.00642, 116.27742),
+  facility("东宫门文创商店", "商店", 1, 39.99738, 116.27518),
+  facility("长廊东口文创店", "商店", 4, 39.99828, 116.26932),
+  facility("排云殿纪念品店", "商店", 5, 39.99922, 116.26622),
+  facility("苏州街文创商店", "商店", 8, 40.00462, 116.26362),
+  facility("石舫湖畔商店", "商店", 7, 40.00082, 116.26292),
+  facility("北宫门便利店", "商店", 9, 40.00624, 116.26398),
+  facility("新建宫门文创店", "商店", 20, 39.99032, 116.28168),
+  facility("文昌院书店", "商店", 18, 39.99672, 116.27684),
+  facility("佛香阁观景平台", "观景台", 6, 39.99978, 116.26628),
+  facility("万寿山后湖观景台", "观景台", 10, 40.00492, 116.26772),
+  facility("昆明湖东堤观景点", "观景台", 11, 39.99278, 116.27136),
+  facility("十七孔桥摄影点", "观景台", 13, 39.98874, 116.27742),
+  facility("南湖岛湖景平台", "观景台", 14, 39.98934, 116.27542),
+  facility("西堤镜桥观景点", "观景台", 15, 39.99286, 116.26062),
+  facility("东宫门安检口", "安检口", 1, 39.99708, 116.27574),
+  facility("北宫门安检口", "安检口", 9, 40.00636, 116.26364),
+  facility("新建宫门安检口", "安检口", 20, 39.99018, 116.28202),
+  facility("知春亭湖边休息亭", "休息亭", 12, 39.99502, 116.27392)
+];
 
 const ENDPOINTS = [
   "https://overpass-api.de/api/interpreter",
@@ -52,26 +139,26 @@ const SCENES = {
     minEdges: 400,
     sampleRoutes: [[1, 8], [9, 13], [20, 6]],
     namedNodes: [
-      node(1, "颐和园东宫门", 39.9973, 116.2753, "gate", "颐和园东宫门是游客入园和路线规划的主要起点，适合连接仁寿殿、德和园和昆明湖东堤。", REAL_IMAGES.summerTower),
-      node(2, "仁寿殿", 39.9994, 116.2740, "building", "仁寿殿是清代皇家园林的政务活动空间，适合文化类推荐和室内参观。", REAL_IMAGES.summerTower),
-      node(3, "德和园", 39.9987, 116.2720, "building", "德和园以戏楼和园林院落著称，适合对戏曲、建筑和历史感兴趣的游客。", REAL_IMAGES.summerTower),
-      node(4, "长廊东口", 39.9982, 116.2695, "path", "长廊连接东部建筑群和万寿山前景区，是步行游览的核心通道。", REAL_IMAGES.summerCorridor),
-      node(5, "排云门", 39.9991, 116.2665, "junction", "排云门位于万寿山中轴线上，是前往佛香阁和昆明湖的重要节点。", REAL_IMAGES.summerTower),
-      node(6, "佛香阁", 39.9997, 116.2662, "landmark", "佛香阁是颐和园标志性建筑，可俯瞰昆明湖和长堤景观。", REAL_IMAGES.summerTower),
-      node(7, "石舫", 40.0007, 116.2630, "landmark", "石舫位于昆明湖北岸，适合拍照、休息和湖岸路线衔接。", REAL_IMAGES.summerCorridor),
-      node(8, "苏州街入口", 40.0046, 116.2638, "poi", "苏州街入口连接后湖商业街区，适合文化体验、美食和文创购物推荐。", IMAGE_POOL[7]),
-      node(9, "北宫门", 40.0061, 116.2636, "gate", "北宫门靠近地铁和外部服务区，适合作为返程或多点游览终点。", IMAGE_POOL[0]),
-      node(10, "万寿山后湖", 40.0048, 116.2676, "waterfront", "后湖区域较安静，适合避开高峰人流的休闲路线。", IMAGE_POOL[8]),
-      node(11, "昆明湖东堤", 39.9926, 116.2715, "path", "昆明湖东堤视野开阔，适合拍照、骑行和湖岸观景。", REAL_IMAGES.summerBridge),
-      node(12, "知春亭", 39.9949, 116.2739, "landmark", "知春亭临近昆明湖，是连接东宫门和湖岸景观的轻量停留点。", IMAGE_POOL[8]),
-      node(13, "十七孔桥", 39.9887, 116.2772, "bridge", "十七孔桥是昆明湖最具辨识度的桥梁景观，适合夕阳和摄影路线。", REAL_IMAGES.summerBridge),
-      node(14, "南湖岛", 39.9893, 116.2753, "island", "南湖岛通过十七孔桥与东堤相连，适合安排湖区环线。", REAL_IMAGES.summerBridge),
-      node(15, "西堤", 39.9928, 116.2608, "path", "西堤横贯昆明湖西侧，适合长距离步行和低拥挤度路线。", IMAGE_POOL[6]),
-      node(16, "谐趣园", 40.0023, 116.2706, "garden", "谐趣园有江南园林风格，适合文化、建筑和安静游览偏好。", IMAGE_POOL[6]),
-      node(17, "乐寿堂", 39.9989, 116.2727, "building", "乐寿堂靠近核心建筑群，适合和仁寿殿、德和园一起推荐。", REAL_IMAGES.summerTower),
-      node(18, "文昌院", 39.9966, 116.2769, "museum", "文昌院适合室内展陈、文物和雨天备选路线。", IMAGE_POOL[10]),
-      node(19, "铜牛广场", 39.9910, 116.2777, "square", "铜牛广场位于湖区东南侧，可作为十七孔桥和东堤之间的休息点。", REAL_IMAGES.summerBridge),
-      node(20, "新建宫门", 39.9904, 116.2818, "gate", "新建宫门临近外部交通与服务设施，适合作为南侧入园起点。", IMAGE_POOL[0])
+      node(1, "颐和园东宫门", 39.9973, 116.2753, "gate", "颐和园东宫门是游客入园和路线规划的主要起点，适合连接仁寿殿、德和园和昆明湖东堤。", REAL_IMAGES.eastPalaceGate),
+      node(2, "仁寿殿", 39.9994, 116.2740, "building", "仁寿殿是清代皇家园林的政务活动空间，适合文化类推荐和室内参观。", REAL_IMAGES.renshouHall),
+      node(3, "德和园", 39.9987, 116.2720, "building", "德和园以戏楼和园林院落著称，适合对戏曲、建筑和历史感兴趣的游客。", REAL_IMAGES.deheyuan),
+      node(4, "长廊东口", 39.9982, 116.2695, "path", "长廊连接东部建筑群和万寿山前景区，是步行游览的核心通道。", REAL_IMAGES.longCorridor),
+      node(5, "排云门", 39.9991, 116.2665, "junction", "排云门位于万寿山中轴线上，是前往佛香阁和昆明湖的重要节点。", REAL_IMAGES.paiyunGate),
+      node(6, "佛香阁", 39.9997, 116.2662, "landmark", "佛香阁是颐和园标志性建筑，可俯瞰昆明湖和长堤景观。", REAL_IMAGES.foxiangge),
+      node(7, "石舫", 40.0007, 116.2630, "landmark", "石舫位于昆明湖北岸，适合拍照、休息和湖岸路线衔接。", REAL_IMAGES.marbleBoat),
+      node(8, "苏州街入口", 40.0046, 116.2638, "poi", "苏州街入口连接后湖商业街区，适合文化体验、美食和文创购物推荐。", REAL_IMAGES.suzhouStreet),
+      node(9, "北宫门", 40.0061, 116.2636, "gate", "北宫门靠近地铁和外部服务区，适合作为返程或多点游览终点。", REAL_IMAGES.northPalaceGate),
+      node(10, "万寿山后湖", 40.0048, 116.2676, "waterfront", "后湖区域较安静，适合避开高峰人流的休闲路线。", REAL_IMAGES.backLake),
+      node(11, "昆明湖东堤", 39.9926, 116.2715, "path", "昆明湖东堤视野开阔，适合拍照、骑行和湖岸观景。", REAL_IMAGES.kunmingLakeEastDike),
+      node(12, "知春亭", 39.9949, 116.2739, "landmark", "知春亭临近昆明湖，是连接东宫门和湖岸景观的轻量停留点。", REAL_IMAGES.zhichunPavilion),
+      node(13, "十七孔桥", 39.9887, 116.2772, "bridge", "十七孔桥是昆明湖最具辨识度的桥梁景观，适合夕阳和摄影路线。", REAL_IMAGES.seventeenArchBridge),
+      node(14, "南湖岛", 39.9893, 116.2753, "island", "南湖岛通过十七孔桥与东堤相连，适合安排湖区环线。", REAL_IMAGES.nanhuIsland),
+      node(15, "西堤", 39.9928, 116.2608, "path", "西堤横贯昆明湖西侧，适合长距离步行和低拥挤度路线。", REAL_IMAGES.westDike),
+      node(16, "谐趣园", 40.0023, 116.2706, "garden", "谐趣园有江南园林风格，适合文化、建筑和安静游览偏好。", REAL_IMAGES.harmoniousInterestsGarden),
+      node(17, "乐寿堂", 39.9989, 116.2727, "building", "乐寿堂靠近核心建筑群，适合和仁寿殿、德和园一起推荐。", REAL_IMAGES.leshouHall),
+      node(18, "文昌院", 39.9966, 116.2769, "museum", "文昌院适合室内展陈、文物和雨天备选路线。", REAL_IMAGES.wenchangGallery),
+      node(19, "铜牛广场", 39.9910, 116.2777, "square", "铜牛广场位于湖区东南侧，可作为十七孔桥和东堤之间的休息点。", REAL_IMAGES.bronzeOx),
+      node(20, "新建宫门", 39.9904, 116.2818, "gate", "新建宫门临近外部交通与服务设施，适合作为南侧入园起点。", REAL_IMAGES.newPalaceGate)
     ],
     highLevelEdges: [
       [1, 2], [2, 17], [17, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 8], [8, 9],
@@ -103,6 +190,10 @@ function node(id, name, lat, lon, type, description, image) {
 
 function spot(id, name, category, tags, rating, heat) {
   return { id, name, category, rating, heat, tags };
+}
+
+function facility(name, type, nearSpotId, lat, lon) {
+  return { name, type, near_spot_id: nearSpotId, lat, lon };
 }
 
 const sceneArg = process.argv[2] || "summer-palace";
@@ -202,6 +293,44 @@ async function fetchOverpassBboxWithSplit(bbox, label, depth = 0) {
     }
     return mergeOverpassResponses(responses);
   }
+}
+
+function facilityOverpassQuery(scene) {
+  const [south, west, north, east] = scene.bbox;
+  return `[out:json][timeout:35];
+(
+  nwr["amenity"~"toilets|drinking_water|parking|clinic|first_aid|ticket_booth"](${south},${west},${north},${east});
+  nwr["tourism"~"information|viewpoint"](${south},${west},${north},${east});
+  nwr["shop"](${south},${west},${north},${east});
+  nwr["railway"="subway_entrance"](${south},${west},${north},${east});
+  nwr["public_transport"="station"](${south},${west},${north},${east});
+);
+out center tags 300;`;
+}
+
+async function fetchFacilityPois(scene) {
+  if (scene.outputSubdir || !scene.bbox) return [];
+  const body = new URLSearchParams({ data: facilityOverpassQuery(scene) });
+  for (const endpoint of ENDPOINTS) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "User-Agent": "PersonalizationTripSystem-course-demo/3.0 (facility data verification)" },
+        body,
+        signal: controller.signal
+      });
+      const text = await response.text();
+      if (!response.ok) throw new Error(`${endpoint} ${response.status}: ${text.slice(0, 120)}`);
+      return JSON.parse(text).elements || [];
+    } catch (error) {
+      console.warn(`Facility POI endpoint failed for ${scene.label}: ${endpoint}: ${error.message}`);
+    } finally {
+      clearTimeout(timeout);
+    }
+  }
+  return [];
 }
 
 async function fetchOsmApiMapWithSplit(bbox, label, depth = 0) {
@@ -913,10 +1042,13 @@ function buildRoads(scene, nodes, edges) {
   });
 }
 
-function buildFacilities(scene) {
+function buildFacilities(scene, sourcePois = []) {
   const types = scene.outputSubdir
     ? ["游客服务", "卫生间", "图书馆", "咖啡馆", "休息区", "售票处", "商店", "饮水点"]
     : ["卫生间", "游客服务", "售票处", "纪念品店", "饮水点", "急救点", "停车场", "地铁站", "休息亭", "观景台", "商店", "安检口"];
+  if (!scene.outputSubdir && sourcePois) {
+    return buildVerifiedSummerFacilities(scene, sourcePois);
+  }
   const facilities = [];
   for (let i = 0; i < scene.facilityCount; ++i) {
     const anchor = scene.namedNodes[i % scene.namedNodes.length];
@@ -935,6 +1067,83 @@ function buildFacilities(scene) {
     });
   }
   return facilities;
+}
+
+function buildVerifiedSummerFacilities(scene, sourcePois) {
+  const byName = new Map();
+  sourcePois
+    .map((element) => facilityFromOsmElement(scene, element))
+    .filter(Boolean)
+    .forEach((item) => {
+      if (!byName.has(item.name)) byName.set(item.name, item);
+    });
+  SUMMER_PALACE_FACILITY_FALLBACKS.forEach((item) => {
+    if (!byName.has(item.name)) byName.set(item.name, { ...item });
+  });
+  return Array.from(byName.values())
+    .slice(0, scene.facilityCount)
+    .map((item, index) => ({
+      id: index + 1,
+      name: item.name,
+      type: item.type,
+      near_spot_id: item.near_spot_id,
+      lat: round(item.lat, 6),
+      lon: round(item.lon, 6),
+      rating: round(4.0 + ((index * 5) % 10) / 10, 1),
+      heat: 260 + ((index * 73) % 620),
+      tags: `${item.type},${spotNameById(scene, item.near_spot_id)},服务`
+    }));
+}
+
+function facilityFromOsmElement(scene, element) {
+  const tags = element.tags || {};
+  const lat = Number(element.lat ?? element.center?.lat);
+  const lon = Number(element.lon ?? element.center?.lon);
+  if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
+  const type = facilityTypeFromTags(tags);
+  if (!type) return null;
+  const rawName = tags.name || tags["name:zh"] || tags.operator || tags.brand || tags.description || "";
+  const near = nearestNamedNode(scene, { lat, lon });
+  const name = realisticFacilityName(rawName, type, near.name);
+  return {
+    name,
+    type,
+    near_spot_id: near.spot_id,
+    lat: clamp(lat, scene.bbox[0], scene.bbox[2]),
+    lon: clamp(lon, scene.bbox[1], scene.bbox[3])
+  };
+}
+
+function facilityTypeFromTags(tags) {
+  if (tags.railway === "subway_entrance" || tags.public_transport === "station" || /subway/i.test(tags.station || "")) return "地铁站";
+  if (tags.amenity === "toilets") return "卫生间";
+  if (tags.amenity === "drinking_water") return "饮水点";
+  if (tags.amenity === "parking") return "停车场";
+  if (tags.amenity === "clinic" || tags.amenity === "first_aid" || tags.healthcare) return "急救点";
+  if (tags.amenity === "ticket_booth") return "售票处";
+  if (tags.tourism === "information") return "游客服务";
+  if (tags.tourism === "viewpoint") return "观景台";
+  if (tags.shop) return "商店";
+  return null;
+}
+
+function realisticFacilityName(rawName, type, anchorName) {
+  const name = String(rawName || "").trim();
+  if (name && !/^\d+$/.test(name) && !/^(toilets?|parking|shop)$/i.test(name)) {
+    return name.endsWith(type) || name.includes(type) ? name : `${name}${type}`;
+  }
+  const suffix = type === "地铁站" ? "地铁出入口" : type;
+  return `${anchorName}${suffix}`;
+}
+
+function nearestNamedNode(scene, point) {
+  return scene.namedNodes
+    .map((node) => ({ node, distance: haversineM(point, node) }))
+    .sort((a, b) => a.distance - b.distance)[0].node;
+}
+
+function spotNameById(scene, id) {
+  return scene.namedNodes.find((node) => Number(node.spot_id) === Number(id))?.name || "颐和园";
 }
 
 function buildRestaurants(scene) {
@@ -1004,6 +1213,7 @@ function buildDiaryIndex(scene) {
       created_at: `2026-05-${String(10 + index).padStart(2, "0")} 09:${String((index * 7) % 60).padStart(2, "0")}:00`,
       tags: spotTags(item).split(","),
       content: `${title}：本次路线围绕${item.name}展开，结合评分、热度和个人兴趣排序，适合在答辩时展示旅游日记管理、查询、推荐和压缩统计。`,
+      comments: buildDiaryComments(index, item.name),
       original_bytes: original,
       compressed_bytes: Math.round(original * (0.44 + (index % 4) * 0.04))
     };
@@ -1036,10 +1246,29 @@ function buildCampusDiaryIndex(scene) {
       created_at: `2026-05-${String(12 + index).padStart(2, "0")} 10:${String((index * 9) % 60).padStart(2, "0")}:00`,
       tags: ["校园", "路线", item.type],
       content: `${title}：本次路线围绕${item.name}展开，适合展示清华大学区域的路线规划、设施查询、美食推荐和日记检索。`,
+      comments: buildDiaryComments(index, item.name),
       original_bytes: original,
       compressed_bytes: Math.round(original * (0.45 + (index % 3) * 0.05))
     };
   });
+}
+
+function buildDiaryComments(index, destination) {
+  const voices = [
+    "路线提示很实用，适合第一次来的人照着走。",
+    "照片点位和停留节奏都清楚，收藏后规划方便很多。",
+    "评论里提到的补给点很有帮助，实际走起来不赶。",
+    "这个目的地适合慢慢逛，避开高峰体验会更好。"
+  ];
+  return [
+    {
+      user_id: (index % 10) + 1,
+      user_name: `游客${String((index % 10) + 1).padStart(2, "0")}`,
+      rating: round(4.2 + (index % 4) * 0.2, 1),
+      content: `${destination}${voices[index % voices.length]}`,
+      created_at: `2026-05-${String(20 + (index % 8)).padStart(2, "0")} 18:00:00`
+    }
+  ];
 }
 
 function shortestDistance(edges, start, goal, mode) {
@@ -1209,7 +1438,8 @@ async function generateScene(scene) {
   const { nodes, edges } = buildOsmOutput(scene, overpass);
   const spots = buildSpots(scene);
   const roads = buildRoads(scene, nodes, edges);
-  const facilities = buildFacilities(scene);
+  const facilityPois = await fetchFacilityPois(scene);
+  const facilities = buildFacilities(scene, facilityPois);
   const restaurants = buildRestaurants(scene);
   const users = buildUsers(scene);
   const diaries = buildDiaryIndex(scene);

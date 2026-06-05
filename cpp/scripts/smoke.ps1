@@ -41,6 +41,26 @@ $InputLines = @(
   "0",
   "4",
   "2",
+  "6",
+  "2",
+  "SmokeUser",
+  "history,photo",
+  "walk",
+  "6",
+  "1",
+  "11",
+  "4",
+  "1",
+  "Smoke User Diary",
+  "4.8",
+  "user11-private-keyword",
+  "4",
+  "2",
+  "4",
+  "3",
+  "4",
+  "5",
+  "4",
   "0"
 )
 
@@ -60,7 +80,14 @@ $Expected = @(
   "Top-10",
   "KMP",
   "Top-5",
-  "rating="
+  "rating=",
+  "Current user",
+  "Registered user",
+  "Switched user",
+  "My diaries",
+  "All diaries",
+  "Smoke User Diary",
+  "Deleted diary"
 )
 
 foreach ($Text in $Expected) {

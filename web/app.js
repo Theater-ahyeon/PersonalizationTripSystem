@@ -1,6 +1,7 @@
 const DATA_PATHS = {
   nodes: ["./data/osm_nodes.json", "../cpp/data/osm_nodes.json"],
   edges: ["./data/osm_edges.json", "../cpp/data/osm_edges.json"],
+  roads: ["./data/roads.json", "../cpp/data/roads.json"],
   spots: ["./data/spots.json", "../cpp/data/spots.json"],
   restaurants: ["./data/restaurants.json", "../cpp/data/restaurants.json"],
   facilities: ["./data/facilities.json", "../cpp/data/facilities.json"],
@@ -23,7 +24,9 @@ const DIARY_IMAGES = [
 const STORAGE_KEYS = {
   users: "vagabond.localUsers",
   currentUserId: "vagabond.currentUserId",
-  settings: "vagabond.settings"
+  settings: "vagabond.settings",
+  diaryScope: "vagabond.diaryScope",
+  aigcConfig: "vagabond.aigcConfig"
 };
 const ROUTE_STRATEGIES = {
   distance: {
@@ -68,6 +71,7 @@ const state = {
   map: null,
   nodes: [],
   edges: [],
+  roads: [],
   spots: [],
   restaurants: [],
   facilities: [],
@@ -82,11 +86,23 @@ const state = {
     defaultRouteMode: "walk",
     defaultDiarySort: "heat"
   },
+  aigcConfig: {
+    enabled: false,
+    baseUrl: "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    model: "qwen-plus",
+    apiKey: ""
+  },
+  diaryScope: "all",
+  diaryPage: 1,
+  diaryPageSize: 10,
   markers: new Map(),
   facilityGeoIndex: new Map(),
   spotLshIndex: new Map(),
   diaryLshIndex: new Map(),
+  spotInvertedIndex: new Map(),
+  diaryInvertedIndex: new Map(),
   diaryTitleIndex: new Map(),
+  searchCache: new Map(),
   edgeLayers: [],
   routeLayers: [],
   poiLayers: [],
@@ -105,9 +121,10 @@ const byId = (id) => document.getElementById(id);
 document.addEventListener("DOMContentLoaded", async () => {
   bindStaticControls();
   try {
-    const [nodes, edges, spots, restaurants, facilities, users, diaries, regionPacks] = await Promise.all([
+    const [nodes, edges, roads, spots, restaurants, facilities, users, diaries, regionPacks] = await Promise.all([
       loadJson(DATA_PATHS.nodes),
       loadJson(DATA_PATHS.edges),
+      loadJson(DATA_PATHS.roads),
       loadJson(DATA_PATHS.spots),
       loadJson(DATA_PATHS.restaurants),
       loadJson(DATA_PATHS.facilities),
@@ -117,6 +134,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     ]);
     state.nodes = nodes;
     state.edges = edges;
+    state.roads = roads;
     state.spots = spots;
     state.restaurants = restaurants;
     state.facilities = facilities;
@@ -124,6 +142,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     state.diaries = diaries;
     state.regionPacks = regionPacks;
     state.appSettings = loadAppSettings();
+    state.aigcConfig = loadAigcConfig();
+    state.diaryScope = loadDiaryScope();
     state.currentUserId = loadCurrentUserId() || Number(state.users[0]?.id) || 1;
     state.currentRegionPackId = state.regionPacks.find((pack) => pack.id === "summer_palace")?.id
       || state.regionPacks.find((pack) => pack.status === "active")?.id
@@ -231,10 +251,20 @@ function bindStaticControls() {
   byId("facilityOriginSelect").addEventListener("change", searchFacilities);
   byId("facilityRangeSelect").addEventListener("change", searchFacilities);
 
+  const renderDiaryListFromFirstPage = () => {
+    state.diaryPage = 1;
+    renderDiaryList();
+  };
   byId("diarySearchButton").addEventListener("click", handleDiarySearchClick);
-  byId("diaryKeyword").addEventListener("input", debounce(renderDiaryList, 180));
-  byId("diarySort").addEventListener("change", renderDiaryList);
-  byId("diarySearchMode").addEventListener("change", renderDiaryList);
+  byId("diaryKeyword").addEventListener("input", debounce(renderDiaryListFromFirstPage, 180));
+  byId("diaryScopeSelect").addEventListener("change", () => {
+    state.diaryScope = byId("diaryScopeSelect").value;
+    state.diaryPage = 1;
+    localStorage.setItem(STORAGE_KEYS.diaryScope, state.diaryScope);
+    renderDiaryList();
+  });
+  byId("diarySort").addEventListener("change", renderDiaryListFromFirstPage);
+  byId("diarySearchMode").addEventListener("change", renderDiaryListFromFirstPage);
   byId("diaryCreateButton").addEventListener("click", createDiaryEntry);
   byId("diaryExportButton").addEventListener("click", exportDiariesJson);
   byId("indoorRouteButton").addEventListener("click", runIndoorRoute);
@@ -261,6 +291,7 @@ function handleFacilitySearchClick() {
 }
 
 function handleDiarySearchClick() {
+  state.diaryPage = 1;
   renderDiaryList();
   focusResultRegion("diaryResults");
 }
@@ -437,6 +468,7 @@ function reloadCurrentDataset({ fit = false } = {}) {
   renderNodeList(selectableRouteNodes());
   buildFacilityGeoIndex();
   buildSimilarityIndexes();
+  state.routeConsistency = routeConsistencyCheck();
   renderNodeMarkers();
   renderRoadNetwork();
   renderFacilityMapMarkers();
@@ -461,6 +493,7 @@ function populateControls() {
   fillCuisineSelect();
   fillIndoorSelects();
   fillRegionPackSelect();
+  if (byId("diaryScopeSelect")) byId("diaryScopeSelect").value = state.diaryScope || "all";
   renderMultiStopList();
 
   const defaults = defaultRouteSelection(routeNodes);
@@ -545,9 +578,10 @@ async function selectRegionPack(packId) {
 async function loadRegionPack(packId) {
   const pack = findRegionPack(packId);
   if (!pack) throw new Error(`未找到旅行区域：${packId}`);
-  const [nodes, edges, spots, facilities, restaurants, diaries] = await Promise.all([
+  const [nodes, edges, roads, spots, facilities, restaurants, diaries] = await Promise.all([
     loadJson(pack.nodes_path),
     loadJson(pack.edges_path),
+    loadJson(pack.roads_path || DATA_PATHS.roads),
     loadJson(pack.spots_path),
     loadJson(pack.facilities_path),
     loadJson(pack.restaurants_path),
@@ -555,6 +589,7 @@ async function loadRegionPack(packId) {
   ]);
   state.nodes = nodes;
   state.edges = edges;
+  state.roads = roads;
   state.spots = spots;
   state.facilities = facilities;
   state.restaurants = restaurants;
@@ -1081,12 +1116,37 @@ function loadAppSettings() {
   }
 }
 
+function loadDiaryScope() {
+  const value = localStorage.getItem(STORAGE_KEYS.diaryScope);
+  return value === "mine" ? "mine" : "all";
+}
+
+function loadAigcConfig() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEYS.aigcConfig) || "{}");
+    return {
+      ...state.aigcConfig,
+      ...saved,
+      enabled: Boolean(saved.enabled),
+      baseUrl: saved.baseUrl || state.aigcConfig.baseUrl,
+      model: saved.model || state.aigcConfig.model,
+      apiKey: saved.apiKey || ""
+    };
+  } catch {
+    return state.aigcConfig;
+  }
+}
+
 function renderSettingsForm() {
   byId("themeSelect").value = state.appSettings.theme || "light";
   byId("compactCardsToggle").checked = Boolean(state.appSettings.compactCards);
   byId("defaultViewSelect").value = state.appSettings.defaultView || "recommendView";
   byId("defaultRouteModeSelect").value = state.appSettings.defaultRouteMode || "walk";
   byId("defaultDiarySortSelect").value = state.appSettings.defaultDiarySort || "heat";
+  byId("aigcEnabledToggle").checked = Boolean(state.aigcConfig.enabled);
+  byId("aigcBaseUrlInput").value = state.aigcConfig.baseUrl || "https://dashscope.aliyuncs.com/compatible-mode/v1";
+  byId("aigcModelInput").value = state.aigcConfig.model || "qwen-plus";
+  byId("aigcApiKeyInput").value = state.aigcConfig.apiKey || "";
   byId("settingsFeedback").textContent = "";
 }
 
@@ -1098,7 +1158,14 @@ function saveSettingsForm() {
     defaultRouteMode: byId("defaultRouteModeSelect").value,
     defaultDiarySort: byId("defaultDiarySortSelect").value
   };
+  state.aigcConfig = {
+    enabled: byId("aigcEnabledToggle").checked,
+    baseUrl: normalizeAigcBaseUrl(byId("aigcBaseUrlInput").value.trim()),
+    model: byId("aigcModelInput").value.trim() || "qwen-plus",
+    apiKey: byId("aigcApiKeyInput").value.trim()
+  };
   localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify(state.appSettings));
+  localStorage.setItem(STORAGE_KEYS.aigcConfig, JSON.stringify(state.aigcConfig));
   applyAppSettings();
   byId("diarySort").value = state.appSettings.defaultDiarySort;
   state.mode = state.appSettings.defaultRouteMode;
@@ -1396,7 +1463,10 @@ function recommendSpots() {
   const categoryPreference = (user?.preferred_categories || []).join(" ");
   const activeIntent = `${preferenceInput} ${keywordInput}`.trim();
   const maxHeat = Math.max(...state.spots.map((spot) => Number(spot.heat) || 0), 1);
-  const lshCandidates = getLshCandidates(state.spotLshIndex, activeIntent || preference || categoryPreference, state.spots, 36);
+  const indexedCandidates = keyword
+    ? invertedIndexCandidates(state.spotInvertedIndex, keyword, state.spots)
+    : state.spots;
+  const lshCandidates = getLshCandidates(state.spotLshIndex, activeIntent || preference || categoryPreference, indexedCandidates, 36);
   let scopedCandidates = lshCandidates
     .filter((spot) => (!category || spot.category === category) && matchesSpotSearch(spot, keyword));
   if (scopedCandidates.length < 10) {
@@ -1462,6 +1532,7 @@ function renderRecommendationCards(results, meta = {}) {
           <span style="width: ${Math.max(8, match * 100).toFixed(0)}%"></span>
         </div>
         <div class="interest-label"><span>轻松探索</span><span>${match >= 0.72 ? "High Interest" : match >= 0.38 ? "Balanced" : "Quiet"}</span></div>
+        ${renderSpotReviewList(spotReviewSnippets(item.spot))}
         <div class="card-actions">
           ${node ? `<button class="link-button" data-focus-node="${node.id}">地图定位</button>${isRoutableNode(node.id) ? `<button class="link-button" data-route-goal="${node.id}">设为终点</button>` : '<span class="route-node-note">可查看详情</span>'}` : ""}
         </div>
@@ -1470,6 +1541,45 @@ function renderRecommendationCards(results, meta = {}) {
     container.appendChild(card);
   });
   bindResultButtons(container);
+}
+
+function spotReviewSnippets(spot) {
+  const related = state.diaries.filter((diary) => diaryMatchesSpot(diary, spot));
+  const comments = related.flatMap((diary) => (diary.comments || [])
+    .filter((comment) => comment.content)
+    .map((comment) => ({
+      author: comment.user_name || `用户 ${comment.user_id || ""}`,
+      rating: Number(comment.rating || diary.rating || spot.rating || 0),
+      content: comment.content
+    })));
+  if (comments.length) return comments.slice(0, 2);
+  return related.slice(0, 2).map((diary) => ({
+    author: diary.title || "旅行日记",
+    rating: Number(diary.rating || spot.rating || 0),
+    content: diaryExcerpt(publicDiaryContent(diary), 58)
+  }));
+}
+
+function diaryMatchesSpot(diary, spot) {
+  const name = String(spot?.name || "").trim();
+  const nodeName = String(findNodeBySpot(spot?.id)?.name || "").trim();
+  const text = textOfDiary(diary);
+  return Boolean(name && text.includes(name)) || Boolean(nodeName && text.includes(nodeName));
+}
+
+function renderSpotReviewList(reviews) {
+  if (!reviews.length) return "";
+  return `
+    <div class="spot-review-list" aria-label="景点评论">
+      ${reviews.map((review) => `
+        <blockquote class="spot-review">
+          <span>★ ${Number(review.rating || 0).toFixed(1)}</span>
+          <p>${escapeHtml(review.content || "")}</p>
+          <cite>${escapeHtml(review.author || "旅行者")}</cite>
+        </blockquote>
+      `).join("")}
+    </div>
+  `;
 }
 
 function runShortestPath() {
@@ -1645,6 +1755,24 @@ function shortestPath(start, goal, mode, strategy = state.routeStrategy) {
     strategy,
     segments
   };
+}
+
+function routeConsistencyCheck() {
+  const samples = state.roads ? state.roads.slice(0, 8) : [];
+  const mismatches = samples.reduce((items, road) => {
+    const route = shortestPath(Number(road.from), Number(road.to), "walk", "distance");
+    if (!route) {
+      items.push({ from: road.from, to: road.to, reason: "unreachable" });
+      return items;
+    }
+    const expected = Number(road.dist_walk || 0);
+    const delta = Math.abs(route.distance - expected);
+    if (expected > 0 && delta / expected > 0.35) {
+      items.push({ from: road.from, to: road.to, expected, actual: route.distance });
+    }
+    return items;
+  }, []);
+  return { checked: samples.length, mismatches };
 }
 
 function neighborsOf(id, mode, strategy = state.routeStrategy) {
@@ -1876,13 +2004,21 @@ function renderDiaryList() {
   const mode = byId("diarySearchMode").value;
   const sort = byId("diarySort").value;
   const user = selectedUser();
+  const diaryScope = byId("diaryScopeSelect")?.value || state.diaryScope || "all";
+  state.diaryScope = diaryScope;
   const interest = (user?.preference_tags || []).join(" ");
+  const scopedDiaries = diaryScope === "mine"
+    ? state.diaries.filter((diary) => Number(diary.user_id) === Number(user?.id))
+    : state.diaries;
   const exactTitleCandidates = mode === "title" && keyword
-    ? (state.diaryTitleIndex.get(keyword) || [])
+    ? (state.diaryTitleIndex.get(keyword) || []).filter((diary) => scopedDiaries.includes(diary))
     : null;
+  const indexedDiaries = keyword
+    ? invertedIndexCandidates(state.diaryInvertedIndex, keyword, scopedDiaries)
+    : scopedDiaries;
   const lshCandidates = exactTitleCandidates || (sort === "interest"
-    ? getLshCandidates(state.diaryLshIndex, `${interest} ${keyword}`, state.diaries, 8)
-    : state.diaries);
+    ? getLshCandidates(state.diaryLshIndex, `${interest} ${keyword}`, indexedDiaries, 8)
+    : indexedDiaries);
   const filtered = lshCandidates
     .filter((diary) => matchesDiarySearch(diary, keyword, mode))
     .map((diary) => ({
@@ -1895,19 +2031,26 @@ function renderDiaryList() {
       if (sort === "rating") return Number(b.diary.rating) - Number(a.diary.rating);
       return Number(b.diary.heat) - Number(a.diary.heat);
     });
+  const pageSize = state.diaryPageSize || 10;
+  const pageCount = Math.max(1, Math.ceil(results.length / pageSize));
+  state.diaryPage = Math.min(Math.max(1, Number(state.diaryPage) || 1), pageCount);
+  const pageStart = (state.diaryPage - 1) * pageSize;
+  const pageResults = results.slice(pageStart, pageStart + pageSize);
 
   const container = byId("diaryResults");
   const note = byId("diaryAlgorithmNote");
   if (note) {
     const searchLabel = mode === "title" ? "按标题查找" : mode === "destination" ? "按目的地查找" : "按正文查找";
     note.innerHTML = `
+      <span>${diaryScope === "mine" ? "我的日记" : "全部日记"}</span>
       <span>${searchLabel}</span>
       <span>${sort === "interest" ? "按你的偏好重排" : "按社区反馈排序"}</span>
-      <span>${results.length} 篇旅行故事</span>
+      <span>第 ${state.diaryPage}/${pageCount} 页，显示 ${pageResults.length}/${results.length} 篇旅行故事</span>
     `;
   }
+  renderDiaryPager(pageCount, results.length);
   container.innerHTML = "";
-  if (!results.length) {
+  if (!pageResults.length) {
     container.innerHTML = `
       <article class="result-card">
         <p class="eyebrow">检索结果</p>
@@ -1917,7 +2060,7 @@ function renderDiaryList() {
     `;
     return;
   }
-  results.forEach((item) => {
+  pageResults.forEach((item) => {
     const image = diaryCardImage(item.diary);
     const date = String(item.diary.created_at || "").slice(0, 10) || "近期";
     const content = publicDiaryContent(item.diary);
@@ -1952,6 +2095,27 @@ function renderDiaryList() {
     container.appendChild(card);
   });
   bindDiaryButtons(container);
+}
+
+function renderDiaryPager(pageCount, resultCount) {
+  const pager = byId("diaryPager");
+  if (!pager) return;
+  if (resultCount <= state.diaryPageSize) {
+    pager.innerHTML = "";
+    return;
+  }
+  pager.innerHTML = `
+    <button class="secondary-button" type="button" data-diary-page="prev" ${state.diaryPage <= 1 ? "disabled" : ""}>上一页</button>
+    <span>第 ${state.diaryPage} / ${pageCount} 页</span>
+    <button class="secondary-button" type="button" data-diary-page="next" ${state.diaryPage >= pageCount ? "disabled" : ""}>下一页</button>
+  `;
+  pager.querySelectorAll("[data-diary-page]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.diaryPage += button.dataset.diaryPage === "next" ? 1 : -1;
+      renderDiaryList();
+      focusResultRegion("diaryResults");
+    });
+  });
 }
 
 function diaryCardImage(diary) {
@@ -2270,7 +2434,65 @@ function generateDiaryDraft() {
   `;
 }
 
-function generateAigcStoryboard() {
+async function generateAigcStoryboard() {
+  const target = byId("aigcStoryboard");
+  if (!isAigcConfigured()) {
+    renderLocalStoryboard("未配置真实 AIGC 接口，已使用本地分镜兜底。");
+    return;
+  }
+  target.innerHTML = `<strong>正在调用 AIGC 接口...</strong><p class="storyboard-hint">使用 ${escapeHtml(state.aigcConfig.model || "qwen-plus")} 生成旅行分镜。</p>`;
+  try {
+    const frames = await callAigcStoryboardApi();
+    renderStoryboardFrames(frames, "旅行分镜已生成", "来自已配置的 OpenAI-compatible 接口。");
+  } catch (error) {
+    renderLocalStoryboard(`真实接口暂不可用：${error.message || "请求失败"}。已使用本地分镜兜底。`);
+  }
+}
+
+function isAigcConfigured() {
+  return Boolean(state.aigcConfig?.enabled && state.aigcConfig?.baseUrl && state.aigcConfig?.model && state.aigcConfig?.apiKey);
+}
+
+async function callAigcStoryboardApi() {
+  const user = selectedUser();
+  const preference = (user?.preference_tags || ["文化", "路线"]).slice(0, 3).join("、");
+  const destination = byId("diaryDestinationInput").value.trim() || selectedMultiStops().map((id) => findNode(id)?.name).filter(Boolean).slice(0, 3).join("、") || "颐和园";
+  const content = byId("diaryContentInput").value.trim() || "根据路线、照片描述和用户偏好生成 4 个短视频分镜。";
+  const response = await fetch(`${normalizeAigcBaseUrl(state.aigcConfig.baseUrl)}/chat/completions`, {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${state.aigcConfig.apiKey}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      model: state.aigcConfig.model || "qwen-plus",
+      messages: [
+        { role: "system", content: "你是旅游日记短视频分镜助手。请输出 4 条中文分镜，每条不超过 32 字。" },
+        { role: "user", content: `目的地：${destination}\n用户偏好：${preference}\n日记内容：${content}` }
+      ],
+      temperature: 0.7
+    })
+  });
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(payload.error?.message || `HTTP ${response.status}`);
+  }
+  const text = payload.choices?.[0]?.message?.content || payload.output_text || "";
+  const frames = text
+    .split(/\n+/)
+    .map((line) => line.replace(/^\s*(?:[-*]|\d+[.、)]）)\s*/, "").trim())
+    .filter(Boolean)
+    .slice(0, 4);
+  if (!frames.length) throw new Error("接口返回为空");
+  return frames;
+}
+
+function normalizeAigcBaseUrl(value) {
+  const base = String(value || "https://dashscope.aliyuncs.com/compatible-mode/v1").trim().replace(/\/+$/, "");
+  return base || "https://dashscope.aliyuncs.com/compatible-mode/v1";
+}
+
+function renderLocalStoryboard(hint = "根据照片描述、路线和偏好生成一组可展示的短片脚本。") {
   const user = selectedUser();
   const preference = (user?.preference_tags || ["文化", "路线"]).slice(0, 3);
   const frames = [
@@ -2279,9 +2501,13 @@ function generateAigcStoryboard() {
     "中景：把评分、热度和日记关键词生成字幕，说明推荐原因。",
     "结尾：输出 8 秒旅行动画脚本草稿，用作日记封面或短视频分镜。"
   ];
+  renderStoryboardFrames(frames, "旅行分镜已生成", hint);
+}
+
+function renderStoryboardFrames(frames, title, hint) {
   byId("aigcStoryboard").innerHTML = `
-    <strong>旅行分镜已生成</strong>
-    <p class="storyboard-hint">根据照片描述、路线和偏好生成一组可展示的短片脚本。</p>
+    <strong>${escapeHtml(title)}</strong>
+    <p class="storyboard-hint">${escapeHtml(hint)}</p>
     <ol>${frames.map((frame) => `<li>${escapeHtml(frame)}</li>`).join("")}</ol>
   `;
 }
@@ -2482,6 +2708,10 @@ function matchesSpotSearch(spot, keyword) {
 }
 
 function spotSearchText(spot) {
+  return textOfSpot(spot).toLowerCase();
+}
+
+function textOfSpot(spot) {
   const node = findNodeBySpot(spot.id);
   return [
     spot.name,
@@ -2490,7 +2720,7 @@ function spotSearchText(spot) {
     node?.name,
     node?.type,
     node?.description
-  ].filter(Boolean).join(" ").toLowerCase();
+  ].filter(Boolean).join(" ");
 }
 
 function spotSortScore(sortMode, compositeScore, ratingScore, heatScore, interestScore) {
@@ -2548,8 +2778,11 @@ function heapSink(heap, index) {
 }
 
 function buildSimilarityIndexes() {
+  state.searchCache.clear();
   state.spotLshIndex = buildLshIndex(state.spots, (spot) => `${spot.name} ${spot.category} ${spot.tags}`);
   state.diaryLshIndex = buildLshIndex(state.diaries, textOfDiary);
+  state.spotInvertedIndex = buildInvertedIndex(state.spots, textOfSpot);
+  state.diaryInvertedIndex = buildInvertedIndex(state.diaries, textOfDiary);
   buildDiaryTitleIndex();
 }
 
@@ -2573,6 +2806,39 @@ function buildLshIndex(items, textOfItem) {
     });
   });
   return index;
+}
+
+function buildInvertedIndex(items, textOfItem) {
+  const index = new Map();
+  items.forEach((item) => {
+    tokenizeFeatureText(textOfItem(item)).forEach((token) => {
+      if (!index.has(token)) index.set(token, []);
+      index.get(token).push(item);
+    });
+  });
+  return index;
+}
+
+function invertedIndexCandidates(index, query, fallbackItems) {
+  const tokens = tokenizeFeatureText(query);
+  if (!tokens.length || !index.size) return fallbackItems;
+  const fallbackKey = fallbackItems.map((item) => item.id ?? item.filename ?? `${item.title}|${item.destination}`).join(",");
+  const cacheKey = `${index === state.spotInvertedIndex ? "spot" : "diary"}:${tokens.join("|")}:${fallbackKey}`;
+  if (state.searchCache.has(cacheKey)) return state.searchCache.get(cacheKey);
+  const counts = new Map();
+  tokens.forEach((token) => {
+    (index.get(token) || []).forEach((item) => {
+      const id = item.id ?? `${item.title}|${item.destination}`;
+      counts.set(id, { item, count: (counts.get(id)?.count || 0) + 1 });
+    });
+  });
+  const candidates = Array.from(counts.values())
+    .filter((entry) => entry.count >= Math.min(tokens.length, 2))
+    .sort((a, b) => b.count - a.count)
+    .map((entry) => entry.item);
+  const result = candidates.length ? candidates : fallbackItems;
+  state.searchCache.set(cacheKey, result);
+  return result;
 }
 
 function getLshCandidates(index, query, fallbackItems, minimum = 10) {
@@ -2828,9 +3094,10 @@ function unique(values) {
 
 function resolveAssetPath(image) {
   if (!image) return FALLBACK_IMAGE;
-  if (image.startsWith("web/")) return `../${image}`;
+  if (image.startsWith("web/")) return `./${image.slice(4)}`;
+  if (image.startsWith("assets/")) return `./${image}`;
   if (image.startsWith("./") || image.startsWith("../") || image.startsWith("http")) return image;
-  return `../${image}`;
+  return `./${image}`;
 }
 
 function haversineM(a, b) {

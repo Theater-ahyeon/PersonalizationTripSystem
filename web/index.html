@@ -241,6 +241,10 @@
               <p>浏览大家的旅行故事，也可以按目的地、标题和正文查找灵感。</p>
             </div>
             <div class="inline-controls">
+              <label>范围<select id="diaryScopeSelect">
+                <option value="all">全部日记</option>
+                <option value="mine">我的日记</option>
+              </select></label>
               <label>排序<select id="diarySort">
                 <option value="heat">热度优先</option>
                 <option value="rating">评分优先</option>
@@ -256,6 +260,7 @@
             </div>
           </div>
           <div id="diaryAlgorithmNote" class="algorithm-note" aria-live="polite"></div>
+          <div id="diaryPager" class="diary-pager" aria-label="日记分页"></div>
           <div id="diaryResults" class="diary-masonry"></div>
         </section>
       </section>
@@ -522,6 +527,10 @@
           <option value="rating">评分优先</option>
           <option value="interest">兴趣匹配</option>
         </select></label>
+        <label class="toggle-row"><input id="aigcEnabledToggle" type="checkbox"> 启用真实 AIGC 分镜接口</label>
+        <label>AIGC Base URL<input id="aigcBaseUrlInput" type="url" placeholder="https://dashscope.aliyuncs.com/compatible-mode/v1"></label>
+        <label>AIGC 模型<input id="aigcModelInput" type="text" placeholder="qwen-plus"></label>
+        <label>AIGC API Key<input id="aigcApiKeyInput" type="password" autocomplete="off" placeholder="仅保存在当前浏览器"></label>
         <label class="toggle-row"><input id="compactCardsToggle" type="checkbox"> 紧凑卡片显示</label>
         <button id="saveSettingsButton" class="primary-button full" type="button">保存设置</button>
         <p id="settingsFeedback" class="modal-feedback" aria-live="polite"></p>

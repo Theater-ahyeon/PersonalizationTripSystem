@@ -14,7 +14,16 @@
     ],
     "content": "二校门到主楼的校园步行路线：本次路线围绕清华大学二校门展开，适合展示清华大学区域的路线规划、设施查询、美食推荐和日记检索。",
     "original_bytes": 460,
-    "compressed_bytes": 207
+    "compressed_bytes": 207,
+    "comments": [
+      {
+        "user_id": 1,
+        "user_name": "游客01",
+        "rating": 4.2,
+        "content": "清华大学二校门路线提示很实用，适合第一次来的人照着走。",
+        "created_at": "2026-05-20 18:00:00"
+      }
+    ]
   },
   {
     "id": 2,
@@ -31,7 +40,16 @@
     ],
     "content": "图书馆老馆和大礼堂的建筑打卡：本次路线围绕清华大学大礼堂展开，适合展示清华大学区域的路线规划、设施查询、美食推荐和日记检索。",
     "original_bytes": 497,
-    "compressed_bytes": 249
+    "compressed_bytes": 249,
+    "comments": [
+      {
+        "user_id": 2,
+        "user_name": "游客02",
+        "rating": 4.4,
+        "content": "清华大学大礼堂照片点位和停留节奏都清楚，收藏后规划方便很多。",
+        "created_at": "2026-05-21 18:00:00"
+      }
+    ]
   },
   {
     "id": 3,
@@ -48,7 +66,16 @@
     ],
     "content": "荷塘到水木清华的安静散步：本次路线围绕清华大学图书馆老馆展开，适合展示清华大学区域的路线规划、设施查询、美食推荐和日记检索。",
     "original_bytes": 534,
-    "compressed_bytes": 294
+    "compressed_bytes": 294,
+    "comments": [
+      {
+        "user_id": 3,
+        "user_name": "游客03",
+        "rating": 4.6,
+        "content": "清华大学图书馆老馆评论里提到的补给点很有帮助，实际走起来不赶。",
+        "created_at": "2026-05-22 18:00:00"
+      }
+    ]
   },
   {
     "id": 4,
@@ -65,7 +92,16 @@
     ],
     "content": "艺术博物馆半日参观记录：本次路线围绕清华大学主楼展开，适合展示清华大学区域的路线规划、设施查询、美食推荐和日记检索。",
     "original_bytes": 571,
-    "compressed_bytes": 257
+    "compressed_bytes": 257,
+    "comments": [
+      {
+        "user_id": 4,
+        "user_name": "游客04",
+        "rating": 4.8,
+        "content": "清华大学主楼这个目的地适合慢慢逛，避开高峰体验会更好。",
+        "created_at": "2026-05-23 18:00:00"
+      }
+    ]
   },
   {
     "id": 5,
@@ -82,7 +118,16 @@
     ],
     "content": "校医院到紫荆公寓区服务路线：本次路线围绕清华荷塘展开，适合展示清华大学区域的路线规划、设施查询、美食推荐和日记检索。",
     "original_bytes": 608,
-    "compressed_bytes": 304
+    "compressed_bytes": 304,
+    "comments": [
+      {
+        "user_id": 5,
+        "user_name": "游客05",
+        "rating": 4.2,
+        "content": "清华荷塘路线提示很实用，适合第一次来的人照着走。",
+        "created_at": "2026-05-24 18:00:00"
+      }
+    ]
   },
   {
     "id": 6,
@@ -99,7 +144,16 @@
     ],
     "content": "清芬园食堂午餐推荐：本次路线围绕近春园展开，适合展示清华大学区域的路线规划、设施查询、美食推荐和日记检索。",
     "original_bytes": 645,
-    "compressed_bytes": 355
+    "compressed_bytes": 355,
+    "comments": [
+      {
+        "user_id": 6,
+        "user_name": "游客06",
+        "rating": 4.4,
+        "content": "近春园照片点位和停留节奏都清楚，收藏后规划方便很多。",
+        "created_at": "2026-05-25 18:00:00"
+      }
+    ]
   },
   {
     "id": 7,
@@ -116,7 +170,16 @@
     ],
     "content": "教学楼区到综合体育馆通勤体验：本次路线围绕水木清华展开，适合展示清华大学区域的路线规划、设施查询、美食推荐和日记检索。",
     "original_bytes": 682,
-    "compressed_bytes": 307
+    "compressed_bytes": 307,
+    "comments": [
+      {
+        "user_id": 7,
+        "user_name": "游客07",
+        "rating": 4.6,
+        "content": "水木清华评论里提到的补给点很有帮助，实际走起来不赶。",
+        "created_at": "2026-05-26 18:00:00"
+      }
+    ]
   },
   {
     "id": 8,
@@ -133,7 +196,16 @@
     ],
     "content": "近春园和荷塘的校园慢游：本次路线围绕清华大学艺术博物馆展开，适合展示清华大学区域的路线规划、设施查询、美食推荐和日记检索。",
     "original_bytes": 719,
-    "compressed_bytes": 360
+    "compressed_bytes": 360,
+    "comments": [
+      {
+        "user_id": 8,
+        "user_name": "游客08",
+        "rating": 4.8,
+        "content": "清华大学艺术博物馆这个目的地适合慢慢逛，避开高峰体验会更好。",
+        "created_at": "2026-05-27 18:00:00"
+      }
+    ]
   },
   {
     "id": 9,
@@ -150,7 +222,16 @@
     ],
     "content": "学生服务中心办事路线：本次路线围绕学生服务中心展开，适合展示清华大学区域的路线规划、设施查询、美食推荐和日记检索。",
     "original_bytes": 756,
-    "compressed_bytes": 416
+    "compressed_bytes": 416,
+    "comments": [
+      {
+        "user_id": 9,
+        "user_name": "游客09",
+        "rating": 4.2,
+        "content": "学生服务中心路线提示很实用，适合第一次来的人照着走。",
+        "created_at": "2026-05-20 18:00:00"
+      }
+    ]
   },
   {
     "id": 10,
@@ -167,6 +248,15 @@
     ],
     "content": "主楼到艺术博物馆的东区路线：本次路线围绕紫荆公寓区展开，适合展示清华大学区域的路线规划、设施查询、美食推荐和日记检索。",
     "original_bytes": 793,
-    "compressed_bytes": 357
+    "compressed_bytes": 357,
+    "comments": [
+      {
+        "user_id": 10,
+        "user_name": "游客10",
+        "rating": 4.4,
+        "content": "紫荆公寓区照片点位和停留节奏都清楚，收藏后规划方便很多。",
+        "created_at": "2026-05-21 18:00:00"
+      }
+    ]
   }
 ]
