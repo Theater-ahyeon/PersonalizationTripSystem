@@ -223,13 +223,17 @@
               <button id="diaryExportButton" class="secondary-button" type="button">导出日记 JSON</button>
               <p class="diary-export-note">导出后可同步到项目数据目录，方便继续维护日记内容。</p>
             </div>
-            <button id="aigcDraftButton" class="primary-button" type="button">生成模拟日记草稿</button>
-            <button id="aigcAnimationButton" class="secondary-button" type="button">生成模拟分镜</button>
+            <button id="aigcDraftButton" class="secondary-button" type="button">填入日记草稿</button>
+            <button id="aigcAnimationButton" class="primary-button" type="button">AI 生成分镜脚本</button>
+            <button id="aigcImagesButton" class="secondary-button" type="button">AI 分镜配图</button>
+            <button id="aigcVideoButton" class="secondary-button" type="button">AI 旅行视频</button>
+            <button id="aigcPipelineButton" class="primary-button" type="button">一键生成（脚本+图+视频）</button>
+            <p id="aigcServiceStatus" class="aigc-service-status">正在检测 AIGC 服务…</p>
             <div id="aigcStoryboard" class="storyboard-output">
               <div class="storyboard-placeholder">
                 <div class="storyboard-icon">🎬</div>
                 <p>旅行故事板</p>
-                <p class="storyboard-hint">根据照片描述和文字，先生成可展示的分镜草稿。</p>
+                <p class="storyboard-hint">填写日记后，可调用千问 + 万相生成真实分镜、配图与短视频；默认使用免费额度更高的模型组合，未配置 API 时自动回退本地模拟。</p>
               </div>
             </div>
           </div>

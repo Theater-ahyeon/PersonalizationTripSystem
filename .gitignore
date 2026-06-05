@@ -8,5 +8,9 @@
 .server-err.log
 .server-out.log
 
+# AIGC secrets
+.env
+web/.env
+
 # C++ build output
 cpp/build/

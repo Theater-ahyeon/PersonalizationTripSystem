@@ -28,6 +28,7 @@ const STORAGE_KEYS = {
   diaryScope: "vagabond.diaryScope",
   aigcConfig: "vagabond.aigcConfig"
 };
+const AIGC_API_BASE = window.AIGC_API_BASE || "http://127.0.0.1:5174";
 const ROUTE_STRATEGIES = {
   distance: {
     label: "最短距离",
@@ -113,7 +114,13 @@ const state = {
   mapBounds: null,
   mapFitted: false,
   mapRegion: "dataset",
-  currentRegionPackId: "summer_palace"
+  currentRegionPackId: "summer_palace",
+  aigc: {
+    ready: false,
+    configured: false,
+    storyboard: null,
+    videoUrl: ""
+  }
 };
 
 const byId = (id) => document.getElementById(id);
@@ -154,6 +161,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     reloadCurrentDataset({ fit: true });
     updateAccountUi();
     await applyInitialUrlState();
+    await refreshAigcServiceStatus();
     byId("loadingState").classList.add("hidden");
   } catch (error) {
     const errMsg = error && error.message ? error.message : String(error || "未知错误");
@@ -269,7 +277,10 @@ function bindStaticControls() {
   byId("diaryExportButton").addEventListener("click", exportDiariesJson);
   byId("indoorRouteButton").addEventListener("click", runIndoorRoute);
   byId("aigcDraftButton").addEventListener("click", generateDiaryDraft);
-  byId("aigcAnimationButton").addEventListener("click", generateAigcStoryboard);
+  byId("aigcAnimationButton").addEventListener("click", () => generateAigcStoryboard({ useApi: true }));
+  byId("aigcImagesButton")?.addEventListener("click", () => generateAigcImages());
+  byId("aigcVideoButton")?.addEventListener("click", () => generateAigcVideo());
+  byId("aigcPipelineButton")?.addEventListener("click", () => generateAigcPipeline());
   setupDiaryModal();
   setupAccountSystem();
 
@@ -2427,64 +2438,103 @@ function huffmanCompressedBytes(text) {
 function generateDiaryDraft() {
   const user = selectedUser();
   const preference = (user?.preference_tags || ["文化", "路线"]).join("、");
-  byId("aigcStoryboard").innerHTML = `
-    <strong>日记草稿已生成</strong>
-    <p class="storyboard-hint">已根据用户偏好和路线内容整理出一版可编辑草稿。</p>
-    <p>今天的路线围绕 ${escapeHtml(preference)} 展开，从入口进入后依次记录建筑、湖景和服务设施体验。你可以继续补充照片说明，让日记更像一篇完整的旅行故事。</p>
+  const context = collectDiaryAigcContext();
+  byId("diaryContentInput").value = [
+    `今天的路线围绕${context.destination || "旅行目的地"}展开，重点体验${preference}。`,
+    context.content || "从入口进入后依次记录建筑、湖景和服务设施，把路线、照片和当天心情整理成一篇完整游记。"
+  ].filter(Boolean).join("\n\n");
+  renderAigcPanel({
+    title: "日记草稿已填入正文",
+    hint: "已根据用户偏好整理可编辑草稿，可继续点击 AI 分镜生成配图或视频。",
+    bodyHtml: `<p>${escapeHtml(byId("diaryContentInput").value)}</p>`
+  });
+}
+
+function collectDiaryAigcContext() {
+  const user = selectedUser();
+  const pack = findRegionPack(state.currentRegionPackId);
+  return {
+    regionName: pack?.name || "旅行区域",
+    title: byId("diaryTitleInput")?.value.trim() || "",
+    destination: byId("diaryDestinationInput")?.value.trim() || pack?.name || "",
+    content: byId("diaryContentInput")?.value.trim() || "",
+    media: byId("diaryMediaInput")?.value.trim() || "",
+    tags: splitTags(byId("diaryTagsInput")?.value || ""),
+    preferences: user?.preference_tags || []
+  };
+}
+
+function formatAigcAudioLabel(videoAudio) {
+  if (videoAudio === "auto") return " · 有声";
+  if (videoAudio === "custom") return " · 自定义音频";
+  if (videoAudio === "none") return " · 静音";
+  return "";
+}
+
+function formatAigcVideoHint(audioMode) {
+  if (audioMode === "custom") return "视频已按自定义音频生成。";
+  if (audioMode === "auto") return "视频由 wan2.7 自动生成背景音乐与环境音效。";
+  return "视频为静音短片（当前模型不含自动配音）。";
+}
+
+async function refreshAigcServiceStatus() {
+  const status = byId("aigcServiceStatus");
+  if (!status) return;
+  try {
+    const response = await fetch(`${AIGC_API_BASE}/api/aigc/health`, { cache: "no-store" });
+    const data = await response.json();
+    state.aigc.ready = Boolean(data.ok);
+    state.aigc.configured = Boolean(data.configured);
+    state.aigc.textModel = data.textModel || "";
+    state.aigc.imageModel = data.imageModel || "";
+    state.aigc.videoModel = data.videoModel || "";
+    state.aigc.videoAudio = data.videoAudio || "none";
+    status.textContent = data.configured
+      ? `AIGC 服务已连接（${data.textModel} / ${data.imageModel} / ${data.videoModel}${formatAigcAudioLabel(data.videoAudio)}）`
+      : "AIGC 代理已启动，但未配置 DASHSCOPE_API_KEY（将使用本地模拟）";
+    status.classList.toggle("aigc-ready", data.configured);
+  } catch {
+    state.aigc.ready = false;
+    state.aigc.configured = false;
+    status.textContent = "AIGC 代理未启动：请运行 web/scripts/start-aigc.ps1（未连接时使用本地模拟）";
+    status.classList.remove("aigc-ready");
+  }
+}
+
+function renderAigcPanel({ title, hint, bodyHtml = "", storyboard = null, videoUrl = "" }) {
+  const container = byId("aigcStoryboard");
+  if (!container) return;
+  const framesHtml = storyboard?.frames?.length
+    ? `<div class="aigc-frame-grid">${storyboard.frames.map((frame, index) => `
+        <article class="frame-card">
+          ${frame.image_url ? `<img src="${escapeHtml(frame.image_url)}" alt="${escapeHtml(frame.title || `镜头 ${index + 1}`)}" loading="lazy">` : ""}
+          <div class="frame-card-body">
+            <h4>${escapeHtml(frame.title || `镜头 ${index + 1}`)}</h4>
+            <p>${escapeHtml(frame.narration || frame.visual_prompt || "")}</p>
+            ${frame.duration_sec ? `<small>${frame.duration_sec}s</small>` : ""}
+          </div>
+        </article>
+      `).join("")}</div>`
+    : "";
+  const videoHtml = videoUrl
+    ? `<div class="aigc-video-wrap"><video class="aigc-video-player" controls playsinline src="${escapeHtml(videoUrl)}"></video></div>`
+    : "";
+  container.innerHTML = `
+    <strong>${escapeHtml(title || "AIGC 输出")}</strong>
+    ${hint ? `<p class="storyboard-hint">${escapeHtml(hint)}</p>` : ""}
+    ${storyboard?.summary ? `<p>${escapeHtml(storyboard.summary)}</p>` : ""}
+    ${framesHtml}
+    ${videoHtml}
+    ${bodyHtml}
   `;
 }
 
-async function generateAigcStoryboard() {
-  const target = byId("aigcStoryboard");
-  if (!isAigcConfigured()) {
-    renderLocalStoryboard("未配置真实 AIGC 接口，已使用本地分镜兜底。");
-    return;
-  }
-  target.innerHTML = `<strong>正在调用 AIGC 接口...</strong><p class="storyboard-hint">使用 ${escapeHtml(state.aigcConfig.model || "qwen-plus")} 生成旅行分镜。</p>`;
-  try {
-    const frames = await callAigcStoryboardApi();
-    renderStoryboardFrames(frames, "旅行分镜已生成", "来自已配置的 OpenAI-compatible 接口。");
-  } catch (error) {
-    renderLocalStoryboard(`真实接口暂不可用：${error.message || "请求失败"}。已使用本地分镜兜底。`);
-  }
-}
-
-function isAigcConfigured() {
-  return Boolean(state.aigcConfig?.enabled && state.aigcConfig?.baseUrl && state.aigcConfig?.model && state.aigcConfig?.apiKey);
-}
-
-async function callAigcStoryboardApi() {
-  const user = selectedUser();
-  const preference = (user?.preference_tags || ["文化", "路线"]).slice(0, 3).join("、");
-  const destination = byId("diaryDestinationInput").value.trim() || selectedMultiStops().map((id) => findNode(id)?.name).filter(Boolean).slice(0, 3).join("、") || "颐和园";
-  const content = byId("diaryContentInput").value.trim() || "根据路线、照片描述和用户偏好生成 4 个短视频分镜。";
-  const response = await fetch(`${normalizeAigcBaseUrl(state.aigcConfig.baseUrl)}/chat/completions`, {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${state.aigcConfig.apiKey}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      model: state.aigcConfig.model || "qwen-plus",
-      messages: [
-        { role: "system", content: "你是旅游日记短视频分镜助手。请输出 4 条中文分镜，每条不超过 32 字。" },
-        { role: "user", content: `目的地：${destination}\n用户偏好：${preference}\n日记内容：${content}` }
-      ],
-      temperature: 0.7
-    })
+function renderAigcLoading(message) {
+  renderAigcPanel({
+    title: "AI 生成中…",
+    hint: message || "正在调用 DashScope，请稍候（视频生成可能需要 1–3 分钟）",
+    bodyHtml: `<p class="aigc-progress"><span class="aigc-spinner" aria-hidden="true"></span>处理中</p>`
   });
-  const payload = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    throw new Error(payload.error?.message || `HTTP ${response.status}`);
-  }
-  const text = payload.choices?.[0]?.message?.content || payload.output_text || "";
-  const frames = text
-    .split(/\n+/)
-    .map((line) => line.replace(/^\s*(?:[-*]|\d+[.、)]）)\s*/, "").trim())
-    .filter(Boolean)
-    .slice(0, 4);
-  if (!frames.length) throw new Error("接口返回为空");
-  return frames;
 }
 
 function normalizeAigcBaseUrl(value) {
@@ -2492,24 +2542,177 @@ function normalizeAigcBaseUrl(value) {
   return base || "https://dashscope.aliyuncs.com/compatible-mode/v1";
 }
 
-function renderLocalStoryboard(hint = "根据照片描述、路线和偏好生成一组可展示的短片脚本。") {
+function mockStoryboard() {
   const user = selectedUser();
+  const context = collectDiaryAigcContext();
   const preference = (user?.preference_tags || ["文化", "路线"]).slice(0, 3);
-  const frames = [
-    `开场：从用户上传的入口照片识别旅行地点，叠加偏好标签 ${preference.join("、")}。`,
-    "转场：沿最短路径展示游览轨迹，突出道路节点和停留点。",
-    "中景：把评分、热度和日记关键词生成字幕，说明推荐原因。",
-    "结尾：输出 8 秒旅行动画脚本草稿，用作日记封面或短视频分镜。"
-  ];
-  renderStoryboardFrames(frames, "旅行分镜已生成", hint);
+  return {
+    title: context.title || `${context.destination || "旅行"}分镜`,
+    summary: "本地模拟分镜（未连接 API 或调用失败时使用）",
+    video_prompt: `旅行 Vlog：${context.destination}，偏好 ${preference.join("、")}`,
+    frames: [
+      {
+        title: "开场",
+        narration: `从${context.destination || "入口"}出发，偏好标签 ${preference.join("、")}。`,
+        visual_prompt: `${context.destination} travel gate morning photo`,
+        duration_sec: 3
+      },
+      {
+        title: "转场",
+        narration: "沿规划路线经过主要节点和停留点。",
+        visual_prompt: "scenic walking route map travel photo",
+        duration_sec: 3
+      },
+      {
+        title: "中景",
+        narration: "记录评分、热度与关键词，形成推荐说明字幕。",
+        visual_prompt: "travel landmark detail shot cinematic",
+        duration_sec: 3
+      },
+      {
+        title: "结尾",
+        narration: "生成 8 秒短片脚本草稿，用作日记封面。",
+        visual_prompt: "sunset travel vlog ending shot",
+        duration_sec: 2
+      }
+    ]
+  };
 }
 
-function renderStoryboardFrames(frames, title, hint) {
-  byId("aigcStoryboard").innerHTML = `
-    <strong>${escapeHtml(title)}</strong>
-    <p class="storyboard-hint">${escapeHtml(hint)}</p>
-    <ol>${frames.map((frame) => `<li>${escapeHtml(frame)}</li>`).join("")}</ol>
-  `;
+async function callAigcApi(path, payload) {
+  const response = await fetch(`${AIGC_API_BASE}${path}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+  const data = await response.json();
+  if (!response.ok || !data.ok) {
+    throw new Error(data.error || `AIGC 请求失败 (${response.status})`);
+  }
+  return data;
+}
+
+async function generateAigcStoryboard({ useApi = true } = {}) {
+  const context = collectDiaryAigcContext();
+  if (!context.title && !context.content && !context.destination) {
+    renderAigcPanel({ title: "请先填写标题、目的地或正文", hint: "AI 分镜需要基础日记内容。" });
+    return;
+  }
+  if (useApi && state.aigc.configured) {
+    try {
+      renderAigcLoading("Qwen 正在生成分镜脚本…");
+      const data = await callAigcApi("/api/aigc/storyboard", { context });
+      state.aigc.storyboard = data.storyboard;
+      renderAigcPanel({
+        title: data.storyboard.title || "AI 分镜脚本",
+        hint: "分镜脚本已生成，可继续「AI 分镜配图」或「AI 旅行视频」。",
+        storyboard: data.storyboard
+      });
+      return;
+    } catch (error) {
+      renderAigcPanel({
+        title: "API 分镜失败，已回退本地模拟",
+        hint: error.message || String(error),
+        storyboard: mockStoryboard()
+      });
+      state.aigc.storyboard = mockStoryboard();
+      return;
+    }
+  }
+  state.aigc.storyboard = mockStoryboard();
+  renderAigcPanel({
+    title: "旅行分镜（本地模拟）",
+    hint: "配置 .env 并启动 aigc-proxy 后可调用千问 + 万相真实 API。",
+    storyboard: state.aigc.storyboard
+  });
+}
+
+async function generateAigcImages() {
+  const context = collectDiaryAigcContext();
+  if (!state.aigc.configured) {
+    renderAigcPanel({ title: "无法生图", hint: "请先配置 DASHSCOPE_API_KEY 并启动 web/scripts/start-aigc.ps1。" });
+    return;
+  }
+  try {
+    renderAigcLoading("万相正在逐帧生成配图（约 30–90 秒）…");
+    const data = await callAigcApi("/api/aigc/images", {
+      context,
+      storyboard: state.aigc.storyboard
+    });
+    state.aigc.storyboard = data.storyboard;
+    renderAigcPanel({
+      title: "AI 分镜配图完成",
+      hint: "图片由通义万相生成，可继续生成旅行短视频。",
+      storyboard: data.storyboard,
+      videoUrl: state.aigc.videoUrl
+    });
+  } catch (error) {
+    renderAigcPanel({ title: "AI 生图失败", hint: error.message || String(error), storyboard: state.aigc.storyboard });
+  }
+}
+
+async function generateAigcVideo() {
+  const context = collectDiaryAigcContext();
+  if (!state.aigc.configured) {
+    renderAigcPanel({ title: "无法生成视频", hint: "请先配置 DASHSCOPE_API_KEY 并启动 web/scripts/start-aigc.ps1。" });
+    return;
+  }
+  try {
+    renderAigcLoading(`万相 ${state.aigc.videoModel || "视频模型"} 正在生成旅行视频（约 1–3 分钟）…`);
+    const data = await callAigcApi("/api/aigc/video", {
+      context,
+      storyboard: state.aigc.storyboard
+    });
+    state.aigc.storyboard = data.storyboard || state.aigc.storyboard;
+    state.aigc.videoUrl = data.video_url || "";
+    renderAigcPanel({
+      title: "AI 旅行视频已生成",
+      hint: formatAigcVideoHint(data.audio_mode),
+      storyboard: state.aigc.storyboard,
+      videoUrl: state.aigc.videoUrl
+    });
+  } catch (error) {
+    renderAigcPanel({ title: "AI 视频生成失败", hint: error.message || String(error), storyboard: state.aigc.storyboard });
+  }
+}
+
+async function generateAigcPipeline() {
+  const context = collectDiaryAigcContext();
+  if (!context.title && !context.content && !context.destination) {
+    renderAigcPanel({ title: "请先填写标题、目的地或正文", hint: "一键生成需要基础日记内容。" });
+    return;
+  }
+  if (!state.aigc.configured) {
+    await generateAigcStoryboard({ useApi: false });
+    renderAigcPanel({
+      title: "未连接 API，仅展示本地模拟",
+      hint: "配置 .env 后可一键生成脚本 + 配图 + 视频。",
+      storyboard: state.aigc.storyboard
+    });
+    return;
+  }
+  try {
+    renderAigcLoading("一键生成：分镜脚本 → 配图 → 短视频，请耐心等待…");
+    const data = await callAigcApi("/api/aigc/pipeline", {
+      context,
+      withImages: true,
+      withVideo: true
+    });
+    state.aigc.storyboard = data.storyboard;
+    state.aigc.videoUrl = data.video_url || "";
+    renderAigcPanel({
+      title: data.storyboard?.title || "AI 旅行故事板",
+      hint: data.audio_mode === "custom"
+        ? "已完成脚本、配图与自定义音频视频。"
+        : data.audio_mode === "auto"
+          ? "已完成脚本、配图与有声短视频（自动配音）。"
+          : "已完成脚本、配图与静音短视频。",
+      storyboard: data.storyboard,
+      videoUrl: state.aigc.videoUrl
+    });
+  } catch (error) {
+    renderAigcPanel({ title: "一键生成失败", hint: error.message || String(error), storyboard: state.aigc.storyboard });
+  }
 }
 
 function recommendFood() {
