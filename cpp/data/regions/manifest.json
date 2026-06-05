@@ -1,39 +1,32 @@
 [
   {
     "id": "summer_palace",
-    "name": "颐和园数据包",
+    "name": "颐和园",
     "city": "北京",
     "status": "active",
     "map_region": "dataset",
-    "description": "当前可运行的算法数据包，包含颐和园内部景点、道路、设施和餐饮数据。",
+    "description": "颐和园旅行区域，包含可选目的地、真实路网过渡节点、设施、美食和日记数据。",
     "nodes_path": "../cpp/data/osm_nodes.json",
     "edges_path": "../cpp/data/osm_edges.json",
     "spots_path": "../cpp/data/spots.json",
+    "roads_path": "../cpp/data/roads.json",
     "facilities_path": "../cpp/data/facilities.json",
-    "restaurants_path": "../cpp/data/restaurants.json"
+    "restaurants_path": "../cpp/data/restaurants.json",
+    "diaries_path": "../cpp/data/diaries/index.json"
   },
   {
-    "id": "beijing_city",
-    "name": "北京全域数据包",
+    "id": "tsinghua_campus",
+    "name": "清华大学",
     "city": "北京",
-    "status": "planned",
-    "map_region": "beijing",
-    "description": "待接入北京多景区/校园路网数据，用于跨目的地推荐与区域内路线规划。"
-  },
-  {
-    "id": "shanghai_city",
-    "name": "上海示例数据包",
-    "city": "上海",
-    "status": "planned",
-    "map_region": "shanghai",
-    "description": "待生成上海景区和校园数据包，复用当前 Top-K、GeoHash、LSH、Dijkstra 和 TSP-DP 算法。"
-  },
-  {
-    "id": "campus_template",
-    "name": "校园模板数据包",
-    "city": "通用",
-    "status": "template",
-    "map_region": "china",
-    "description": "用于学校内部场景：教学楼、宿舍、食堂、图书馆、超市、骑行道路和室内导航。"
+    "status": "active",
+    "map_region": "dataset",
+    "description": "清华大学旅行区域，包含可选目的地、真实路网过渡节点、设施、美食和日记数据。",
+    "nodes_path": "../cpp/data/regions/tsinghua_campus/osm_nodes.json",
+    "edges_path": "../cpp/data/regions/tsinghua_campus/osm_edges.json",
+    "spots_path": "../cpp/data/regions/tsinghua_campus/spots.json",
+    "roads_path": "../cpp/data/regions/tsinghua_campus/roads.json",
+    "facilities_path": "../cpp/data/regions/tsinghua_campus/facilities.json",
+    "restaurants_path": "../cpp/data/regions/tsinghua_campus/restaurants.json",
+    "diaries_path": "../cpp/data/regions/tsinghua_campus/diaries/index.json"
   }
 ]

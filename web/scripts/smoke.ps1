@@ -1,301 +1,257 @@
 $ErrorActionPreference = "Stop"
 
-function New-Text {
-  param([int[]]$CodePoints)
-  return -join ($CodePoints | ForEach-Object { [char]$_ })
-}
-
-$TextSummerPalaceSystem = New-Text @(39056,21644,22253,20010,24615,21270,26053,28216,31995,32479)
-$TextEastGate = New-Text @(39056,21644,22253,19996,23467,38376)
-$TextSuzhouStreet = New-Text @(33487,24030,34903,20837,21475)
-$TextAcceptanceDesk = New-Text @(39564,25910,21488)
-
 $WebRoot = Resolve-Path (Join-Path $PSScriptRoot "..")
 $RepoRoot = Resolve-Path (Join-Path $WebRoot "..")
 $Index = Join-Path $WebRoot "index.html"
 $Styles = Join-Path $WebRoot "styles.css"
 $App = Join-Path $WebRoot "app.js"
 $Assets = Join-Path $WebRoot "assets\spots"
-$OsmNodes = Join-Path $RepoRoot "cpp\data\osm_nodes.json"
-$OsmEdges = Join-Path $RepoRoot "cpp\data\osm_edges.json"
-$SpotsPath = Join-Path $RepoRoot "cpp\data\spots.json"
-$RestaurantsPath = Join-Path $RepoRoot "cpp\data\restaurants.json"
-$FacilitiesPath = Join-Path $RepoRoot "cpp\data\facilities.json"
-$UsersPath = Join-Path $RepoRoot "cpp\data\users.json"
-$DiariesPath = Join-Path $RepoRoot "cpp\data\diaries\index.json"
-$RegionsPath = Join-Path $RepoRoot "cpp\data\regions\manifest.json"
+$AttributionsPath = Join-Path $WebRoot "assets\ATTRIBUTIONS.md"
+$CppData = Join-Path $RepoRoot "cpp\data"
+$WebData = Join-Path $RepoRoot "web\data"
 
-foreach ($Path in @($Index, $Styles, $App, $Assets, $OsmNodes, $OsmEdges, $SpotsPath, $RestaurantsPath, $FacilitiesPath, $UsersPath, $DiariesPath, $RegionsPath)) {
-  if (-not (Test-Path $Path)) {
-    throw "Missing required web demo path: $Path"
+foreach ($Path in @($Index, $Styles, $App, $Assets, $AttributionsPath, $CppData, $WebData)) {
+  if (-not (Test-Path -LiteralPath $Path)) { throw "Missing required path: $Path" }
+}
+
+function Read-Json {
+  param([string]$Path)
+  return Get-Content -Raw -Encoding UTF8 -Path $Path | ConvertFrom-Json
+}
+
+function New-Text {
+  param([int[]]$CodePoints)
+  return -join ($CodePoints | ForEach-Object { [char]$_ })
+}
+
+function New-EdgeAdjacency {
+  param([object[]]$Edges, [string]$Mode)
+  $Adjacency = @{}
+  foreach ($Edge in @($Edges)) {
+    if ($Edge.mode -ne "both" -and $Edge.mode -ne $Mode) { continue }
+    $From = [int]$Edge.from
+    if (-not $Adjacency.ContainsKey($From)) { $Adjacency[$From] = [System.Collections.ArrayList]::new() }
+    [void]$Adjacency[$From].Add($Edge)
+  }
+  return $Adjacency
+}
+
+function Find-ShortestPathWithEdgeData {
+  param([object[]]$Edges, [int]$Start, [int]$Goal, [string]$Mode)
+  $Adjacency = New-EdgeAdjacency -Edges $Edges -Mode $Mode
+  $Dist = @{}
+  $Prev = @{}
+  $PrevEdge = @{}
+  $Queue = [System.Collections.ArrayList]::new()
+  $Dist[$Start] = 0.0
+  [void]$Queue.Add([pscustomobject]@{ Node = $Start; Distance = 0.0 })
+
+  while ($Queue.Count -gt 0) {
+    $Current = @($Queue | Sort-Object Distance)[0]
+    [void]$Queue.Remove($Current)
+    if ([double]$Current.Distance -ne [double]$Dist[[int]$Current.Node]) { continue }
+    if ([int]$Current.Node -eq $Goal) { break }
+    $Outgoing = if ($Adjacency.ContainsKey([int]$Current.Node)) { $Adjacency[[int]$Current.Node] } else { @() }
+    foreach ($Edge in @($Outgoing)) {
+      $NextDistance = [double]$Current.Distance + [double]$Edge.distance
+      if (-not $Dist.ContainsKey([int]$Edge.to) -or $NextDistance -lt [double]$Dist[[int]$Edge.to]) {
+        $Dist[[int]$Edge.to] = $NextDistance
+        $Prev[[int]$Edge.to] = [int]$Current.Node
+        $PrevEdge[[int]$Edge.to] = $Edge
+        [void]$Queue.Add([pscustomobject]@{ Node = [int]$Edge.to; Distance = $NextDistance })
+      }
+    }
+  }
+  if (-not $Dist.ContainsKey($Goal)) {
+    return [pscustomobject]@{ Nodes = @(); Edges = @(); Distance = [double]::PositiveInfinity }
+  }
+  $Path = [System.Collections.ArrayList]::new()
+  $PathEdges = [System.Collections.ArrayList]::new()
+  for ($Node = $Goal; $Node -ne $null; $Node = $Prev[$Node]) {
+    [void]$Path.Insert(0, [int]$Node)
+    if ([int]$Node -eq $Start) { break }
+    [void]$PathEdges.Insert(0, $PrevEdge[[int]$Node])
+  }
+  return [pscustomobject]@{ Nodes = @($Path); Edges = @($PathEdges); Distance = [double]$Dist[$Goal] }
+}
+
+function Assert-RegionDataPack {
+  param(
+    [string]$DataDir,
+    [string]$Label,
+    [int]$ExpectedPoi,
+    [int]$ExpectedSpots,
+    [int]$MinEdges,
+    [int]$MinFacilities,
+    [int]$MinRestaurants,
+    [int]$MinDiaries,
+    [object[]]$Routes
+  )
+
+  $Nodes = Read-Json (Join-Path $DataDir "osm_nodes.json")
+  $Edges = Read-Json (Join-Path $DataDir "osm_edges.json")
+  $Spots = Read-Json (Join-Path $DataDir "spots.json")
+  $Restaurants = Read-Json (Join-Path $DataDir "restaurants.json")
+  $Facilities = Read-Json (Join-Path $DataDir "facilities.json")
+  $Diaries = Read-Json (Join-Path $DataDir "diaries\index.json")
+
+  $PoiNodes = @($Nodes | Where-Object { [int]$_.spot_id -gt 0 })
+  $RoadNodes = @($Nodes | Where-Object { [int]$_.spot_id -eq 0 })
+  if ($PoiNodes.Count -ne $ExpectedPoi) { throw "$Label must contain $ExpectedPoi selectable POI nodes, found $($PoiNodes.Count)" }
+  if ($RoadNodes.Count -lt 400 -or $RoadNodes.Count -gt 700) { throw "$Label transition nodes must be 400-700, found $($RoadNodes.Count)" }
+  if (@($Edges).Count -lt $MinEdges) { throw "$Label must contain at least $MinEdges directed OSM edges, found $(@($Edges).Count)" }
+  if (@($Spots).Count -ne $ExpectedSpots) { throw "$Label must contain $ExpectedSpots spots, found $(@($Spots).Count)" }
+  if (@($Restaurants).Count -lt $MinRestaurants) { throw "$Label must contain at least $MinRestaurants restaurants, found $(@($Restaurants).Count)" }
+  if (@($Facilities).Count -lt $MinFacilities) { throw "$Label must contain at least $MinFacilities facilities, found $(@($Facilities).Count)" }
+  if (@($Diaries).Count -lt $MinDiaries) { throw "$Label must contain at least $MinDiaries diary entries, found $(@($Diaries).Count)" }
+
+  $NodeById = @{}
+  foreach ($Node in @($Nodes)) { $NodeById[[int]$Node.id] = $Node }
+
+  $MaxEdge = 0.0
+  foreach ($Edge in @($Edges)) {
+    $From = $NodeById[[int]$Edge.from]
+    $To = $NodeById[[int]$Edge.to]
+    if (-not $From -or -not $To) { throw "$Label edge references missing node: $($Edge.from)->$($Edge.to)" }
+    if ([int]$From.spot_id -gt 0 -and [int]$To.spot_id -gt 0) {
+      throw "$Label must not contain direct POI-to-POI OSM edge: $($Edge.from)->$($Edge.to)"
+    }
+    $MaxEdge = [Math]::Max($MaxEdge, [double]$Edge.distance)
+  }
+  if ($MaxEdge -gt 120.1) { throw "$Label must keep output route segments near 120m or less; max edge was $MaxEdge" }
+
+  foreach ($Poi in @($PoiNodes)) {
+    $AccessEdges = @($Edges | Where-Object {
+      [int]$_.from -eq [int]$Poi.id -or [int]$_.to -eq [int]$Poi.id
+    } | Where-Object {
+      $OtherId = if ([int]$_.from -eq [int]$Poi.id) { [int]$_.to } else { [int]$_.from }
+      $Other = $NodeById[$OtherId]
+      $Other -and [int]$Other.spot_id -eq 0
+    })
+    if ($AccessEdges.Count -eq 0) { throw "$Label POI has no transition-node access edge: $($Poi.name)" }
+  }
+
+  foreach ($Pair in @($Routes)) {
+    $Route = Find-ShortestPathWithEdgeData -Edges $Edges -Start $Pair[0] -Goal $Pair[1] -Mode "walk"
+    if ($Route.Nodes.Count -lt 3) { throw "$Label route $($Pair[0])->$($Pair[1]) must include transition nodes." }
+    $TransitionCount = @($Route.Nodes | Where-Object {
+      $NodeById[[int]$_] -and [int]$NodeById[[int]$_].spot_id -eq 0
+    }).Count
+    if ($TransitionCount -eq 0) { throw "$Label route $($Pair[0])->$($Pair[1]) did not use transition nodes." }
+    $RouteMaxEdge = 0.0
+    foreach ($Edge in @($Route.Edges)) { $RouteMaxEdge = [Math]::Max($RouteMaxEdge, [double]$Edge.distance) }
+    if ($RouteMaxEdge -gt 120.1) {
+      throw "$Label route $($Pair[0])->$($Pair[1]) has a segment longer than 120m: $RouteMaxEdge"
+    }
+  }
+
+  foreach ($Poi in @($PoiNodes)) {
+    $PoiImage = [string]$Poi.image
+    if (-not $PoiImage) { throw "$Label POI must include an image: $($Poi.name)" }
+    if ($Label -like "*Summer Palace*" -and $PoiImage -like "*.svg") {
+      throw "$Label POI must use a real photo instead of SVG placeholder: $($Poi.name) -> $PoiImage"
+    }
+  }
+
+  $ImagePaths = @($Nodes | ForEach-Object { $_.image } | Sort-Object -Unique)
+  foreach ($ImagePath in $ImagePaths) {
+    if ([string]$ImagePath -match '^https?://') { continue }
+    $LocalImage = Join-Path $RepoRoot $ImagePath
+    if (-not (Test-Path -LiteralPath $LocalImage)) { throw "$Label references missing image asset: $ImagePath" }
   }
 }
 
-# Also verify web/data/ copies exist for HTTP serving
-$WebDataDirs = @("web\data", "web\data\diaries", "web\data\regions")
-foreach ($Dir in $WebDataDirs) {
-  $FullPath = Join-Path $RepoRoot $Dir
-  if (-not (Test-Path $FullPath)) {
-    throw "Missing web/data directory required for HTTP serving: $FullPath. Run setup-data.ps1 first."
+function Assert-Manifest {
+  param([string]$DataDir, [string]$Label)
+  $Regions = Read-Json (Join-Path $DataDir "regions\manifest.json")
+  if (@($Regions).Count -ne 2) { throw "$Label manifest must contain exactly 2 regions, found $(@($Regions).Count)" }
+  $Names = @($Regions | Sort-Object id | ForEach-Object { $_.name })
+  $ExpectedNames = @(
+    (New-Text @(39056, 21644, 22253)),
+    (New-Text @(28165, 21326, 22823, 23398))
+  )
+  if (($Names -join "|") -ne ($ExpectedNames -join "|")) { throw "$Label manifest names must be Summer Palace and Tsinghua University, found $($Names -join ', ')" }
+  foreach ($Region in @($Regions)) {
+    foreach ($Field in @("nodes_path", "edges_path", "spots_path", "facilities_path", "restaurants_path", "diaries_path")) {
+      if (-not $Region.PSObject.Properties[$Field] -or -not $Region.$Field) { throw "$Label manifest region $($Region.id) missing $Field" }
+    }
+    if ([string]$Region.name -like "*数据集*" -or [string]$Region.name -like "*数据包*") {
+      throw "$Label manifest region name must not include 数据集/数据包: $($Region.name)"
+    }
   }
 }
-$WebDataFiles = @("osm_nodes.json", "osm_edges.json", "spots.json", "restaurants.json", "facilities.json", "users.json")
-foreach ($File in $WebDataFiles) {
-  $FullPath = Join-Path $RepoRoot "web\data\$File"
-  if (-not (Test-Path $FullPath)) {
-    throw "Missing web/data file: $FullPath. Run setup-data.ps1 to copy from cpp/data/."
+
+Assert-Manifest -DataDir $CppData -Label "cpp/data"
+Assert-Manifest -DataDir $WebData -Label "web/data"
+
+Assert-RegionDataPack -DataDir $CppData -Label "cpp/data Summer Palace" -ExpectedPoi 20 -ExpectedSpots 20 -MinEdges 1000 -MinFacilities 50 -MinRestaurants 50 -MinDiaries 10 -Routes @(@(1, 8), @(9, 13), @(20, 6))
+Assert-RegionDataPack -DataDir $WebData -Label "web/data Summer Palace" -ExpectedPoi 20 -ExpectedSpots 20 -MinEdges 1000 -MinFacilities 50 -MinRestaurants 50 -MinDiaries 10 -Routes @(@(1, 8), @(9, 13), @(20, 6))
+Assert-RegionDataPack -DataDir (Join-Path $CppData "regions\tsinghua_campus") -Label "cpp/data Tsinghua" -ExpectedPoi 14 -ExpectedSpots 14 -MinEdges 800 -MinFacilities 8 -MinRestaurants 6 -MinDiaries 10 -Routes @(@(1, 4), @(14, 10), @(3, 8))
+Assert-RegionDataPack -DataDir (Join-Path $WebData "regions\tsinghua_campus") -Label "web/data Tsinghua" -ExpectedPoi 14 -ExpectedSpots 14 -MinEdges 800 -MinFacilities 8 -MinRestaurants 6 -MinDiaries 10 -Routes @(@(1, 4), @(14, 10), @(3, 8))
+
+$CppFacilitiesRaw = Get-Content -Raw -Encoding UTF8 -Path (Join-Path $CppData "facilities.json")
+$WebFacilitiesRaw = Get-Content -Raw -Encoding UTF8 -Path (Join-Path $WebData "facilities.json")
+if ($CppFacilitiesRaw -ne $WebFacilitiesRaw) { throw "Summer Palace facilities must be byte-identical between cpp/data and web/data." }
+$SummerFacilities = $CppFacilitiesRaw | ConvertFrom-Json
+$SummerSpots = Read-Json (Join-Path $CppData "spots.json")
+$SummerSpotIds = @{}
+foreach ($Spot in @($SummerSpots)) { $SummerSpotIds[[int]$Spot.id] = $true }
+$FacilityTypes = @{}
+$PlaceholderRecommendPoint = New-Text @(25512, 33616, 28857)
+$PlaceholderServiceFacility = New-Text @(26381, 21153, 35774, 26045)
+foreach ($Facility in @($SummerFacilities)) {
+  if (-not $SummerSpotIds.ContainsKey([int]$Facility.near_spot_id)) { throw "Facility references missing spot id: $($Facility.name)" }
+  if ([double]$Facility.lat -lt 39.9850 -or [double]$Facility.lat -gt 40.0120 -or [double]$Facility.lon -lt 116.2550 -or [double]$Facility.lon -gt 116.3050) {
+    throw "Facility outside Summer Palace bbox: $($Facility.name)"
   }
+  if ([string]$Facility.name -match '\d+$') { throw "Facility name must not keep generated numeric suffix: $($Facility.name)" }
+  if ([string]$Facility.name -like "*$PlaceholderRecommendPoint*" -or [string]$Facility.name -like "*$PlaceholderServiceFacility*") { throw "Facility name must be realistic, found placeholder wording: $($Facility.name)" }
+  $FacilityTypes[[string]$Facility.type] = $true
+}
+$RequiredFacilityTypes = @(
+  (New-Text @(21355, 29983, 38388)),
+  (New-Text @(28216, 23458, 26381, 21153)),
+  (New-Text @(21806, 31080, 22788)),
+  (New-Text @(39278, 27700, 28857)),
+  (New-Text @(24613, 25937, 28857)),
+  (New-Text @(20572, 36710, 22330)),
+  (New-Text @(22320, 38081, 31449)),
+  (New-Text @(21830, 24215)),
+  (New-Text @(35266, 26223, 21488))
+)
+foreach ($RequiredType in $RequiredFacilityTypes) {
+  if (-not $FacilityTypes.ContainsKey($RequiredType)) { throw "Summer Palace facilities missing type: $RequiredType" }
 }
 
 $IndexText = Get-Content -Raw -Encoding UTF8 -Path $Index
 $StyleText = Get-Content -Raw -Encoding UTF8 -Path $Styles
 $AppText = Get-Content -Raw -Encoding UTF8 -Path $App
-$AllText = @(
-  $IndexText,
-  $StyleText,
-  $AppText,
-  (Get-Content -Raw -Encoding UTF8 -Path $OsmNodes),
-  (Get-Content -Raw -Encoding UTF8 -Path $OsmEdges),
-  (Get-Content -Raw -Encoding UTF8 -Path $SpotsPath),
-  (Get-Content -Raw -Encoding UTF8 -Path $RestaurantsPath),
-  (Get-Content -Raw -Encoding UTF8 -Path $FacilitiesPath),
-  (Get-Content -Raw -Encoding UTF8 -Path $UsersPath),
-  (Get-Content -Raw -Encoding UTF8 -Path $DiariesPath),
-  (Get-Content -Raw -Encoding UTF8 -Path $RegionsPath)
-) -join "`n"
 
-$ForbiddenMojibake = @(
-  (New-Text @(28598,57413,31673)),
-  (New-Text @(38007)),
-  (New-Text @(37734,26495,27992)),
-  (New-Text @(23005,12520)),
-  (New-Text @(26976,25123)),
-  (New-Text @(37719,27697,22719)),
-  (New-Text @(37905)),
-  (New-Text @(29882,57884)),
-  (New-Text @(79,83,77,23059)),
-  ([char]0xfffd)
-)
-foreach ($Needle in $ForbiddenMojibake) {
-  if ($AllText.Contains($Needle)) {
-    throw "Detected mojibake text in frontend/data output."
+foreach ($Needle in @("mapRegionSelect", "datasetMapButton", "MAP_REGIONS", "全国视野", "上海", "广州", "深圳", "成都", "西安", "杭州", "武汉", "重庆")) {
+  if ($IndexText -like "*$Needle*" -or $AppText -like "*$Needle*") {
+    throw "Frontend active UI/code must not contain stale map option/reference: $Needle"
   }
 }
-
-$RequiredIndex = @(
-  $TextSummerPalaceSystem,
-  "tourTabs",
-  "recommendView",
-  "routeView",
-  "queryView",
-  "diaryView",
-  "foodView",
-  "mapRegionSelect",
-  "datasetMapButton",
-  "mapDataNotice",
-  "regionPackSelect",
-  "regionPackStatus",
-  "recommendAlgorithmNote",
-  "recommendKeyword",
-  "recommendSort",
-  "diaryAlgorithmNote",
-  "foodAlgorithmNote",
-  "foodSortSelect",
-  "facilityRangeSelect",
-  "diaryCreateButton",
-  "diaryTitleInput",
-  "diaryDestinationInput",
-  "diaryContentInput",
-  "diaryMediaFileInput",
-  "indoorStartSelect",
-  "indoorGoalSelect",
-  "aigcAnimationButton",
-  "aigcStoryboard",
-  "storyboard-placeholder",
-  "diarySearchMode",
-  "routeStrategySelect",
-  "leaflet.css",
-  "leaflet.js",
-  "map",
-  "detail-panel"
-)
-foreach ($Needle in $RequiredIndex) {
-  if ($IndexText -notlike "*$Needle*") {
-    throw "index.html does not contain required text: $Needle"
+foreach ($Needle in @("fixed-map-region", "regionPackSelect", "selectableRouteNodes", "renderRoadNetwork", "route-summary", "diaries_path")) {
+  if ($IndexText -notlike "*$Needle*" -and $AppText -notlike "*$Needle*" -and $StyleText -notlike "*$Needle*") {
+    throw "Frontend missing expected dual-region hook: $Needle"
   }
 }
-
-$RequiredCss = @(
-  ".app-shell",
-  ".tour-tabs",
-  ".view-panel",
-  ".map-canvas",
-  ".detail-panel",
-  ".result-card",
-  ".algorithm-note",
-  ".map-data-notice",
-  ".region-pack-status"
-)
-foreach ($Needle in $RequiredCss) {
-  if ($StyleText -notlike "*$Needle*") {
-    throw "styles.css does not contain required selector: $Needle"
+foreach ($Needle in @("spotReviewSnippets", "spot-review-list", "diaryScopeSelect", "vagabond.diaryScope", "vagabond.aigcConfig", "loadAigcConfig", "callAigcApi", "generateAigcStoryboard", "renderAigcMotion", "aigc-motion-stage", "spotInvertedIndex", "diaryInvertedIndex", "routeConsistencyCheck")) {
+  if ($IndexText -notlike "*$Needle*" -and $AppText -notlike "*$Needle*" -and $StyleText -notlike "*$Needle*") {
+    throw "Frontend missing planned optimization hook: $Needle"
   }
 }
-
-$RequiredJs = @(
-  "initializeMap",
-  "renderNodeMarkers",
-  "renderFacilityMapMarkers",
-  "focusMapRegion",
-  "updateLocalOverlayVisibility",
-  "geohashEncode",
-  "buildFacilityGeoIndex",
-  "nearbyFacilitiesByGeoHash",
-  "buildSimilarityIndexes",
-  "buildLshIndex",
-  "getLshCandidates",
-  "simhashSignature",
-  "lshBandKeys",
-  "topK",
-  "heapPush",
-  "heapSink",
-  "fillRegionPackSelect",
-  "selectRegionPack",
-  "renderRegionPackStatus",
-  "kmpContains",
-  "kmpTable",
-  "diaryCompressionRatio",
-  "matchesSpotSearch",
-  "spotSortScore",
-  "recommendSortLabel",
-  "createDiaryEntry",
-  "buildDiaryTitleIndex",
-  "huffmanCompressedBytes",
-  "bindDiaryButtons",
-  "foodSortScore",
-  "foodSortLabel",
-  "runIndoorRoute",
-  "generateAigcStoryboard",
-  "MAP_REGIONS",
-  "runShortestPath",
-  "runMultiStopRoute",
-  "fitMapToData",
-  "addMapResetControl",
-  "recommendSpots",
-  "searchFacilities",
-  "recommendFood",
-  "renderDiaryList",
-  "matchesDiarySearch",
-  "ROUTE_STRATEGIES",
-  "routeStrategyInfo",
-  "edgeWeight",
-  "facilityIconText",
-  "drawRoute",
-  "invalidateSize",
-  "circleMarker"
-)
-foreach ($Needle in $RequiredJs) {
-  if ($AppText -notlike "*$Needle*") {
-    throw "app.js does not contain required function or call: $Needle"
-  }
+if ($IndexText -like "*数据集*" -or $IndexText -like "*数据包*") {
+  throw "Visible region UI must not use 数据集/数据包 naming."
+}
+if ($AppText -like '*edge.from < edge.to && edgeSupportsMode(edge, state.mode)*' -or $AppText -like '*edgeLayers.push(layer)*') {
+  throw "Frontend must not render the full road network by default."
 }
 
-foreach ($Needle in @("renderDataOverview", "dataOverview", $TextAcceptanceDesk)) {
-  if ($IndexText -like "*$Needle*" -or $AppText -like "*$Needle*" -or $StyleText -like "*$Needle*") {
-    throw "Removed acceptance-lab page/code should not remain in frontend: $Needle"
-  }
+$AttributionsText = Get-Content -Raw -Encoding UTF8 -Path $AttributionsPath
+foreach ($Needle in @("OpenStreetMap", "ODbL", "The_Long_Corridor", "Seventeen-Arch_Bridge", "TsinghuaUniversityGate", "Main_building_of_Tsinghua_University")) {
+  if ($AttributionsText -notlike "*$Needle*") { throw "Attribution file must include source: $Needle" }
 }
 
-$Nodes = Get-Content -Raw -Encoding UTF8 -Path $OsmNodes | ConvertFrom-Json
-$Edges = Get-Content -Raw -Encoding UTF8 -Path $OsmEdges | ConvertFrom-Json
-$Spots = Get-Content -Raw -Encoding UTF8 -Path $SpotsPath | ConvertFrom-Json
-$Restaurants = Get-Content -Raw -Encoding UTF8 -Path $RestaurantsPath | ConvertFrom-Json
-$Facilities = Get-Content -Raw -Encoding UTF8 -Path $FacilitiesPath | ConvertFrom-Json
-$Users = Get-Content -Raw -Encoding UTF8 -Path $UsersPath | ConvertFrom-Json
-$Diaries = Get-Content -Raw -Encoding UTF8 -Path $DiariesPath | ConvertFrom-Json
-$Regions = Get-Content -Raw -Encoding UTF8 -Path $RegionsPath | ConvertFrom-Json
-
-if (@($Nodes).Count -lt 220) { throw "Expected at least 220 OSM nodes, found $(@($Nodes).Count)" }
-if (@($Edges).Count -lt 400) { throw "Expected at least 400 directed OSM edges, found $(@($Edges).Count)" }
-if (@($Spots).Count -lt 200) { throw "Expected at least 200 scenic/campus destinations, found $(@($Spots).Count)" }
-if (@($Restaurants).Count -lt 50) { throw "Expected at least 50 restaurants, found $(@($Restaurants).Count)" }
-if (@($Facilities).Count -lt 50) { throw "Expected at least 50 facilities, found $(@($Facilities).Count)" }
-if (@($Users).Count -lt 10) { throw "Expected at least 10 users, found $(@($Users).Count)" }
-if (@($Diaries).Count -lt 10) { throw "Expected at least 10 diary entries, found $(@($Diaries).Count)" }
-if (@($Regions).Count -lt 4) { throw "Expected at least 4 region pack manifest entries, found $(@($Regions).Count)" }
-if (-not (@($Regions | Where-Object { $_.status -eq "active" }).Count)) {
-  throw "Expected at least one active region data pack."
-}
-
-$FacilityTypes = @($Facilities | ForEach-Object { $_.type } | Sort-Object -Unique)
-if ($FacilityTypes.Count -lt 10) {
-  throw "Expected at least 10 facility types, found $($FacilityTypes.Count)"
-}
-
-$SummerPalaceNodes = @($Nodes | Where-Object { [int]$_.id -lt 5000 })
-$OutOfBeijingBox = @($SummerPalaceNodes | Where-Object {
-  [double]$_.lat -lt 39.9850 -or [double]$_.lat -gt 40.0120 -or
-  [double]$_.lon -lt 116.2550 -or [double]$_.lon -gt 116.3050
-})
-if ($OutOfBeijingBox.Count -gt 0) {
-  throw "Expected Summer Palace OSM nodes to be inside the bbox; first bad node: $($OutOfBeijingBox[0].name)"
-}
-
-if (-not (@($Nodes | Where-Object { $_.name -eq $TextEastGate }).Count)) {
-  throw "Node dataset must include East Gate named anchor"
-}
-if (-not (@($Nodes | Where-Object { $_.name -eq $TextSuzhouStreet }).Count)) {
-  throw "Node dataset must include Suzhou Street named anchor"
-}
-
-$ImagePaths = @($Nodes | ForEach-Object { $_.image } | Sort-Object -Unique)
-foreach ($ImagePath in $ImagePaths) {
-  $LocalImage = Join-Path $RepoRoot $ImagePath
-  if (-not (Test-Path $LocalImage)) {
-    throw "Missing node image asset referenced by osm_nodes.json: $ImagePath"
-  }
-}
-
-function Find-ShortestPath {
-  param(
-    [int]$Start,
-    [int]$Goal,
-    [string]$Mode
-  )
-  $Dist = @{}
-  $Queue = [System.Collections.ArrayList]::new()
-  $Dist[$Start] = 0.0
-  [void]$Queue.Add([pscustomobject]@{ Node = $Start; Distance = 0.0 })
-  while ($Queue.Count -gt 0) {
-    $Ordered = @($Queue | Sort-Object Distance)
-    $Current = $Ordered[0]
-    [void]$Queue.Remove($Current)
-    if ([double]$Current.Distance -ne [double]$Dist[[int]$Current.Node]) { continue }
-    if ([int]$Current.Node -eq $Goal) { break }
-    foreach ($Edge in @($Edges | Where-Object {
-      $_.from -eq [int]$Current.Node -and ($_.mode -eq "both" -or $_.mode -eq $Mode)
-    })) {
-      $NextDistance = [double]$Current.Distance + [double]$Edge.distance
-      if (-not $Dist.ContainsKey([int]$Edge.to) -or $NextDistance -lt [double]$Dist[[int]$Edge.to]) {
-        $Dist[[int]$Edge.to] = $NextDistance
-        [void]$Queue.Add([pscustomobject]@{ Node = [int]$Edge.to; Distance = $NextDistance })
-      }
-    }
-  }
-  return $Dist.ContainsKey($Goal)
-}
-
-if (-not (Find-ShortestPath -Start 1 -Goal 8 -Mode "walk")) {
-  throw "Expected walk route from node 1 to node 8 to be reachable"
-}
-
-if ($IndexText -notlike "*./vendor/leaflet.css*" -or $IndexText -notlike "*./vendor/leaflet.js*") {
-  throw "index.html must use local Leaflet assets so the demo works without CDN access"
-}
-
-$Images = Get-ChildItem -Path $Assets -Filter *.svg -File
-if ($Images.Count -lt 12) {
-  throw "Expected at least 12 local node image assets, found $($Images.Count)"
-}
-
-Write-Host "Frontend smoke verification passed for Beijing Summer Palace demo."
+Write-Host "Frontend smoke verification passed for Summer Palace and Tsinghua regions."

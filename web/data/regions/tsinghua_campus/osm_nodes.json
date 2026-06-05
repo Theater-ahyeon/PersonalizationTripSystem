@@ -1,0 +1,4192 @@
+[
+  {
+    "id": 1,
+    "name": "清华大学二校门",
+    "lat": 39.9997122,
+    "lon": 116.3182676,
+    "type": "campus_gate",
+    "spot_id": 1,
+    "description": "清华二校门是清华园最具辨识度的历史地标之一，常作为校园参观和拍照路线的起点。",
+    "image": "web/assets/spots/real/tsinghua-gate.jpg"
+  },
+  {
+    "id": 2,
+    "name": "清华大学大礼堂",
+    "lat": 40.0024409,
+    "lon": 116.3182701,
+    "type": "campus_building",
+    "spot_id": 2,
+    "description": "清华大礼堂位于校园核心区，是早期校园建筑群的重要组成部分，适合展示校园文化与建筑路线。",
+    "image": "web/assets/spots/real/tsinghua-auditorium.jpg"
+  },
+  {
+    "id": 3,
+    "name": "清华大学图书馆老馆",
+    "lat": 40.0034859,
+    "lon": 116.3186677,
+    "type": "library",
+    "spot_id": 3,
+    "description": "清华大学图书馆老馆见证了学校百余年学术传统，是校园学习空间和历史建筑结合的代表节点。",
+    "image": "web/assets/spots/real/tsinghua-library.jpg"
+  },
+  {
+    "id": 4,
+    "name": "清华大学主楼",
+    "lat": 40.0006835,
+    "lon": 116.3263596,
+    "type": "teaching_building",
+    "spot_id": 4,
+    "description": "清华主楼位于校园东部教学科研区，是工科教学、科研和校园通勤路线中的重要锚点。",
+    "image": "web/assets/spots/real/tsinghua-main-building.jpg"
+  },
+  {
+    "id": 5,
+    "name": "清华荷塘",
+    "lat": 40.0003659,
+    "lon": 116.3136842,
+    "type": "campus_landscape",
+    "spot_id": 5,
+    "description": "荷塘区域因朱自清散文《荷塘月色》而广为人知，适合散步、摄影和校园文化讲解。",
+    "image": "web/assets/spots/real/tsinghua-former-gate.jpg"
+  },
+  {
+    "id": 6,
+    "name": "近春园",
+    "lat": 40.0007133,
+    "lon": 116.3137813,
+    "type": "campus_landscape",
+    "spot_id": 6,
+    "description": "近春园保留了清华园林空间的水系与绿地景观，是校园慢游和湖畔休息的典型区域。",
+    "image": "web/assets/spots/real/tsinghua-former-gate.jpg"
+  },
+  {
+    "id": 7,
+    "name": "水木清华",
+    "lat": 40.0019264,
+    "lon": 116.3168682,
+    "type": "campus_landmark",
+    "spot_id": 7,
+    "description": "水木清华是清华园古典景观代表之一，常与荷塘、近春园组成校园文化步行路线。",
+    "image": "web/assets/spots/real/tsinghua-library.jpg"
+  },
+  {
+    "id": 8,
+    "name": "清华大学艺术博物馆",
+    "lat": 40.0005821,
+    "lon": 116.329475,
+    "type": "museum",
+    "spot_id": 8,
+    "description": "清华大学艺术博物馆面向校园和公众开放，适合在雨天或室内路线中展示文化展览节点。",
+    "image": "web/assets/spots/museum.svg"
+  },
+  {
+    "id": 9,
+    "name": "学生服务中心",
+    "lat": 40.0086153,
+    "lon": 116.3221181,
+    "type": "service",
+    "spot_id": 9,
+    "description": "学生服务中心承担咨询、事务办理和校园生活服务，可用于展示校园设施查询与附近服务推荐。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 10,
+    "name": "紫荆公寓区",
+    "lat": 40.0098092,
+    "lon": 116.3238712,
+    "type": "dormitory",
+    "spot_id": 10,
+    "description": "紫荆公寓区是清华重要学生生活片区，连接食堂、体育馆、教学区等高频校园通勤节点。",
+    "image": "web/assets/spots/camp-lawn.svg"
+  },
+  {
+    "id": 11,
+    "name": "清芬园食堂",
+    "lat": 40.0045889,
+    "lon": 116.3220522,
+    "type": "restaurant_area",
+    "spot_id": 11,
+    "description": "清芬园食堂是校园餐饮节点，可用于展示从景点或宿舍区到美食推荐点的路径距离计算。",
+    "image": "web/assets/spots/bookstore.svg"
+  },
+  {
+    "id": 12,
+    "name": "综合体育馆",
+    "lat": 40.0030976,
+    "lon": 116.3262759,
+    "type": "sports",
+    "spot_id": 12,
+    "description": "综合体育馆承载运动、比赛和大型校园活动，是教学区与生活区之间的公共活动节点。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 13,
+    "name": "教学楼区",
+    "lat": 40.0015547,
+    "lon": 116.3238181,
+    "type": "teaching_area",
+    "spot_id": 13,
+    "description": "教学楼区覆盖日常上课和科研通勤场景，适合作为校园路线规划中的高频目的地。",
+    "image": "web/assets/spots/real/tsinghua-main-building.jpg"
+  },
+  {
+    "id": 14,
+    "name": "清华大学校医院",
+    "lat": 40.0015279,
+    "lon": 116.3121005,
+    "type": "medical",
+    "spot_id": 14,
+    "description": "清华大学校医院提供基础医疗和应急服务，可与宿舍、体育馆等节点组成服务设施检索示例。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 254,
+    "name": "生活区道路节点240",
+    "lat": 39.999708,
+    "lon": 116.321826,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 6959725348，关联道路：学堂路。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 308,
+    "name": "生活区道路节点294",
+    "lat": 39.999755,
+    "lon": 116.323323,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 380736808，关联道路：清华路。",
+    "image": "web/assets/spots/pier.svg"
+  },
+  {
+    "id": 309,
+    "name": "生活区道路节点295",
+    "lat": 39.999699,
+    "lon": 116.320324,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 380423857，关联道路：清华路。",
+    "image": "web/assets/spots/bamboo.svg"
+  },
+  {
+    "id": 364,
+    "name": "服务道路节点350",
+    "lat": 39.999777,
+    "lon": 116.324033,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 975702234，关联道路：服务道路。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 365,
+    "name": "生活区道路节点351",
+    "lat": 39.999704,
+    "lon": 116.320216,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9003302380，关联道路：清华路。",
+    "image": "web/assets/spots/cherry-road.svg"
+  },
+  {
+    "id": 393,
+    "name": "生活区道路节点379",
+    "lat": 39.999626,
+    "lon": 116.31837,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 975579498，关联道路：清华路。",
+    "image": "web/assets/spots/bamboo.svg"
+  },
+  {
+    "id": 436,
+    "name": "生活区道路节点422",
+    "lat": 39.999794,
+    "lon": 116.324575,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 4723474912，关联道路：清华路。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 438,
+    "name": "生活区道路节点424",
+    "lat": 39.999711,
+    "lon": 116.319926,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9003302381，关联道路：清华路。",
+    "image": "web/assets/spots/museum.svg"
+  },
+  {
+    "id": 465,
+    "name": "生活区道路节点451",
+    "lat": 39.999713,
+    "lon": 116.319856,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 974490968，关联道路：清华路。",
+    "image": "web/assets/spots/bamboo.svg"
+  },
+  {
+    "id": 466,
+    "name": "服务道路节点452",
+    "lat": 39.99969,
+    "lon": 116.318364,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 975579535，关联道路：服务道路。",
+    "image": "web/assets/spots/folk-street.svg"
+  },
+  {
+    "id": 512,
+    "name": "生活区道路节点498",
+    "lat": 40.000999,
+    "lon": 116.321732,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 937644146，关联道路：学堂路。",
+    "image": "web/assets/spots/pier.svg"
+  },
+  {
+    "id": 517,
+    "name": "步行路节点503",
+    "lat": 40.001019,
+    "lon": 116.321632,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10188911968，关联道路：步行路。",
+    "image": "web/assets/spots/bookstore.svg"
+  },
+  {
+    "id": 519,
+    "name": "生活区道路节点505",
+    "lat": 39.999802,
+    "lon": 116.324839,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9776712909，关联道路：清华路。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 550,
+    "name": "服务道路节点536",
+    "lat": 39.999759,
+    "lon": 116.319856,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9176648418，关联道路：服务道路。",
+    "image": "web/assets/spots/folk-street.svg"
+  },
+  {
+    "id": 551,
+    "name": "服务道路节点537",
+    "lat": 39.99979,
+    "lon": 116.318339,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 975579530，关联道路：服务道路。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 554,
+    "name": "服务道路节点540",
+    "lat": 39.999684,
+    "lon": 116.318172,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 975579523，关联道路：服务道路。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 586,
+    "name": "生活区道路节点572",
+    "lat": 40.001301,
+    "lon": 116.315419,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 380419872，关联道路：熙春路。",
+    "image": "web/assets/spots/folk-street.svg"
+  },
+  {
+    "id": 602,
+    "name": "生活区道路节点588",
+    "lat": 39.999822,
+    "lon": 116.325474,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10314633599，关联道路：清华路。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 609,
+    "name": "生活区道路节点595",
+    "lat": 40.001022,
+    "lon": 116.321729,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9801013418，关联道路：学堂路。",
+    "image": "web/assets/spots/bamboo.svg"
+  },
+  {
+    "id": 610,
+    "name": "服务道路节点596",
+    "lat": 40.001004,
+    "lon": 116.321832,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10188911966，关联道路：服务道路。",
+    "image": "web/assets/spots/folk-street.svg"
+  },
+  {
+    "id": 619,
+    "name": "骑行道节点605",
+    "lat": 40.001364,
+    "lon": 116.321584,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10188911969，关联道路：骑行道。",
+    "image": "web/assets/spots/view-tower.svg"
+  },
+  {
+    "id": 620,
+    "name": "步行路节点606",
+    "lat": 40.000997,
+    "lon": 116.321307,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 11057877038，关联道路：步行路。",
+    "image": "web/assets/spots/pier.svg"
+  },
+  {
+    "id": 622,
+    "name": "生活区道路节点608",
+    "lat": 39.999806,
+    "lon": 116.324961,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9776712908，关联道路：清华路。",
+    "image": "web/assets/spots/folk-street.svg"
+  },
+  {
+    "id": 623,
+    "name": "服务道路节点609",
+    "lat": 40.001098,
+    "lon": 116.324516,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 937644147，关联道路：服务道路。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 626,
+    "name": "服务道路节点612",
+    "lat": 40.001078,
+    "lon": 116.323954,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9330994785，关联道路：服务道路。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 648,
+    "name": "服务道路节点634",
+    "lat": 39.999822,
+    "lon": 116.319856,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 977305235，关联道路：服务道路。",
+    "image": "web/assets/spots/camp-lawn.svg"
+  },
+  {
+    "id": 650,
+    "name": "服务道路节点636",
+    "lat": 39.9999,
+    "lon": 116.318258,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 975579517，关联道路：服务道路。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 682,
+    "name": "步行路节点668",
+    "lat": 40.000202,
+    "lon": 116.314727,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 980076558，关联道路：步行路。",
+    "image": "web/assets/spots/folk-street.svg"
+  },
+  {
+    "id": 688,
+    "name": "生活区道路节点674",
+    "lat": 40.0014,
+    "lon": 116.315403,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9731738264，关联道路：熙春路。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 689,
+    "name": "骑行道节点675",
+    "lat": 40.001296,
+    "lon": 116.314759,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 380419150，关联道路：骑行道。",
+    "image": "web/assets/spots/cherry-road.svg"
+  },
+  {
+    "id": 709,
+    "name": "骑行道节点695",
+    "lat": 39.999826,
+    "lon": 116.325606,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 953857984，关联道路：骑行道。",
+    "image": "web/assets/spots/bookstore.svg"
+  },
+  {
+    "id": 715,
+    "name": "服务道路节点701",
+    "lat": 40.001017,
+    "lon": 116.32222,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 974516649，关联道路：服务道路。",
+    "image": "web/assets/spots/view-tower.svg"
+  },
+  {
+    "id": 724,
+    "name": "骑行道节点710",
+    "lat": 40.001331,
+    "lon": 116.320897,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 942362885，关联道路：骑行道。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 727,
+    "name": "步行路节点713",
+    "lat": 40.000994,
+    "lon": 116.32127,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 11662340469，关联道路：步行路。",
+    "image": "web/assets/spots/view-tower.svg"
+  },
+  {
+    "id": 728,
+    "name": "生活区道路节点714",
+    "lat": 40.001304,
+    "lon": 116.324503,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 937460781，关联道路：新民路。",
+    "image": "web/assets/spots/pier.svg"
+  },
+  {
+    "id": 730,
+    "name": "步行路节点716",
+    "lat": 40.001004,
+    "lon": 116.324617,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9078358428，关联道路：步行路。",
+    "image": "web/assets/spots/folk-street.svg"
+  },
+  {
+    "id": 731,
+    "name": "服务道路节点717",
+    "lat": 40.001043,
+    "lon": 116.32307,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 974520049，关联道路：服务道路。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 751,
+    "name": "服务道路节点737",
+    "lat": 40.000051,
+    "lon": 116.319992,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 371157784，关联道路：服务道路。",
+    "image": "web/assets/spots/view-tower.svg"
+  },
+  {
+    "id": 753,
+    "name": "服务道路节点739",
+    "lat": 40.000175,
+    "lon": 116.318241,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9801013442，关联道路：服务道路。",
+    "image": "web/assets/spots/bamboo.svg"
+  },
+  {
+    "id": 783,
+    "name": "步行路节点769",
+    "lat": 40.000203,
+    "lon": 116.314749,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9003302387，关联道路：步行路。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 784,
+    "name": "步行路节点770",
+    "lat": 40.000211,
+    "lon": 116.314652,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 980076548，关联道路：莲桥。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 792,
+    "name": "步行路节点778",
+    "lat": 40.001451,
+    "lon": 116.316047,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 6177640588，关联道路：步行路。",
+    "image": "web/assets/spots/camp-lawn.svg"
+  },
+  {
+    "id": 795,
+    "name": "步行路节点781",
+    "lat": 40.001082,
+    "lon": 116.314812,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 980112224，关联道路：步行路。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 816,
+    "name": "服务道路节点802",
+    "lat": 39.999922,
+    "lon": 116.325739,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10186099501，关联道路：服务道路。",
+    "image": "web/assets/spots/camp-lawn.svg"
+  },
+  {
+    "id": 831,
+    "name": "骑行道节点817",
+    "lat": 40.001375,
+    "lon": 116.320844,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9801013430，关联道路：骑行道。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 834,
+    "name": "服务道路节点820",
+    "lat": 40.003372,
+    "lon": 116.321397,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10188911979，关联道路：服务道路。",
+    "image": "web/assets/spots/museum.svg"
+  },
+  {
+    "id": 836,
+    "name": "步行路节点822",
+    "lat": 40.000972,
+    "lon": 116.320952,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9801013419，关联道路：步行路。",
+    "image": "web/assets/spots/pier.svg"
+  },
+  {
+    "id": 837,
+    "name": "服务道路节点823",
+    "lat": 40.00211,
+    "lon": 116.324455,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 937644150，关联道路：服务道路。",
+    "image": "web/assets/spots/bamboo.svg"
+  },
+  {
+    "id": 838,
+    "name": "服务道路节点824",
+    "lat": 40.001304,
+    "lon": 116.324671,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 992552678，关联道路：服务道路。",
+    "image": "web/assets/spots/folk-street.svg"
+  },
+  {
+    "id": 839,
+    "name": "步行路节点825",
+    "lat": 40.001191,
+    "lon": 116.324611,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9078358427，关联道路：步行路。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 842,
+    "name": "服务道路节点828",
+    "lat": 40.001034,
+    "lon": 116.325574,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9078358429，关联道路：服务道路。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 844,
+    "name": "骑行道节点830",
+    "lat": 40.0013,
+    "lon": 116.323394,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10188911960，关联道路：骑行道。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 863,
+    "name": "服务道路节点849",
+    "lat": 40.000323,
+    "lon": 116.320135,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 977305211，关联道路：服务道路。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 865,
+    "name": "服务道路节点851",
+    "lat": 40.000216,
+    "lon": 116.318238,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 11104325928，关联道路：服务道路。",
+    "image": "web/assets/spots/bookstore.svg"
+  },
+  {
+    "id": 889,
+    "name": "步行路节点875",
+    "lat": 40.000202,
+    "lon": 116.314941,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 980076559，关联道路：步行路。",
+    "image": "web/assets/spots/bookstore.svg"
+  },
+  {
+    "id": 891,
+    "name": "步行路节点877",
+    "lat": 40.000202,
+    "lon": 116.314916,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9003302388，关联道路：步行路。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 892,
+    "name": "步行路节点878",
+    "lat": 40.000229,
+    "lon": 116.314636,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9003302386，关联道路：莲桥。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 898,
+    "name": "步行路节点884",
+    "lat": 40.001761,
+    "lon": 116.316012,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9751767107，关联道路：步行路。",
+    "image": "web/assets/spots/folk-street.svg"
+  },
+  {
+    "id": 902,
+    "name": "步行路节点888",
+    "lat": 40.000792,
+    "lon": 116.31491,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 980112222，关联道路：步行路。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 926,
+    "name": "服务道路节点912",
+    "lat": 39.999978,
+    "lon": 116.32576,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 7952153410，关联道路：服务道路。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 942,
+    "name": "骑行道节点928",
+    "lat": 40.001601,
+    "lon": 116.320817,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 2354044805，关联道路：骑行道。",
+    "image": "web/assets/spots/museum.svg"
+  },
+  {
+    "id": 943,
+    "name": "生活区道路节点929",
+    "lat": 40.003378,
+    "lon": 116.321492,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 371156197，关联道路：学堂路。",
+    "image": "web/assets/spots/view-tower.svg"
+  },
+  {
+    "id": 946,
+    "name": "服务道路节点932",
+    "lat": 40.003362,
+    "lon": 116.321264,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 937443590，关联道路：服务道路。",
+    "image": "web/assets/spots/folk-street.svg"
+  },
+  {
+    "id": 949,
+    "name": "步行路节点935",
+    "lat": 40.000961,
+    "lon": 116.320768,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9801013425，关联道路：步行路。",
+    "image": "web/assets/spots/bookstore.svg"
+  },
+  {
+    "id": 950,
+    "name": "服务道路节点936",
+    "lat": 40.002108,
+    "lon": 116.324335,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 983365363，关联道路：服务道路。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 951,
+    "name": "生活区道路节点937",
+    "lat": 40.002317,
+    "lon": 116.324442,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 151994535，关联道路：新民路。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 952,
+    "name": "服务道路节点938",
+    "lat": 40.001324,
+    "lon": 116.325431,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9797846824，关联道路：服务道路。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 953,
+    "name": "步行路节点939",
+    "lat": 40.001474,
+    "lon": 116.3246,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9078358432，关联道路：步行路。",
+    "image": "web/assets/spots/cherry-road.svg"
+  },
+  {
+    "id": 957,
+    "name": "服务道路节点943",
+    "lat": 40.000942,
+    "lon": 116.325577,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9756804050，关联道路：服务道路。",
+    "image": "web/assets/spots/bamboo.svg"
+  },
+  {
+    "id": 960,
+    "name": "骑行道节点946",
+    "lat": 40.001387,
+    "lon": 116.323499,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 4415075640，关联道路：骑行道。",
+    "image": "web/assets/spots/camp-lawn.svg"
+  },
+  {
+    "id": 981,
+    "name": "服务道路节点967",
+    "lat": 40.000572,
+    "lon": 116.32023,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 6959725340，关联道路：服务道路。",
+    "image": "web/assets/spots/bamboo.svg"
+  },
+  {
+    "id": 984,
+    "name": "服务道路节点970",
+    "lat": 40.000701,
+    "lon": 116.318209,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 380422185，关联道路：服务道路。",
+    "image": "web/assets/spots/camp-lawn.svg"
+  },
+  {
+    "id": 1010,
+    "name": "步行路节点996",
+    "lat": 40.000354,
+    "lon": 116.314545,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9003302385，关联道路：莲桥。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 1015,
+    "name": "步行路节点1001",
+    "lat": 40.001934,
+    "lon": 116.315993,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 6177640589，关联道路：步行路。",
+    "image": "web/assets/spots/view-tower.svg"
+  },
+  {
+    "id": 1019,
+    "name": "服务道路节点1005",
+    "lat": 40.001898,
+    "lon": 116.314139,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 980105853，关联道路：服务道路。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 1045,
+    "name": "服务道路节点1031",
+    "lat": 40.000036,
+    "lon": 116.325766,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10314663512，关联道路：服务道路。",
+    "image": "web/assets/spots/bookstore.svg"
+  },
+  {
+    "id": 1059,
+    "name": "骑行道节点1045",
+    "lat": 40.001715,
+    "lon": 116.320753,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 942362887，关联道路：骑行道。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 1063,
+    "name": "服务道路节点1049",
+    "lat": 40.003381,
+    "lon": 116.321588,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 8000890931，关联道路：服务道路。",
+    "image": "web/assets/spots/view-tower.svg"
+  },
+  {
+    "id": 1065,
+    "name": "步行路节点1051",
+    "lat": 40.002822,
+    "lon": 116.320659,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10845871354，关联道路：步行路。",
+    "image": "web/assets/spots/bamboo.svg"
+  },
+  {
+    "id": 1066,
+    "name": "服务道路节点1052",
+    "lat": 40.003293,
+    "lon": 116.321204,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9015870340，关联道路：服务道路。",
+    "image": "web/assets/spots/folk-street.svg"
+  },
+  {
+    "id": 1070,
+    "name": "服务道路节点1056",
+    "lat": 40.000927,
+    "lon": 116.32025,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 2353968172，关联道路：服务道路。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 1072,
+    "name": "骑行道节点1058",
+    "lat": 40.001852,
+    "lon": 116.324039,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 4415075643，关联道路：骑行道。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 1073,
+    "name": "服务道路节点1059",
+    "lat": 40.003483,
+    "lon": 116.324371,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 371156207，关联道路：服务道路。",
+    "image": "web/assets/spots/cherry-road.svg"
+  },
+  {
+    "id": 1075,
+    "name": "步行路节点1061",
+    "lat": 40.002268,
+    "lon": 116.324496,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10893676247，关联道路：步行路。",
+    "image": "web/assets/spots/view-tower.svg"
+  },
+  {
+    "id": 1077,
+    "name": "服务道路节点1063",
+    "lat": 40.001324,
+    "lon": 116.325487,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9330994779，关联道路：服务道路。",
+    "image": "web/assets/spots/bamboo.svg"
+  },
+  {
+    "id": 1078,
+    "name": "步行路节点1064",
+    "lat": 40.002215,
+    "lon": 116.324554,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9078358431，关联道路：步行路。",
+    "image": "web/assets/spots/folk-street.svg"
+  },
+  {
+    "id": 1079,
+    "name": "步行路节点1065",
+    "lat": 40.001497,
+    "lon": 116.325317,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9330994772，关联道路：步行路。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 1083,
+    "name": "服务道路节点1069",
+    "lat": 40.001326,
+    "lon": 116.325565,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 937460782，关联道路：服务道路。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 1084,
+    "name": "步行路节点1070",
+    "lat": 40.001104,
+    "lon": 116.32593,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9756804055，关联道路：步行路。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 1086,
+    "name": "步行路节点1072",
+    "lat": 40.000956,
+    "lon": 116.325938,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9756804054，关联道路：步行路。",
+    "image": "web/assets/spots/museum.svg"
+  },
+  {
+    "id": 1089,
+    "name": "骑行道节点1075",
+    "lat": 40.001455,
+    "lon": 116.323573,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 4415075641，关联道路：骑行道。",
+    "image": "web/assets/spots/bamboo.svg"
+  },
+  {
+    "id": 1113,
+    "name": "服务道路节点1099",
+    "lat": 40.000745,
+    "lon": 116.320275,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 371157785，关联道路：服务道路。",
+    "image": "web/assets/spots/bamboo.svg"
+  },
+  {
+    "id": 1117,
+    "name": "服务道路节点1103",
+    "lat": 40.000743,
+    "lon": 116.318033,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 937443591，关联道路：服务道路。",
+    "image": "web/assets/spots/bookstore.svg"
+  },
+  {
+    "id": 1135,
+    "name": "服务道路节点1121",
+    "lat": 40.001263,
+    "lon": 116.312546,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 982326369，关联道路：服务道路。",
+    "image": "web/assets/spots/view-tower.svg"
+  },
+  {
+    "id": 1144,
+    "name": "步行路节点1130",
+    "lat": 40.000367,
+    "lon": 116.314533,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 980076547，关联道路：莲桥。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 1147,
+    "name": "生活区道路节点1133",
+    "lat": 40.002354,
+    "lon": 116.31524,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 380419175，关联道路：熙春路。",
+    "image": "web/assets/spots/view-tower.svg"
+  },
+  {
+    "id": 1149,
+    "name": "步行路节点1135",
+    "lat": 40.001957,
+    "lon": 116.316602,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9731761449，关联道路：步行路。",
+    "image": "web/assets/spots/bamboo.svg"
+  },
+  {
+    "id": 1154,
+    "name": "服务道路节点1140",
+    "lat": 40.002195,
+    "lon": 116.314121,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 937447908，关联道路：服务道路。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 1155,
+    "name": "步行路节点1141",
+    "lat": 40.001891,
+    "lon": 116.314044,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 4419164975，关联道路：步行路。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 1183,
+    "name": "步行街节点1169",
+    "lat": 40.000086,
+    "lon": 116.32579,
+    "type": "pedestrian",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 974534930，关联道路：步行街。",
+    "image": "web/assets/spots/view-tower.svg"
+  },
+  {
+    "id": 1196,
+    "name": "骑行道节点1182",
+    "lat": 40.00177,
+    "lon": 116.320719,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 942362888，关联道路：骑行道。",
+    "image": "web/assets/spots/pier.svg"
+  },
+  {
+    "id": 1200,
+    "name": "服务道路节点1186",
+    "lat": 40.003385,
+    "lon": 116.321734,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10702165328，关联道路：服务道路。",
+    "image": "web/assets/spots/camp-lawn.svg"
+  },
+  {
+    "id": 1202,
+    "name": "服务道路节点1188",
+    "lat": 40.002827,
+    "lon": 116.32051,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10845871355，关联道路：服务道路。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 1203,
+    "name": "服务道路节点1189",
+    "lat": 40.003262,
+    "lon": 116.321093,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9015870341，关联道路：服务道路。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 1204,
+    "name": "服务道路节点1190",
+    "lat": 40.003254,
+    "lon": 116.32081,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 937443588，关联道路：服务道路。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 1211,
+    "name": "骑行道节点1197",
+    "lat": 40.001772,
+    "lon": 116.323943,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 4415075642，关联道路：骑行道。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 1212,
+    "name": "服务道路节点1198",
+    "lat": 40.003449,
+    "lon": 116.323463,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 975719287，关联道路：服务道路。",
+    "image": "web/assets/spots/camp-lawn.svg"
+  },
+  {
+    "id": 1213,
+    "name": "步行路节点1199",
+    "lat": 40.003854,
+    "lon": 116.32435,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 2354497640，关联道路：步行路。",
+    "image": "web/assets/spots/bookstore.svg"
+  },
+  {
+    "id": 1214,
+    "name": "服务道路节点1200",
+    "lat": 40.003511,
+    "lon": 116.325114,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9740794048，关联道路：服务道路。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 1220,
+    "name": "步行路节点1206",
+    "lat": 40.001502,
+    "lon": 116.325473,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9330994780，关联道路：步行路。",
+    "image": "web/assets/spots/pier.svg"
+  },
+  {
+    "id": 1223,
+    "name": "服务道路节点1209",
+    "lat": 40.001335,
+    "lon": 116.325919,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9756804056，关联道路：服务道路。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 1225,
+    "name": "步行路节点1211",
+    "lat": 40.00096,
+    "lon": 116.326072,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9756804049，关联道路：步行路。",
+    "image": "web/assets/spots/bookstore.svg"
+  },
+  {
+    "id": 1262,
+    "name": "服务道路节点1248",
+    "lat": 40.001262,
+    "lon": 116.31799,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9766263494，关联道路：服务道路。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 1282,
+    "name": "服务道路节点1268",
+    "lat": 40.001812,
+    "lon": 116.312497,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 982326366，关联道路：服务道路。",
+    "image": "web/assets/spots/folk-street.svg"
+  },
+  {
+    "id": 1287,
+    "name": "步行路节点1273",
+    "lat": 40.000444,
+    "lon": 116.314456,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9731863405，关联道路：步行路。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 1290,
+    "name": "生活区道路节点1276",
+    "lat": 40.00239,
+    "lon": 116.315367,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9751767112，关联道路：熙春路。",
+    "image": "web/assets/spots/museum.svg"
+  },
+  {
+    "id": 1291,
+    "name": "服务道路节点1277",
+    "lat": 40.00225,
+    "lon": 116.314627,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9735152967，关联道路：服务道路。",
+    "image": "web/assets/spots/view-tower.svg"
+  },
+  {
+    "id": 1294,
+    "name": "步行路节点1280",
+    "lat": 40.00192,
+    "lon": 116.316678,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9731761448，关联道路：步行路。",
+    "image": "web/assets/spots/folk-street.svg"
+  },
+  {
+    "id": 1299,
+    "name": "服务道路节点1285",
+    "lat": 40.002206,
+    "lon": 116.314378,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10702142567，关联道路：服务道路。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 1300,
+    "name": "服务道路节点1286",
+    "lat": 40.002212,
+    "lon": 116.313563,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 937447910，关联道路：服务道路。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 1301,
+    "name": "步行路节点1287",
+    "lat": 40.001864,
+    "lon": 116.313736,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 4419168115，关联道路：步行路。",
+    "image": "web/assets/spots/cherry-road.svg"
+  },
+  {
+    "id": 1328,
+    "name": "服务道路节点1314",
+    "lat": 40.000147,
+    "lon": 116.325842,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10314663511，关联道路：服务道路。",
+    "image": "web/assets/spots/pier.svg"
+  },
+  {
+    "id": 1337,
+    "name": "服务道路节点1323",
+    "lat": 40.000241,
+    "lon": 116.326365,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10699314654，关联道路：服务道路。",
+    "image": "web/assets/spots/cherry-road.svg"
+  },
+  {
+    "id": 1342,
+    "name": "骑行道节点1328",
+    "lat": 40.001922,
+    "lon": 116.320614,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 942362890，关联道路：骑行道。",
+    "image": "web/assets/spots/folk-street.svg"
+  },
+  {
+    "id": 1345,
+    "name": "服务道路节点1331",
+    "lat": 40.002726,
+    "lon": 116.320041,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 937443595，关联道路：服务道路。",
+    "image": "web/assets/spots/bookstore.svg"
+  },
+  {
+    "id": 1348,
+    "name": "服务道路节点1334",
+    "lat": 40.003405,
+    "lon": 116.322282,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10198894132，关联道路：服务道路。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 1351,
+    "name": "服务道路节点1337",
+    "lat": 40.002911,
+    "lon": 116.320649,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 937443623，关联道路：服务道路。",
+    "image": "web/assets/spots/view-tower.svg"
+  },
+  {
+    "id": 1352,
+    "name": "服务道路节点1338",
+    "lat": 40.002761,
+    "lon": 116.320402,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 937443597，关联道路：服务道路。",
+    "image": "web/assets/spots/pier.svg"
+  },
+  {
+    "id": 1353,
+    "name": "服务道路节点1339",
+    "lat": 40.003002,
+    "lon": 116.320767,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 937443622，关联道路：服务道路。",
+    "image": "web/assets/spots/bamboo.svg"
+  },
+  {
+    "id": 1365,
+    "name": "服务道路节点1351",
+    "lat": 40.00344,
+    "lon": 116.323229,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 6956583337，关联道路：服务道路。",
+    "image": "web/assets/spots/bamboo.svg"
+  },
+  {
+    "id": 1367,
+    "name": "步行路节点1353",
+    "lat": 40.004164,
+    "lon": 116.32433,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 2354497583，关联道路：步行路。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 1368,
+    "name": "服务道路节点1354",
+    "lat": 40.003512,
+    "lon": 116.325142,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 6956583333，关联道路：服务道路。",
+    "image": "web/assets/spots/camp-lawn.svg"
+  },
+  {
+    "id": 1371,
+    "name": "服务道路节点1357",
+    "lat": 40.003147,
+    "lon": 116.325515,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 946565937，关联道路：服务道路。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 1376,
+    "name": "服务道路节点1362",
+    "lat": 40.001355,
+    "lon": 116.326646,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9756804053，关联道路：服务道路。",
+    "image": "web/assets/spots/pier.svg"
+  },
+  {
+    "id": 1377,
+    "name": "步行路节点1363",
+    "lat": 40.000983,
+    "lon": 116.326667,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9756804051，关联道路：步行路。",
+    "image": "web/assets/spots/bamboo.svg"
+  },
+  {
+    "id": 1379,
+    "name": "步行路节点1365",
+    "lat": 40.001018,
+    "lon": 116.326163,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9756804048，关联道路：步行路。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 1416,
+    "name": "服务道路节点1402",
+    "lat": 40.001871,
+    "lon": 116.317932,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 11104325967，关联道路：服务道路。",
+    "image": "web/assets/spots/camp-lawn.svg"
+  },
+  {
+    "id": 1432,
+    "name": "骑行道节点1418",
+    "lat": 40.001368,
+    "lon": 116.313191,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 380738748，关联道路：骑行道。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 1436,
+    "name": "生活区道路节点1422",
+    "lat": 40.001941,
+    "lon": 116.312489,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 982326360，关联道路：近春路。",
+    "image": "web/assets/spots/pier.svg"
+  },
+  {
+    "id": 1439,
+    "name": "步行路节点1425",
+    "lat": 40.00043,
+    "lon": 116.314263,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 980084702，关联道路：步行路。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 1441,
+    "name": "生活区道路节点1427",
+    "lat": 40.002457,
+    "lon": 116.315598,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 937447907，关联道路：熙春路。",
+    "image": "web/assets/spots/bookstore.svg"
+  },
+  {
+    "id": 1443,
+    "name": "步行路节点1429",
+    "lat": 40.001926,
+    "lon": 116.31703,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9731761447，关联道路：步行路。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 1446,
+    "name": "服务道路节点1432",
+    "lat": 40.00218,
+    "lon": 116.313294,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 937447911，关联道路：服务道路。",
+    "image": "web/assets/spots/museum.svg"
+  },
+  {
+    "id": 1448,
+    "name": "步行路节点1434",
+    "lat": 40.001802,
+    "lon": 116.313683,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 4419168116，关联道路：步行路。",
+    "image": "web/assets/spots/pier.svg"
+  },
+  {
+    "id": 1468,
+    "name": "服务道路节点1454",
+    "lat": 40.000184,
+    "lon": 116.3259,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10186099500，关联道路：服务道路。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 1482,
+    "name": "服务道路节点1468",
+    "lat": 40.000231,
+    "lon": 116.326085,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 974534934，关联道路：服务道路。",
+    "image": "web/assets/spots/museum.svg"
+  },
+  {
+    "id": 1483,
+    "name": "步行路节点1469",
+    "lat": 40.000331,
+    "lon": 116.326359,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10699314655，关联道路：步行路。",
+    "image": "web/assets/spots/view-tower.svg"
+  },
+  {
+    "id": 1486,
+    "name": "骑行道节点1472",
+    "lat": 40.002152,
+    "lon": 116.32055,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 942362893，关联道路：骑行道。",
+    "image": "web/assets/spots/folk-street.svg"
+  },
+  {
+    "id": 1491,
+    "name": "服务道路节点1477",
+    "lat": 40.002734,
+    "lon": 116.320194,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 937443596，关联道路：服务道路。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 1492,
+    "name": "服务道路节点1478",
+    "lat": 40.002703,
+    "lon": 116.319644,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 937443585，关联道路：服务道路。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 1495,
+    "name": "服务道路节点1481",
+    "lat": 40.00341,
+    "lon": 116.322399,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 945575340，关联道路：服务道路。",
+    "image": "web/assets/spots/view-tower.svg"
+  },
+  {
+    "id": 1497,
+    "name": "服务道路节点1483",
+    "lat": 40.002752,
+    "lon": 116.320349,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9003302399，关联道路：服务道路。",
+    "image": "web/assets/spots/bamboo.svg"
+  },
+  {
+    "id": 1509,
+    "name": "步行路节点1495",
+    "lat": 40.004142,
+    "lon": 116.323427,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 992548483，关联道路：步行路。",
+    "image": "web/assets/spots/bamboo.svg"
+  },
+  {
+    "id": 1510,
+    "name": "生活区道路节点1496",
+    "lat": 40.004261,
+    "lon": 116.324324,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 6956583330，关联道路：新民路。",
+    "image": "web/assets/spots/folk-street.svg"
+  },
+  {
+    "id": 1511,
+    "name": "服务道路节点1497",
+    "lat": 40.003517,
+    "lon": 116.325281,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 941379454，关联道路：服务道路。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 1516,
+    "name": "服务道路节点1502",
+    "lat": 40.003438,
+    "lon": 116.325496,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 941379457，关联道路：服务道路。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 1520,
+    "name": "服务道路节点1506",
+    "lat": 40.001357,
+    "lon": 116.326744,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 941379461，关联道路：服务道路。",
+    "image": "web/assets/spots/pier.svg"
+  },
+  {
+    "id": 1523,
+    "name": "步行路节点1509",
+    "lat": 40.000979,
+    "lon": 116.326582,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9756804043，关联道路：步行路。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 1524,
+    "name": "服务道路节点1510",
+    "lat": 40.000989,
+    "lon": 116.327083,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9756804042，关联道路：服务道路。",
+    "image": "web/assets/spots/camp-lawn.svg"
+  },
+  {
+    "id": 1525,
+    "name": "服务道路节点1511",
+    "lat": 40.001366,
+    "lon": 116.327062,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 937460783，关联道路：服务道路。",
+    "image": "web/assets/spots/bookstore.svg"
+  },
+  {
+    "id": 1526,
+    "name": "步行路节点1512",
+    "lat": 40.001088,
+    "lon": 116.327079,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9235057958，关联道路：步行路。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 1527,
+    "name": "步行路节点1513",
+    "lat": 40.001059,
+    "lon": 116.326254,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9756804047，关联道路：步行路。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 1569,
+    "name": "服务道路节点1555",
+    "lat": 40.001912,
+    "lon": 116.317928,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 953857949，关联道路：服务道路。",
+    "image": "web/assets/spots/bamboo.svg"
+  },
+  {
+    "id": 1581,
+    "name": "骑行道节点1567",
+    "lat": 40.001391,
+    "lon": 116.313276,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 12409426759，关联道路：骑行道。",
+    "image": "web/assets/spots/bamboo.svg"
+  },
+  {
+    "id": 1582,
+    "name": "步行路节点1568",
+    "lat": 40.001332,
+    "lon": 116.313201,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9003302391，关联道路：步行路。",
+    "image": "web/assets/spots/folk-street.svg"
+  },
+  {
+    "id": 1585,
+    "name": "骑行道节点1571",
+    "lat": 40.002053,
+    "lon": 116.312494,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 380419123，关联道路：骑行道。",
+    "image": "web/assets/spots/bookstore.svg"
+  },
+  {
+    "id": 1589,
+    "name": "步行路节点1575",
+    "lat": 40.000534,
+    "lon": 116.314217,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9731863396，关联道路：步行路。",
+    "image": "web/assets/spots/cherry-road.svg"
+  },
+  {
+    "id": 1592,
+    "name": "步行路节点1578",
+    "lat": 40.002484,
+    "lon": 116.315735,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 980087922，关联道路：步行路。",
+    "image": "web/assets/spots/pier.svg"
+  },
+  {
+    "id": 1593,
+    "name": "生活区道路节点1579",
+    "lat": 40.0025,
+    "lon": 116.315607,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9003302395，关联道路：熙春路。",
+    "image": "web/assets/spots/bamboo.svg"
+  },
+  {
+    "id": 1595,
+    "name": "步行路节点1581",
+    "lat": 40.001991,
+    "lon": 116.317202,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9731761446，关联道路：步行路。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 1596,
+    "name": "骑行道节点1582",
+    "lat": 40.001466,
+    "lon": 116.313715,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 4419168293，关联道路：骑行道。",
+    "image": "web/assets/spots/camp-lawn.svg"
+  },
+  {
+    "id": 1599,
+    "name": "服务道路节点1585",
+    "lat": 40.002114,
+    "lon": 116.312964,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10702142566，关联道路：服务道路。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 1604,
+    "name": "步行路节点1590",
+    "lat": 40.001613,
+    "lon": 116.313701,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 12409426786，关联道路：步行路。",
+    "image": "web/assets/spots/pier.svg"
+  },
+  {
+    "id": 1626,
+    "name": "服务道路节点1612",
+    "lat": 40.000214,
+    "lon": 116.325984,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10314663514，关联道路：服务道路。",
+    "image": "web/assets/spots/museum.svg"
+  },
+  {
+    "id": 1648,
+    "name": "服务道路节点1634",
+    "lat": 40.002737,
+    "lon": 116.320266,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 975646427，关联道路：服务道路。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 1649,
+    "name": "服务道路节点1635",
+    "lat": 40.002656,
+    "lon": 116.31864,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 941375120，关联道路：服务道路。",
+    "image": "web/assets/spots/cherry-road.svg"
+  },
+  {
+    "id": 1650,
+    "name": "服务道路节点1636",
+    "lat": 40.002731,
+    "lon": 116.319643,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9003302400，关联道路：服务道路。",
+    "image": "web/assets/spots/museum.svg"
+  },
+  {
+    "id": 1652,
+    "name": "步行路节点1638",
+    "lat": 40.0057,
+    "lon": 116.321398,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10845948917，关联道路：步行路。",
+    "image": "web/assets/spots/pier.svg"
+  },
+  {
+    "id": 1671,
+    "name": "步行路节点1657",
+    "lat": 40.004209,
+    "lon": 116.323424,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9748178848，关联道路：步行路。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 1672,
+    "name": "生活区道路节点1658",
+    "lat": 40.004543,
+    "lon": 116.324307,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 6956583332，关联道路：新民路。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 1673,
+    "name": "服务道路节点1659",
+    "lat": 40.003447,
+    "lon": 116.325309,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 941379455，关联道路：服务道路。",
+    "image": "web/assets/spots/cherry-road.svg"
+  },
+  {
+    "id": 1682,
+    "name": "步行路节点1668",
+    "lat": 40.00103,
+    "lon": 116.326528,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9756804044，关联道路：步行路。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 1684,
+    "name": "服务道路节点1670",
+    "lat": 40.001394,
+    "lon": 116.328045,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9235057952，关联道路：服务道路。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 1685,
+    "name": "步行路节点1671",
+    "lat": 40.001112,
+    "lon": 116.327985,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9235057954，关联道路：步行路。",
+    "image": "web/assets/spots/cherry-road.svg"
+  },
+  {
+    "id": 1686,
+    "name": "步行路节点1672",
+    "lat": 40.001069,
+    "lon": 116.326332,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9756804046，关联道路：步行路。",
+    "image": "web/assets/spots/museum.svg"
+  },
+  {
+    "id": 1725,
+    "name": "服务道路节点1711",
+    "lat": 40.001994,
+    "lon": 116.317913,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10845871338，关联道路：服务道路。",
+    "image": "web/assets/spots/bamboo.svg"
+  },
+  {
+    "id": 1727,
+    "name": "步行路节点1713",
+    "lat": 40.002075,
+    "lon": 116.317497,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9735152973，关联道路：步行路。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 1737,
+    "name": "骑行道节点1723",
+    "lat": 40.001419,
+    "lon": 116.313375,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 380419145，关联道路：骑行道。",
+    "image": "web/assets/spots/bamboo.svg"
+  },
+  {
+    "id": 1739,
+    "name": "步行路节点1725",
+    "lat": 40.001137,
+    "lon": 116.31326,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9003302390，关联道路：步行路。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 1748,
+    "name": "步行路节点1734",
+    "lat": 40.000501,
+    "lon": 116.314108,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9731863397，关联道路：步行路。",
+    "image": "web/assets/spots/pier.svg"
+  },
+  {
+    "id": 1751,
+    "name": "steps节点1737",
+    "lat": 40.002503,
+    "lon": 116.315842,
+    "type": "steps",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 980090120，关联道路：steps。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 1752,
+    "name": "生活区道路节点1738",
+    "lat": 40.002509,
+    "lon": 116.315609,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9634332897，关联道路：熙春路。",
+    "image": "web/assets/spots/camp-lawn.svg"
+  },
+  {
+    "id": 1754,
+    "name": "步行路节点1740",
+    "lat": 40.002019,
+    "lon": 116.317294,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9751795230，关联道路：步行路。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 1755,
+    "name": "骑行道节点1741",
+    "lat": 40.001468,
+    "lon": 116.313675,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 380419146，关联道路：骑行道。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 1804,
+    "name": "服务道路节点1790",
+    "lat": 40.002702,
+    "lon": 116.318637,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 937443593，关联道路：服务道路。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 1806,
+    "name": "步行路节点1792",
+    "lat": 40.002647,
+    "lon": 116.318585,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 12759474296，关联道路：步行路。",
+    "image": "web/assets/spots/museum.svg"
+  },
+  {
+    "id": 1807,
+    "name": "服务道路节点1793",
+    "lat": 40.002883,
+    "lon": 116.319637,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9003302401，关联道路：服务道路。",
+    "image": "web/assets/spots/view-tower.svg"
+  },
+  {
+    "id": 1811,
+    "name": "生活区道路节点1797",
+    "lat": 40.0057,
+    "lon": 116.321304,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10188912098，关联道路：学堂路。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 1812,
+    "name": "骑行道节点1798",
+    "lat": 40.0057,
+    "lon": 116.32152,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10188912097，关联道路：骑行道。",
+    "image": "web/assets/spots/camp-lawn.svg"
+  },
+  {
+    "id": 1836,
+    "name": "步行路节点1822",
+    "lat": 40.004596,
+    "lon": 116.323404,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 2354497897，关联道路：步行路。",
+    "image": "web/assets/spots/camp-lawn.svg"
+  },
+  {
+    "id": 1838,
+    "name": "步行路节点1824",
+    "lat": 40.004662,
+    "lon": 116.3243,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 983041050，关联道路：步行路。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 1843,
+    "name": "服务道路节点1829",
+    "lat": 40.003208,
+    "lon": 116.326966,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9740794046，关联道路：服务道路。",
+    "image": "web/assets/spots/view-tower.svg"
+  },
+  {
+    "id": 1848,
+    "name": "步行路节点1834",
+    "lat": 40.001059,
+    "lon": 116.326447,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9756804045，关联道路：步行路。",
+    "image": "web/assets/spots/camp-lawn.svg"
+  },
+  {
+    "id": 1849,
+    "name": "服务道路节点1835",
+    "lat": 40.001396,
+    "lon": 116.328118,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 7077837523，关联道路：服务道路。",
+    "image": "web/assets/spots/bookstore.svg"
+  },
+  {
+    "id": 1850,
+    "name": "步行路节点1836",
+    "lat": 40.001179,
+    "lon": 116.328055,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9235057953，关联道路：步行路。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 1886,
+    "name": "服务道路节点1872",
+    "lat": 40.002078,
+    "lon": 116.317897,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 937443592，关联道路：服务道路。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 1887,
+    "name": "骑行道节点1873",
+    "lat": 40.002018,
+    "lon": 116.318286,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10845871340，关联道路：骑行道。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 1890,
+    "name": "步行路节点1876",
+    "lat": 40.002071,
+    "lon": 116.317464,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 2354336744，关联道路：步行路。",
+    "image": "web/assets/spots/museum.svg"
+  },
+  {
+    "id": 1902,
+    "name": "骑行道节点1888",
+    "lat": 40.001448,
+    "lon": 116.313553,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 4419173294，关联道路：骑行道。",
+    "image": "web/assets/spots/museum.svg"
+  },
+  {
+    "id": 1906,
+    "name": "步行路节点1892",
+    "lat": 40.001113,
+    "lon": 116.313266,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 380738806，关联道路：步行路。",
+    "image": "web/assets/spots/folk-street.svg"
+  },
+  {
+    "id": 1914,
+    "name": "步行路节点1900",
+    "lat": 40.000553,
+    "lon": 116.314058,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9731863398，关联道路：步行路。",
+    "image": "web/assets/spots/museum.svg"
+  },
+  {
+    "id": 1915,
+    "name": "步行路节点1901",
+    "lat": 40.00035,
+    "lon": 116.313635,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 980084710，关联道路：步行路。",
+    "image": "web/assets/spots/view-tower.svg"
+  },
+  {
+    "id": 1916,
+    "name": "步行路节点1902",
+    "lat": 40.001157,
+    "lon": 116.313589,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 980084725，关联道路：步行路。",
+    "image": "web/assets/spots/pier.svg"
+  },
+  {
+    "id": 1917,
+    "name": "步行路节点1903",
+    "lat": 40.002552,
+    "lon": 116.316242,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 980090123，关联道路：步行路。",
+    "image": "web/assets/spots/bamboo.svg"
+  },
+  {
+    "id": 1919,
+    "name": "生活区道路节点1905",
+    "lat": 40.002603,
+    "lon": 116.315625,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9003302394，关联道路：熙春路。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 1920,
+    "name": "步行路节点1906",
+    "lat": 40.002041,
+    "lon": 116.317366,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9731757855，关联道路：步行路。",
+    "image": "web/assets/spots/camp-lawn.svg"
+  },
+  {
+    "id": 1958,
+    "name": "服务道路节点1944",
+    "lat": 40.002669,
+    "lon": 116.317788,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 937443582，关联道路：服务道路。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 1959,
+    "name": "骑行道节点1945",
+    "lat": 40.002867,
+    "lon": 116.318629,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 937443599，关联道路：骑行道。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 1961,
+    "name": "步行路节点1947",
+    "lat": 40.002624,
+    "lon": 116.318525,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 12759474295，关联道路：步行路。",
+    "image": "web/assets/spots/cherry-road.svg"
+  },
+  {
+    "id": 1962,
+    "name": "服务道路节点1948",
+    "lat": 40.0029,
+    "lon": 116.319634,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 937443584，关联道路：服务道路。",
+    "image": "web/assets/spots/museum.svg"
+  },
+  {
+    "id": 1966,
+    "name": "生活区道路节点1952",
+    "lat": 40.006194,
+    "lon": 116.321268,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 4419184606，关联道路：学堂路。",
+    "image": "web/assets/spots/folk-street.svg"
+  },
+  {
+    "id": 1967,
+    "name": "骑行道节点1953",
+    "lat": 40.005645,
+    "lon": 116.321705,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10188912096，关联道路：骑行道。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 1985,
+    "name": "步行路节点1971",
+    "lat": 40.004651,
+    "lon": 116.323402,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 2354497817，关联道路：步行路。",
+    "image": "web/assets/spots/cherry-road.svg"
+  },
+  {
+    "id": 1986,
+    "name": "骑行道节点1972",
+    "lat": 40.004579,
+    "lon": 116.322365,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 945575374，关联道路：骑行道。",
+    "image": "web/assets/spots/museum.svg"
+  },
+  {
+    "id": 1991,
+    "name": "步行路节点1977",
+    "lat": 40.005302,
+    "lon": 116.323366,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 975577633，关联道路：步行路。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 1998,
+    "name": "生活区道路节点1984",
+    "lat": 40.002385,
+    "lon": 116.328114,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10893676248，关联道路：明德路。",
+    "image": "web/assets/spots/museum.svg"
+  },
+  {
+    "id": 1999,
+    "name": "服务道路节点1985",
+    "lat": 40.001397,
+    "lon": 116.328165,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 937461954，关联道路：服务道路。",
+    "image": "web/assets/spots/view-tower.svg"
+  },
+  {
+    "id": 2000,
+    "name": "骑行道节点1986",
+    "lat": 40.001187,
+    "lon": 116.328129,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9235057957，关联道路：骑行道。",
+    "image": "web/assets/spots/pier.svg"
+  },
+  {
+    "id": 2035,
+    "name": "步行街节点2021",
+    "lat": 40.002102,
+    "lon": 116.318282,
+    "type": "pedestrian",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10845871342，关联道路：步行街。",
+    "image": "web/assets/spots/view-tower.svg"
+  },
+  {
+    "id": 2058,
+    "name": "步行路节点2044",
+    "lat": 40.000553,
+    "lon": 116.313947,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9731863399，关联道路：步行路。",
+    "image": "web/assets/spots/museum.svg"
+  },
+  {
+    "id": 2059,
+    "name": "步行路节点2045",
+    "lat": 40.000427,
+    "lon": 116.313564,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 980084709，关联道路：步行路。",
+    "image": "web/assets/spots/view-tower.svg"
+  },
+  {
+    "id": 2060,
+    "name": "步行路节点2046",
+    "lat": 40.000991,
+    "lon": 116.313651,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 980084698，关联道路：步行路。",
+    "image": "web/assets/spots/pier.svg"
+  },
+  {
+    "id": 2061,
+    "name": "步行路节点2047",
+    "lat": 40.00266,
+    "lon": 116.317572,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9751795232，关联道路：步行路。",
+    "image": "web/assets/spots/bamboo.svg"
+  },
+  {
+    "id": 2063,
+    "name": "骑行道节点2049",
+    "lat": 40.002665,
+    "lon": 116.315637,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 937447906，关联道路：骑行道。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 2099,
+    "name": "步行路节点2085",
+    "lat": 40.002668,
+    "lon": 116.31769,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9751795231，关联道路：步行路。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 2101,
+    "name": "服务道路节点2087",
+    "lat": 40.003019,
+    "lon": 116.318616,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 984042438，关联道路：服务道路。",
+    "image": "web/assets/spots/bookstore.svg"
+  },
+  {
+    "id": 2102,
+    "name": "骑行道节点2088",
+    "lat": 40.002878,
+    "lon": 116.31898,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 937443603，关联道路：骑行道。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 2103,
+    "name": "步行路节点2089",
+    "lat": 40.0026,
+    "lon": 116.318507,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 12759474294，关联道路：步行路。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 2108,
+    "name": "生活区道路节点2094",
+    "lat": 40.00623,
+    "lon": 116.321265,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10188912099，关联道路：学堂路。",
+    "image": "web/assets/spots/pier.svg"
+  },
+  {
+    "id": 2111,
+    "name": "骑行道节点2097",
+    "lat": 40.005622,
+    "lon": 116.321763,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10845948907，关联道路：骑行道。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 2116,
+    "name": "骑行道节点2102",
+    "lat": 40.006635,
+    "lon": 116.319251,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 2353996187，关联道路：骑行道。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 2124,
+    "name": "步行路节点2110",
+    "lat": 40.004909,
+    "lon": 116.323388,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 975577637，关联道路：步行路。",
+    "image": "web/assets/spots/camp-lawn.svg"
+  },
+  {
+    "id": 2125,
+    "name": "骑行道节点2111",
+    "lat": 40.004875,
+    "lon": 116.32228,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 975577618，关联道路：骑行道。",
+    "image": "web/assets/spots/bookstore.svg"
+  },
+  {
+    "id": 2131,
+    "name": "生活区道路节点2117",
+    "lat": 40.005301,
+    "lon": 116.323316,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10702086234，关联道路：至善路。",
+    "image": "web/assets/spots/view-tower.svg"
+  },
+  {
+    "id": 2132,
+    "name": "生活区道路节点2118",
+    "lat": 40.006026,
+    "lon": 116.324266,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 2354042701，关联道路：新民路。",
+    "image": "web/assets/spots/pier.svg"
+  },
+  {
+    "id": 2134,
+    "name": "服务道路节点2120",
+    "lat": 40.002437,
+    "lon": 116.328111,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 371157144，关联道路：服务道路。",
+    "image": "web/assets/spots/folk-street.svg"
+  },
+  {
+    "id": 2138,
+    "name": "步行路节点2124",
+    "lat": 40.002322,
+    "lon": 116.328178,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10893676244，关联道路：步行路。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 2139,
+    "name": "生活区道路节点2125",
+    "lat": 40.001235,
+    "lon": 116.328173,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 7077837512，关联道路：明德路。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 2171,
+    "name": "steps节点2157",
+    "lat": 40.002165,
+    "lon": 116.318279,
+    "type": "steps",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10845871343，关联道路：steps。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 2198,
+    "name": "步行路节点2184",
+    "lat": 40.000629,
+    "lon": 116.313888,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9731863400，关联道路：步行路。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 2199,
+    "name": "步行路节点2185",
+    "lat": 40.000679,
+    "lon": 116.313517,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9731863402，关联道路：步行路。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 2201,
+    "name": "步行路节点2187",
+    "lat": 40.000903,
+    "lon": 116.313471,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 980084708，关联道路：步行路。",
+    "image": "web/assets/spots/cherry-road.svg"
+  },
+  {
+    "id": 2203,
+    "name": "服务道路节点2189",
+    "lat": 40.002911,
+    "lon": 116.315658,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 937447914，关联道路：服务道路。",
+    "image": "web/assets/spots/view-tower.svg"
+  },
+  {
+    "id": 2238,
+    "name": "服务道路节点2224",
+    "lat": 40.003189,
+    "lon": 116.3186,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 11273632012，关联道路：服务道路。",
+    "image": "web/assets/spots/museum.svg"
+  },
+  {
+    "id": 2240,
+    "name": "骑行道节点2226",
+    "lat": 40.003342,
+    "lon": 116.31895,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 6959716470，关联道路：骑行道。",
+    "image": "web/assets/spots/pier.svg"
+  },
+  {
+    "id": 2241,
+    "name": "步行路节点2227",
+    "lat": 40.002511,
+    "lon": 116.318514,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 12759474293，关联道路：步行路。",
+    "image": "web/assets/spots/bamboo.svg"
+  },
+  {
+    "id": 2247,
+    "name": "生活区道路节点2233",
+    "lat": 40.006267,
+    "lon": 116.321262,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 991197564，关联道路：学堂路。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 2250,
+    "name": "骑行道节点2236",
+    "lat": 40.005589,
+    "lon": 116.321847,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10188912095，关联道路：骑行道。",
+    "image": "web/assets/spots/museum.svg"
+  },
+  {
+    "id": 2255,
+    "name": "服务道路节点2241",
+    "lat": 40.006562,
+    "lon": 116.319086,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 945107456，关联道路：服务道路。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 2256,
+    "name": "骑行道节点2242",
+    "lat": 40.006679,
+    "lon": 116.319339,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 945107457，关联道路：骑行道。",
+    "image": "web/assets/spots/camp-lawn.svg"
+  },
+  {
+    "id": 2262,
+    "name": "骑行道节点2248",
+    "lat": 40.005069,
+    "lon": 116.322265,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 8000890911，关联道路：骑行道。",
+    "image": "web/assets/spots/museum.svg"
+  },
+  {
+    "id": 2264,
+    "name": "生活区道路节点2250",
+    "lat": 40.003618,
+    "lon": 116.328049,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 6956583327，关联道路：明德路。",
+    "image": "web/assets/spots/pier.svg"
+  },
+  {
+    "id": 2269,
+    "name": "生活区道路节点2255",
+    "lat": 40.005293,
+    "lon": 116.322953,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 2354041741，关联道路：至善路。",
+    "image": "web/assets/spots/bookstore.svg"
+  },
+  {
+    "id": 2270,
+    "name": "步行路节点2256",
+    "lat": 40.005535,
+    "lon": 116.323309,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 978514086，关联道路：步行路。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 2271,
+    "name": "生活区道路节点2257",
+    "lat": 40.006681,
+    "lon": 116.324237,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 380766297，关联道路：新民路。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 2272,
+    "name": "骑行道节点2258",
+    "lat": 40.006,
+    "lon": 116.323642,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 2354497406，关联道路：骑行道。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 2275,
+    "name": "生活区道路节点2261",
+    "lat": 40.00273,
+    "lon": 116.328096,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 13512722731，关联道路：明德路。",
+    "image": "web/assets/spots/view-tower.svg"
+  },
+  {
+    "id": 2277,
+    "name": "骑行道节点2263",
+    "lat": 40.002222,
+    "lon": 116.328181,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10893676231，关联道路：骑行道。",
+    "image": "web/assets/spots/bamboo.svg"
+  },
+  {
+    "id": 2278,
+    "name": "服务道路节点2264",
+    "lat": 40.002272,
+    "lon": 116.32818,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10893676245，关联道路：服务道路。",
+    "image": "web/assets/spots/folk-street.svg"
+  },
+  {
+    "id": 2281,
+    "name": "服务道路节点2267",
+    "lat": 40.001236,
+    "lon": 116.328225,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10893676225，关联道路：服务道路。",
+    "image": "web/assets/spots/bookstore.svg"
+  },
+  {
+    "id": 2310,
+    "name": "步行路节点2296",
+    "lat": 40.002174,
+    "lon": 116.318279,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 12759474271，关联道路：步行路。",
+    "image": "web/assets/spots/museum.svg"
+  },
+  {
+    "id": 2340,
+    "name": "步行路节点2326",
+    "lat": 40.000615,
+    "lon": 116.313627,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9731863401，关联道路：步行路。",
+    "image": "web/assets/spots/camp-lawn.svg"
+  },
+  {
+    "id": 2341,
+    "name": "步行路节点2327",
+    "lat": 40.00067,
+    "lon": 116.313852,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 12188535406，关联道路：步行路。",
+    "image": "web/assets/spots/bookstore.svg"
+  },
+  {
+    "id": 2347,
+    "name": "生活区道路节点2333",
+    "lat": 40.003147,
+    "lon": 116.315641,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9756407901，关联道路：熙春路。",
+    "image": "web/assets/spots/view-tower.svg"
+  },
+  {
+    "id": 2385,
+    "name": "骑行道节点2371",
+    "lat": 40.003457,
+    "lon": 116.318578,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 937446561，关联道路：骑行道。",
+    "image": "web/assets/spots/bamboo.svg"
+  },
+  {
+    "id": 2386,
+    "name": "骑行道节点2372",
+    "lat": 40.003364,
+    "lon": 116.318798,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 11273632011，关联道路：骑行道。",
+    "image": "web/assets/spots/folk-street.svg"
+  },
+  {
+    "id": 2387,
+    "name": "骑行道节点2373",
+    "lat": 40.00337,
+    "lon": 116.318911,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 11273632014，关联道路：骑行道。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 2388,
+    "name": "步行路节点2374",
+    "lat": 40.002381,
+    "lon": 116.318523,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 12759474292，关联道路：步行路。",
+    "image": "web/assets/spots/camp-lawn.svg"
+  },
+  {
+    "id": 2395,
+    "name": "生活区道路节点2381",
+    "lat": 40.006574,
+    "lon": 116.321242,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 371156382，关联道路：学堂路。",
+    "image": "web/assets/spots/view-tower.svg"
+  },
+  {
+    "id": 2399,
+    "name": "骑行道节点2385",
+    "lat": 40.005489,
+    "lon": 116.321971,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10188912094，关联道路：骑行道。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 2402,
+    "name": "服务道路节点2388",
+    "lat": 40.006472,
+    "lon": 116.318849,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 937634278，关联道路：服务道路。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 2404,
+    "name": "骑行道节点2390",
+    "lat": 40.006915,
+    "lon": 116.319314,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 945107458，关联道路：骑行道。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 2412,
+    "name": "骑行道节点2398",
+    "lat": 40.005252,
+    "lon": 116.322244,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 975571160，关联道路：骑行道。",
+    "image": "web/assets/spots/camp-lawn.svg"
+  },
+  {
+    "id": 2415,
+    "name": "生活区道路节点2401",
+    "lat": 40.003215,
+    "lon": 116.32807,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 13512722726，关联道路：明德路。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 2416,
+    "name": "生活区道路节点2402",
+    "lat": 40.004481,
+    "lon": 116.328004,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 1715756854，关联道路：明德路。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 2423,
+    "name": "服务道路节点2409",
+    "lat": 40.005518,
+    "lon": 116.322942,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 2354335614，关联道路：服务道路。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 2424,
+    "name": "步行路节点2410",
+    "lat": 40.005554,
+    "lon": 116.323557,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 2354497407，关联道路：步行路。",
+    "image": "web/assets/spots/camp-lawn.svg"
+  },
+  {
+    "id": 2425,
+    "name": "生活区道路节点2411",
+    "lat": 40.007171,
+    "lon": 116.324211,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 2354014047，关联道路：新民路。",
+    "image": "web/assets/spots/bookstore.svg"
+  },
+  {
+    "id": 2426,
+    "name": "服务道路节点2412",
+    "lat": 40.006635,
+    "lon": 116.322896,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9748233336，关联道路：服务道路。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 2427,
+    "name": "服务道路节点2413",
+    "lat": 40.005973,
+    "lon": 116.322925,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 2354042699，关联道路：服务道路。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 2428,
+    "name": "步行路节点2414",
+    "lat": 40.005694,
+    "lon": 116.323653,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10702086235，关联道路：步行路。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 2435,
+    "name": "步行路节点2421",
+    "lat": 40.002245,
+    "lon": 116.32818,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10893676229，关联道路：步行路。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 2438,
+    "name": "步行路节点2424",
+    "lat": 40.001108,
+    "lon": 116.328232,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10893676228，关联道路：步行路。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 2461,
+    "name": "步行路节点2447",
+    "lat": 40.00218,
+    "lon": 116.318382,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 12759474286，关联道路：步行路。",
+    "image": "web/assets/spots/bookstore.svg"
+  },
+  {
+    "id": 2493,
+    "name": "步行路节点2479",
+    "lat": 40.00072,
+    "lon": 116.313912,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 12188535407，关联道路：步行路。",
+    "image": "web/assets/spots/bamboo.svg"
+  },
+  {
+    "id": 2497,
+    "name": "生活区道路节点2483",
+    "lat": 40.004647,
+    "lon": 116.316799,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 380421659，关联道路：至善路。",
+    "image": "web/assets/spots/bookstore.svg"
+  },
+  {
+    "id": 2498,
+    "name": "服务道路节点2484",
+    "lat": 40.003222,
+    "lon": 116.315635,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 2354500165，关联道路：服务道路。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 2524,
+    "name": "服务道路节点2510",
+    "lat": 40.000876,
+    "lon": 116.328244,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10893676227，关联道路：服务道路。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 2534,
+    "name": "骑行道节点2520",
+    "lat": 40.003468,
+    "lon": 116.318703,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 937446615，关联道路：骑行道。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 2535,
+    "name": "骑行道节点2521",
+    "lat": 40.003444,
+    "lon": 116.318774,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 11273632013，关联道路：骑行道。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 2537,
+    "name": "步行路节点2523",
+    "lat": 40.002307,
+    "lon": 116.318542,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 12759474291，关联道路：步行路。",
+    "image": "web/assets/spots/cherry-road.svg"
+  },
+  {
+    "id": 2544,
+    "name": "生活区道路节点2530",
+    "lat": 40.006749,
+    "lon": 116.321228,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 976492093，关联道路：学堂路。",
+    "image": "web/assets/spots/camp-lawn.svg"
+  },
+  {
+    "id": 2548,
+    "name": "骑行道节点2534",
+    "lat": 40.005497,
+    "lon": 116.32223,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10188912093，关联道路：骑行道。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 2551,
+    "name": "服务道路节点2537",
+    "lat": 40.006419,
+    "lon": 116.31769,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 371156376，关联道路：服务道路。",
+    "image": "web/assets/spots/view-tower.svg"
+  },
+  {
+    "id": 2554,
+    "name": "骑行道节点2540",
+    "lat": 40.007072,
+    "lon": 116.319423,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10696062533，关联道路：骑行道。",
+    "image": "web/assets/spots/folk-street.svg"
+  },
+  {
+    "id": 2571,
+    "name": "生活区道路节点2557",
+    "lat": 40.005041,
+    "lon": 116.327979,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9004126661，关联道路：明德路。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 2574,
+    "name": "生活区道路节点2560",
+    "lat": 40.005463,
+    "lon": 116.327953,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 371157143，关联道路：至善路。",
+    "image": "web/assets/spots/museum.svg"
+  },
+  {
+    "id": 2581,
+    "name": "骑行道节点2567",
+    "lat": 40.005855,
+    "lon": 116.322929,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 2354335608，关联道路：骑行道。",
+    "image": "web/assets/spots/bookstore.svg"
+  },
+  {
+    "id": 2582,
+    "name": "生活区道路节点2568",
+    "lat": 40.00777,
+    "lon": 116.324154,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 6956583325，关联道路：新民路。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 2583,
+    "name": "服务道路节点2569",
+    "lat": 40.00663,
+    "lon": 116.322758,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 983351366，关联道路：服务道路。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 2584,
+    "name": "服务道路节点2570",
+    "lat": 40.006352,
+    "lon": 116.322908,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10188912092，关联道路：服务道路。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 2585,
+    "name": "服务道路节点2571",
+    "lat": 40.006105,
+    "lon": 116.322919,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10188912089，关联道路：服务道路。",
+    "image": "web/assets/spots/cherry-road.svg"
+  },
+  {
+    "id": 2616,
+    "name": "步行路节点2602",
+    "lat": 40.002184,
+    "lon": 116.318451,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 12759474287，关联道路：步行路。",
+    "image": "web/assets/spots/camp-lawn.svg"
+  },
+  {
+    "id": 2649,
+    "name": "生活区道路节点2635",
+    "lat": 40.00458,
+    "lon": 116.31552,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 937447919，关联道路：至善路。",
+    "image": "web/assets/spots/bamboo.svg"
+  },
+  {
+    "id": 2650,
+    "name": "服务道路节点2636",
+    "lat": 40.005141,
+    "lon": 116.316796,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 978617286，关联道路：服务道路。",
+    "image": "web/assets/spots/folk-street.svg"
+  },
+  {
+    "id": 2651,
+    "name": "骑行道节点2637",
+    "lat": 40.004135,
+    "lon": 116.315557,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 2354337982，关联道路：骑行道。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 2674,
+    "name": "服务道路节点2660",
+    "lat": 40.000879,
+    "lon": 116.328357,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9740794043，关联道路：服务道路。",
+    "image": "web/assets/spots/folk-street.svg"
+  },
+  {
+    "id": 2686,
+    "name": "步行路节点2672",
+    "lat": 40.00228,
+    "lon": 116.31858,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 12759474290，关联道路：步行路。",
+    "image": "web/assets/spots/folk-street.svg"
+  },
+  {
+    "id": 2691,
+    "name": "生活区道路节点2677",
+    "lat": 40.006976,
+    "lon": 116.321212,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10188912012，关联道路：学堂路。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 2698,
+    "name": "服务道路节点2684",
+    "lat": 40.006214,
+    "lon": 116.317706,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 2353988155，关联道路：服务道路。",
+    "image": "web/assets/spots/folk-street.svg"
+  },
+  {
+    "id": 2704,
+    "name": "骑行道节点2690",
+    "lat": 40.007241,
+    "lon": 116.319412,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10696062534，关联道路：骑行道。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 2727,
+    "name": "生活区道路节点2713",
+    "lat": 40.005689,
+    "lon": 116.32795,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 12772010932，关联道路：明德路。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 2734,
+    "name": "服务道路节点2720",
+    "lat": 40.008702,
+    "lon": 116.324092,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 930118872，关联道路：服务道路。",
+    "image": "web/assets/spots/folk-street.svg"
+  },
+  {
+    "id": 2735,
+    "name": "服务道路节点2721",
+    "lat": 40.006926,
+    "lon": 116.322742,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10161202055，关联道路：服务道路。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 2763,
+    "name": "步行路节点2749",
+    "lat": 40.002185,
+    "lon": 116.318505,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 12759474288，关联道路：步行路。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 2793,
+    "name": "服务道路节点2779",
+    "lat": 40.005252,
+    "lon": 116.31679,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10948596753，关联道路：服务道路。",
+    "image": "web/assets/spots/bamboo.svg"
+  },
+  {
+    "id": 2811,
+    "name": "服务道路节点2797",
+    "lat": 40.000914,
+    "lon": 116.32953,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 8000890913，关联道路：服务道路。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 2818,
+    "name": "步行路节点2804",
+    "lat": 40.002217,
+    "lon": 116.318556,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 12759474289，关联道路：步行路。",
+    "image": "web/assets/spots/folk-street.svg"
+  },
+  {
+    "id": 2821,
+    "name": "生活区道路节点2807",
+    "lat": 40.007342,
+    "lon": 116.321187,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10188912011，关联道路：学堂路。",
+    "image": "web/assets/spots/bookstore.svg"
+  },
+  {
+    "id": 2828,
+    "name": "步行路节点2814",
+    "lat": 40.006175,
+    "lon": 116.317129,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 2353988242，关联道路：步行路。",
+    "image": "web/assets/spots/pier.svg"
+  },
+  {
+    "id": 2833,
+    "name": "骑行道节点2819",
+    "lat": 40.007491,
+    "lon": 116.319832,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10696062536，关联道路：骑行道。",
+    "image": "web/assets/spots/bookstore.svg"
+  },
+  {
+    "id": 2836,
+    "name": "骑行道节点2822",
+    "lat": 40.007474,
+    "lon": 116.319557,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10696062535，关联道路：骑行道。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 2857,
+    "name": "生活区道路节点2843",
+    "lat": 40.006021,
+    "lon": 116.327944,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 6956583362，关联道路：明德路。",
+    "image": "web/assets/spots/bookstore.svg"
+  },
+  {
+    "id": 2864,
+    "name": "生活区道路节点2850",
+    "lat": 40.007708,
+    "lon": 116.322725,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 245131431，关联道路：生活区道路。",
+    "image": "web/assets/spots/pier.svg"
+  },
+  {
+    "id": 2868,
+    "name": "生活区道路节点2854",
+    "lat": 40.009538,
+    "lon": 116.324026,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 13236528897，关联道路：新民路。",
+    "image": "web/assets/spots/camp-lawn.svg"
+  },
+  {
+    "id": 2869,
+    "name": "服务道路节点2855",
+    "lat": 40.007042,
+    "lon": 116.322684,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 943400045，关联道路：服务道路。",
+    "image": "web/assets/spots/bookstore.svg"
+  },
+  {
+    "id": 2917,
+    "name": "服务道路节点2903",
+    "lat": 40.005346,
+    "lon": 116.316785,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 975752318，关联道路：服务道路。",
+    "image": "web/assets/spots/bookstore.svg"
+  },
+  {
+    "id": 2944,
+    "name": "生活区道路节点2930",
+    "lat": 40.007381,
+    "lon": 116.321184,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 976492287，关联道路：学堂路。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 2954,
+    "name": "服务道路节点2940",
+    "lat": 40.00608,
+    "lon": 116.31672,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 974486755，关联道路：服务道路。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 2961,
+    "name": "骑行道节点2947",
+    "lat": 40.007637,
+    "lon": 116.319817,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 945107461，关联道路：骑行道。",
+    "image": "web/assets/spots/bamboo.svg"
+  },
+  {
+    "id": 2988,
+    "name": "生活区道路节点2974",
+    "lat": 40.006344,
+    "lon": 116.327878,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 7110874280，关联道路：明德路。",
+    "image": "web/assets/spots/camp-lawn.svg"
+  },
+  {
+    "id": 2993,
+    "name": "生活区道路节点2979",
+    "lat": 40.0068,
+    "lon": 116.327746,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10198894150，关联道路：明德路。",
+    "image": "web/assets/spots/cherry-road.svg"
+  },
+  {
+    "id": 2995,
+    "name": "生活区道路节点2981",
+    "lat": 40.008371,
+    "lon": 116.322674,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 2354492910，关联道路：生活区道路。",
+    "image": "web/assets/spots/view-tower.svg"
+  },
+  {
+    "id": 2997,
+    "name": "服务道路节点2983",
+    "lat": 40.00749,
+    "lon": 116.322726,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10188912003，关联道路：服务道路。",
+    "image": "web/assets/spots/bamboo.svg"
+  },
+  {
+    "id": 3001,
+    "name": "生活区道路节点2987",
+    "lat": 40.009693,
+    "lon": 116.325729,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 930118878，关联道路：生活区道路。",
+    "image": "web/assets/spots/bookstore.svg"
+  },
+  {
+    "id": 3002,
+    "name": "生活区道路节点2988",
+    "lat": 40.009623,
+    "lon": 116.324021,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 151994531，关联道路：生活区道路。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 3003,
+    "name": "步行路节点2989",
+    "lat": 40.009537,
+    "lon": 116.324013,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 13236528572，关联道路：步行路。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 3005,
+    "name": "服务道路节点2991",
+    "lat": 40.00712,
+    "lon": 116.32266,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10161202056，关联道路：服务道路。",
+    "image": "web/assets/spots/cherry-road.svg"
+  },
+  {
+    "id": 3047,
+    "name": "服务道路节点3033",
+    "lat": 40.00544,
+    "lon": 116.316776,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10290584981，关联道路：服务道路。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 3066,
+    "name": "生活区道路节点3052",
+    "lat": 40.008007,
+    "lon": 116.321131,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 961414146，关联道路：学堂路。",
+    "image": "web/assets/spots/museum.svg"
+  },
+  {
+    "id": 3074,
+    "name": "服务道路节点3060",
+    "lat": 40.005749,
+    "lon": 116.316747,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 380421660，关联道路：服务道路。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 3085,
+    "name": "骑行道节点3071",
+    "lat": 40.007657,
+    "lon": 116.320342,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 945107462，关联道路：骑行道。",
+    "image": "web/assets/spots/bookstore.svg"
+  },
+  {
+    "id": 3103,
+    "name": "生活区道路节点3089",
+    "lat": 40.006424,
+    "lon": 116.327861,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 937451437，关联道路：明德路。",
+    "image": "web/assets/spots/view-tower.svg"
+  },
+  {
+    "id": 3108,
+    "name": "生活区道路节点3094",
+    "lat": 40.006648,
+    "lon": 116.327778,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 937451436，关联道路：明德路。",
+    "image": "web/assets/spots/camp-lawn.svg"
+  },
+  {
+    "id": 3109,
+    "name": "生活区道路节点3095",
+    "lat": 40.006989,
+    "lon": 116.327727,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9004126670，关联道路：明德路。",
+    "image": "web/assets/spots/bookstore.svg"
+  },
+  {
+    "id": 3111,
+    "name": "步行路节点3097",
+    "lat": 40.008366,
+    "lon": 116.322592,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 13236528602，关联道路：步行路。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 3113,
+    "name": "服务道路节点3099",
+    "lat": 40.007303,
+    "lon": 116.322727,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 943400056，关联道路：服务道路。",
+    "image": "web/assets/spots/cherry-road.svg"
+  },
+  {
+    "id": 3118,
+    "name": "服务道路节点3104",
+    "lat": 40.008822,
+    "lon": 116.326949,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 930118876，关联道路：服务道路。",
+    "image": "web/assets/spots/folk-street.svg"
+  },
+  {
+    "id": 3120,
+    "name": "生活区道路节点3106",
+    "lat": 40.0097,
+    "lon": 116.325939,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 2354002839，关联道路：生活区道路。",
+    "image": "web/assets/spots/camp-lawn.svg"
+  },
+  {
+    "id": 3121,
+    "name": "生活区道路节点3107",
+    "lat": 40.009628,
+    "lon": 116.32418,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10269110111，关联道路：生活区道路。",
+    "image": "web/assets/spots/bookstore.svg"
+  },
+  {
+    "id": 3122,
+    "name": "生活区道路节点3108",
+    "lat": 40.009626,
+    "lon": 116.324136,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 13236528577，关联道路：生活区道路。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 3123,
+    "name": "生活区道路节点3109",
+    "lat": 40.009618,
+    "lon": 116.323881,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 13236528569，关联道路：生活区道路。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 3124,
+    "name": "小径节点3110",
+    "lat": 40.009955,
+    "lon": 116.324015,
+    "type": "path",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 930076809，关联道路：小径。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 3125,
+    "name": "步行路节点3111",
+    "lat": 40.009535,
+    "lon": 116.323924,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 13236528567，关联道路：步行路。",
+    "image": "web/assets/spots/cherry-road.svg"
+  },
+  {
+    "id": 3127,
+    "name": "服务道路节点3113",
+    "lat": 40.007189,
+    "lon": 116.322678,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10161202053，关联道路：服务道路。",
+    "image": "web/assets/spots/view-tower.svg"
+  },
+  {
+    "id": 3138,
+    "name": "步行路节点3124",
+    "lat": 40.000609,
+    "lon": 116.329908,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 9769500366，关联道路：步行路。",
+    "image": "web/assets/spots/museum.svg"
+  },
+  {
+    "id": 3183,
+    "name": "生活区道路节点3169",
+    "lat": 40.008176,
+    "lon": 116.321116,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 3736176211，关联道路：学堂路。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 3184,
+    "name": "骑行道节点3170",
+    "lat": 40.007968,
+    "lon": 116.320316,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 961414147，关联道路：骑行道。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 3219,
+    "name": "生活区道路节点3205",
+    "lat": 40.007911,
+    "lon": 116.327672,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 6948372546，关联道路：明德路。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 3222,
+    "name": "步行路节点3208",
+    "lat": 40.008362,
+    "lon": 116.322538,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 6951357350，关联道路：步行路。",
+    "image": "web/assets/spots/museum.svg"
+  },
+  {
+    "id": 3231,
+    "name": "小径节点3217",
+    "lat": 40.008398,
+    "lon": 116.327411,
+    "type": "path",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 974479565，关联道路：小径。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 3232,
+    "name": "小径节点3218",
+    "lat": 40.009353,
+    "lon": 116.326327,
+    "type": "path",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 974479569，关联道路：小径。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 3238,
+    "name": "生活区道路节点3224",
+    "lat": 40.009582,
+    "lon": 116.322671,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 13236528591，关联道路：生活区道路。",
+    "image": "web/assets/spots/folk-street.svg"
+  },
+  {
+    "id": 3239,
+    "name": "步行路节点3225",
+    "lat": 40.009564,
+    "lon": 116.32389,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 13236528568，关联道路：步行路。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 3240,
+    "name": "步行路节点3226",
+    "lat": 40.009705,
+    "lon": 116.323876,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 13236528570，关联道路：步行路。",
+    "image": "web/assets/spots/camp-lawn.svg"
+  },
+  {
+    "id": 3286,
+    "name": "生活区道路节点3272",
+    "lat": 40.008674,
+    "lon": 116.321082,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 2354000358，关联道路：学堂路。",
+    "image": "web/assets/spots/folk-street.svg"
+  },
+  {
+    "id": 3287,
+    "name": "生活区道路节点3273",
+    "lat": 40.00815,
+    "lon": 116.320463,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 245131277，关联道路：紫荆路。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 3288,
+    "name": "步行路节点3274",
+    "lat": 40.008107,
+    "lon": 116.321305,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 2354492906，关联道路：步行路。",
+    "image": "web/assets/spots/camp-lawn.svg"
+  },
+  {
+    "id": 3289,
+    "name": "骑行道节点3275",
+    "lat": 40.008144,
+    "lon": 116.320312,
+    "type": "cycleway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 945107463，关联道路：骑行道。",
+    "image": "web/assets/spots/bookstore.svg"
+  },
+  {
+    "id": 3323,
+    "name": "生活区道路节点3309",
+    "lat": 40.008038,
+    "lon": 116.327658,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 8639885928，关联道路：明德路。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 3326,
+    "name": "生活区道路节点3312",
+    "lat": 40.009579,
+    "lon": 116.322578,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 2354002509，关联道路：生活区道路。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 3329,
+    "name": "步行路节点3315",
+    "lat": 40.008282,
+    "lon": 116.322399,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 6951357351，关联道路：步行路。",
+    "image": "web/assets/spots/cherry-road.svg"
+  },
+  {
+    "id": 3337,
+    "name": "生活区道路节点3323",
+    "lat": 40.008272,
+    "lon": 116.327536,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 6948372544，关联道路：明德路。",
+    "image": "web/assets/spots/bookstore.svg"
+  },
+  {
+    "id": 3389,
+    "name": "服务道路节点3375",
+    "lat": 40.008823,
+    "lon": 116.321238,
+    "type": "service",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 253721872，关联道路：服务道路。",
+    "image": "web/assets/spots/cherry-road.svg"
+  },
+  {
+    "id": 3390,
+    "name": "步行路节点3376",
+    "lat": 40.008415,
+    "lon": 116.321804,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 2354492907，关联道路：步行路。",
+    "image": "web/assets/spots/museum.svg"
+  },
+  {
+    "id": 3421,
+    "name": "生活区道路节点3407",
+    "lat": 40.008147,
+    "lon": 116.327622,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 6948372545，关联道路：明德路。",
+    "image": "web/assets/spots/bookstore.svg"
+  },
+  {
+    "id": 3424,
+    "name": "生活区道路节点3410",
+    "lat": 40.009571,
+    "lon": 116.322458,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 13236528593，关联道路：生活区道路。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 3427,
+    "name": "步行路节点3413",
+    "lat": 40.008261,
+    "lon": 116.322269,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 2354492908，关联道路：步行路。",
+    "image": "web/assets/spots/view-tower.svg"
+  },
+  {
+    "id": 3431,
+    "name": "生活区道路节点3417",
+    "lat": 40.00821,
+    "lon": 116.327584,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 10161202058，关联道路：明德路。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 3482,
+    "name": "步行路节点3468",
+    "lat": 40.008986,
+    "lon": 116.321422,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 2354492955，关联道路：步行路。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 3483,
+    "name": "步行路节点3469",
+    "lat": 40.008302,
+    "lon": 116.321943,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 2354492912，关联道路：步行路。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 3484,
+    "name": "步行路节点3470",
+    "lat": 40.008524,
+    "lon": 116.321753,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 2354492913，关联道路：步行路。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 3515,
+    "name": "生活区道路节点3501",
+    "lat": 40.009567,
+    "lon": 116.322408,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 983304866，关联道路：生活区道路。",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 3520,
+    "name": "步行路节点3506",
+    "lat": 40.008264,
+    "lon": 116.322118,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 2354492911，关联道路：步行路。",
+    "image": "web/assets/spots/lakeside-plaza.svg"
+  },
+  {
+    "id": 3560,
+    "name": "步行路节点3546",
+    "lat": 40.008785,
+    "lon": 116.32181,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 2354492915，关联道路：步行路。",
+    "image": "web/assets/spots/pier.svg"
+  },
+  {
+    "id": 3561,
+    "name": "生活区道路节点3547",
+    "lat": 40.009405,
+    "lon": 116.321903,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 245131276，关联道路：生活区道路。",
+    "image": "web/assets/spots/bamboo.svg"
+  },
+  {
+    "id": 3562,
+    "name": "步行路节点3548",
+    "lat": 40.008664,
+    "lon": 116.321757,
+    "type": "footway",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 2354492914，关联道路：步行路。",
+    "image": "web/assets/spots/folk-street.svg"
+  },
+  {
+    "id": 3593,
+    "name": "生活区道路节点3579",
+    "lat": 40.009555,
+    "lon": 116.322265,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 245131274，关联道路：生活区道路。",
+    "image": "web/assets/spots/cherry-road.svg"
+  },
+  {
+    "id": 3627,
+    "name": "生活区道路节点3613",
+    "lat": 40.009474,
+    "lon": 116.322002,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 245131275，关联道路：生活区道路。",
+    "image": "web/assets/spots/visitor-center.svg"
+  },
+  {
+    "id": 3662,
+    "name": "生活区道路节点3648",
+    "lat": 40.009523,
+    "lon": 116.322121,
+    "type": "residential",
+    "spot_id": 0,
+    "description": "来自 OpenStreetMap 的真实道路过渡节点，OSM node id 983304840，关联道路：生活区道路。",
+    "image": "web/assets/spots/sports-station.svg"
+  },
+  {
+    "id": 4565,
+    "name": "Road transition node 4565",
+    "lat": 39.999669,
+    "lon": 116.319113,
+    "type": "road_transition",
+    "spot_id": 0,
+    "description": "Interpolated transition node for 清华路; keeps route drawing below 120m per segment.",
+    "image": "web/assets/spots/pier.svg"
+  },
+  {
+    "id": 4566,
+    "name": "Road transition node 4566",
+    "lat": 39.999731,
+    "lon": 116.322575,
+    "type": "road_transition",
+    "spot_id": 0,
+    "description": "Interpolated transition node for 清华路; keeps route drawing below 120m per segment.",
+    "image": "web/assets/spots/bamboo.svg"
+  },
+  {
+    "id": 4567,
+    "name": "Road transition node 4567",
+    "lat": 39.999703,
+    "lon": 116.321075,
+    "type": "road_transition",
+    "spot_id": 0,
+    "description": "Interpolated transition node for 清华路; keeps route drawing below 120m per segment.",
+    "image": "web/assets/spots/folk-street.svg"
+  },
+  {
+    "id": 4568,
+    "name": "Road transition node 4568",
+    "lat": 40.0029,
+    "lon": 116.324407,
+    "type": "road_transition",
+    "spot_id": 0,
+    "description": "Interpolated transition node for 新民路; keeps route drawing below 120m per segment.",
+    "image": "web/assets/spots/wetland.svg"
+  },
+  {
+    "id": 4569,
+    "name": "Road transition node 4569",
+    "lat": 40.00966,
+    "lon": 116.324954,
+    "type": "road_transition",
+    "spot_id": 0,
+    "description": "Interpolated transition node for 生活区道路; keeps route drawing below 120m per segment.",
+    "image": "web/assets/spots/camp-lawn.svg"
+  }
+]

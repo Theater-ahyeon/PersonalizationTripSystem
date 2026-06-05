@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "name": "清华图书馆老馆周边食堂",
+    "near_spot_id": 3,
+    "cuisine": "校园食堂",
+    "rating": 4,
+    "heat": 300
+  },
+  {
+    "id": 2,
+    "name": "主楼附近面食窗口",
+    "near_spot_id": 4,
+    "cuisine": "面食",
+    "rating": 4.7,
+    "heat": 391
+  },
+  {
+    "id": 3,
+    "name": "荷塘咖啡小站",
+    "near_spot_id": 5,
+    "cuisine": "咖啡",
+    "rating": 4.4,
+    "heat": 482
+  },
+  {
+    "id": 4,
+    "name": "近春园简餐点",
+    "near_spot_id": 6,
+    "cuisine": "简餐",
+    "rating": 4.1,
+    "heat": 573
+  },
+  {
+    "id": 5,
+    "name": "水木清华轻食点",
+    "near_spot_id": 7,
+    "cuisine": "轻食",
+    "rating": 4.8,
+    "heat": 664
+  },
+  {
+    "id": 6,
+    "name": "艺术博物馆茶饮吧",
+    "near_spot_id": 8,
+    "cuisine": "茶饮",
+    "rating": 4.5,
+    "heat": 755
+  }
+]

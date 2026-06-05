@@ -1,10 +1,13 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, "..", "..");
-const dataDir = path.join(repoRoot, "cpp", "data");
+const dataRoots = [
+  path.join(repoRoot, "cpp", "data"),
+  path.join(repoRoot, "web", "data")
+];
 
 const IMAGE_POOL = [
   "web/assets/spots/visitor-center.svg",
@@ -21,107 +24,242 @@ const IMAGE_POOL = [
   "web/assets/spots/sports-station.svg"
 ];
 
+const REAL_IMAGES = {
+  eastPalaceGate: "web/assets/spots/real/summer-palace/east-palace-gate.jpg",
+  renshouHall: "web/assets/spots/real/summer-palace/renshou-hall.jpg",
+  deheyuan: "web/assets/spots/real/summer-palace/deheyuan.jpg",
+  longCorridor: "web/assets/spots/real/summer-palace/long-corridor-east.jpg",
+  paiyunGate: commonsImage("Summer Palace at Beijing 15.jpg"),
+  foxiangge: "web/assets/spots/real/tower-buddhist-incense.jpg",
+  marbleBoat: commonsImage("Barco de marmol palacio verano pekin.jpg"),
+  suzhouStreet: "web/assets/spots/real/summer-palace/suzhou-street.jpg",
+  northPalaceGate: "web/assets/spots/real/summer-palace/north-palace-gate.jpg",
+  backLake: commonsImage("Summer Palace Beijing creek.jpg"),
+  kunmingLakeEastDike: commonsImage("Kunming Lake of Summer Palace.JPG"),
+  zhichunPavilion: commonsImage("Summer Palace Panorama.jpg"),
+  seventeenArchBridge: "web/assets/spots/real/summer-seventeen-arch-bridge.jpg",
+  nanhuIsland: commonsImage("Yiheyuan South Lake Island.jpg"),
+  westDike: commonsImage("Bridge at Summer Palace in Beijing.jpg"),
+  harmoniousInterestsGarden: commonsImage("Summer Palace at Beijing 20.jpg"),
+  leshouHall: commonsImage("Beijing Summer Palace Leshoutang.jpg"),
+  wenchangGallery: commonsImage("20090530 Beijing Summer Palace 8467.jpg"),
+  bronzeOx: commonsImage("Bronze Ox, Summer Palace, Beijing (24569731336).jpg"),
+  newPalaceGate: commonsImage("New Gate of the Summer Palace (20201222164832).jpg"),
+  summerTower: "web/assets/spots/real/tower-buddhist-incense.jpg",
+  summerBridge: "web/assets/spots/real/summer-seventeen-arch-bridge.jpg",
+  summerCorridor: "web/assets/spots/real/summer-long-corridor-commons.jpg"
+};
+
+function commonsImage(file) {
+  return `https://commons.wikimedia.org/wiki/Special:Redirect/file/${encodeURIComponent(file)}?width=1280`;
+}
+
+const SUMMER_PALACE_FACILITY_FALLBACKS = [
+  facility("颐和园东宫门卫生间", "卫生间", 1, 39.99732, 116.27548),
+  facility("仁寿殿东侧卫生间", "卫生间", 2, 39.99955, 116.27422),
+  facility("长廊东口卫生间", "卫生间", 4, 39.99832, 116.26952),
+  facility("排云殿东侧卫生间", "卫生间", 5, 39.99916, 116.26672),
+  facility("石舫码头卫生间", "卫生间", 7, 40.00062, 116.26318),
+  facility("北宫门内卫生间", "卫生间", 9, 40.00602, 116.26386),
+  facility("南湖岛卫生间", "卫生间", 14, 39.98912, 116.27512),
+  facility("新建宫门外卫生间", "卫生间", 20, 39.99055, 116.28158),
+  facility("西堤南口卫生间", "卫生间", 15, 39.99256, 116.26098),
+  facility("谐趣园北侧卫生间", "卫生间", 16, 40.00218, 116.27068),
+  facility("东宫门游客服务中心", "游客服务", 1, 39.99726, 116.27568),
+  facility("北宫门游客服务中心", "游客服务", 9, 40.00618, 116.26372),
+  facility("新建宫门游客服务中心", "游客服务", 20, 39.99042, 116.28196),
+  facility("苏州街咨询服务点", "游客服务", 8, 40.00454, 116.26396),
+  facility("文昌院导览服务台", "游客服务", 18, 39.99666, 116.27702),
+  facility("十七孔桥东堤游客咨询点", "游客服务", 13, 39.98886, 116.27738),
+  facility("东宫门售票处", "售票处", 1, 39.99716, 116.27586),
+  facility("北宫门售票处", "售票处", 9, 40.00626, 116.26356),
+  facility("新建宫门售票处", "售票处", 20, 39.99028, 116.28212),
+  facility("苏州街售票处", "售票处", 8, 40.00442, 116.26372),
+  facility("德和园联票处", "售票处", 3, 39.99876, 116.27218),
+  facility("游船码头票务亭", "售票处", 19, 39.99118, 116.27762),
+  facility("仁寿殿饮水点", "饮水点", 2, 39.99938, 116.27418),
+  facility("长廊东口饮水点", "饮水点", 4, 39.99818, 116.26958),
+  facility("排云门饮水点", "饮水点", 5, 39.99902, 116.26644),
+  facility("佛香阁下饮水点", "饮水点", 6, 39.99962, 116.26622),
+  facility("石舫饮水点", "饮水点", 7, 40.00074, 116.26306),
+  facility("十七孔桥东饮水点", "饮水点", 13, 39.98878, 116.27708),
+  facility("东宫门医疗救护点", "急救点", 1, 39.99708, 116.27542),
+  facility("北宫门急救点", "急救点", 9, 40.00608, 116.26342),
+  facility("佛香阁急救联系点", "急救点", 6, 39.99948, 116.26608),
+  facility("十七孔桥急救联系点", "急救点", 13, 39.98862, 116.27728),
+  facility("新建宫门医疗服务点", "急救点", 20, 39.99066, 116.28184),
+  facility("东宫门停车场", "停车场", 1, 39.99768, 116.27638),
+  facility("新建宫门停车场", "停车场", 20, 39.99072, 116.28258),
+  facility("北宫门停车场", "停车场", 9, 40.00648, 116.26332),
+  facility("西苑停车场", "停车场", 1, 39.99792, 116.27966),
+  facility("颐和园路临时落客区", "停车场", 18, 39.99634, 116.27802),
+  facility("地铁4号线西苑站C2口", "地铁站", 1, 39.99804, 116.29074),
+  facility("地铁4号线西苑站A口", "地铁站", 1, 39.99826, 116.29022),
+  facility("地铁4号线北宫门站D口", "地铁站", 9, 40.00682, 116.27712),
+  facility("地铁4号线北宫门站A1口", "地铁站", 9, 40.00642, 116.27742),
+  facility("东宫门文创商店", "商店", 1, 39.99738, 116.27518),
+  facility("长廊东口文创店", "商店", 4, 39.99828, 116.26932),
+  facility("排云殿纪念品店", "商店", 5, 39.99922, 116.26622),
+  facility("苏州街文创商店", "商店", 8, 40.00462, 116.26362),
+  facility("石舫湖畔商店", "商店", 7, 40.00082, 116.26292),
+  facility("北宫门便利店", "商店", 9, 40.00624, 116.26398),
+  facility("新建宫门文创店", "商店", 20, 39.99032, 116.28168),
+  facility("文昌院书店", "商店", 18, 39.99672, 116.27684),
+  facility("佛香阁观景平台", "观景台", 6, 39.99978, 116.26628),
+  facility("万寿山后湖观景台", "观景台", 10, 40.00492, 116.26772),
+  facility("昆明湖东堤观景点", "观景台", 11, 39.99278, 116.27136),
+  facility("十七孔桥摄影点", "观景台", 13, 39.98874, 116.27742),
+  facility("南湖岛湖景平台", "观景台", 14, 39.98934, 116.27542),
+  facility("西堤镜桥观景点", "观景台", 15, 39.99286, 116.26062),
+  facility("东宫门安检口", "安检口", 1, 39.99708, 116.27574),
+  facility("北宫门安检口", "安检口", 9, 40.00636, 116.26364),
+  facility("新建宫门安检口", "安检口", 20, 39.99018, 116.28202),
+  facility("知春亭湖边休息亭", "休息亭", 12, 39.99502, 116.27392)
+];
+
 const ENDPOINTS = [
-  "https://overpass.kumi.systems/api/interpreter",
   "https://overpass-api.de/api/interpreter",
+  "https://overpass.kumi.systems/api/interpreter",
   "https://maps.mail.ru/osm/tools/overpass/api/interpreter"
 ];
+const OSM_MAP_ENDPOINT = "https://api.openstreetmap.org/api/0.6/map";
+
+const ROAD_HIGHWAYS = "footway|path|pedestrian|cycleway|service|residential|living_street|unclassified|tertiary";
+const FETCH_TIMEOUT_MS = 25_000;
+const MAX_TILE_SPLIT_DEPTH = 2;
 
 const SCENES = {
   "summer-palace": {
     label: "北京颐和园",
+    outputSubdir: "",
     bbox: [39.9850, 116.2550, 40.0120, 116.3050],
-    targetRoadNodes: 208,
+    minRoadNodes: 400,
+    maxRoadNodes: 700,
+    maxSegmentM: 120,
+    minEdges: 400,
+    sampleRoutes: [[1, 8], [9, 13], [20, 6]],
     namedNodes: [
-      { id: 1, name: "颐和园东宫门", lat: 39.9973, lon: 116.2753, type: "gate", spot_id: 1, description: "颐和园东宫门是游客入园和路线规划的主要起点，适合连接仁寿殿、德和园和昆明湖东堤。", image: IMAGE_POOL[0] },
-      { id: 2, name: "仁寿殿", lat: 39.9994, lon: 116.2740, type: "building", spot_id: 2, description: "仁寿殿是清代皇家园林的政务活动空间，适合文化类推荐和室内参观。", image: IMAGE_POOL[3] },
-      { id: 3, name: "德和园", lat: 39.9987, lon: 116.2720, type: "building", spot_id: 3, description: "德和园以戏楼和园林院落著称，适合对戏曲、建筑和历史感兴趣的游客。", image: IMAGE_POOL[10] },
-      { id: 4, name: "长廊东口", lat: 39.9982, lon: 116.2695, type: "path", spot_id: 4, description: "长廊连接东部建筑群和万寿山前景区，是步行游览的核心通道。", image: IMAGE_POOL[2] },
-      { id: 5, name: "排云门", lat: 39.9991, lon: 116.2665, type: "junction", spot_id: 5, description: "排云门位于万寿山中轴线上，是前往佛香阁和昆明湖的重要节点。", image: IMAGE_POOL[1] },
-      { id: 6, name: "佛香阁", lat: 39.9997, lon: 116.2662, type: "landmark", spot_id: 6, description: "佛香阁是颐和园标志性建筑，可俯瞰昆明湖和长堤景观。", image: IMAGE_POOL[4] },
-      { id: 7, name: "石舫", lat: 40.0007, lon: 116.2630, type: "landmark", spot_id: 7, description: "石舫位于昆明湖北岸，适合拍照、休息和湖岸路线衔接。", image: IMAGE_POOL[5] },
-      { id: 8, name: "苏州街入口", lat: 40.0046, lon: 116.2638, type: "poi", spot_id: 8, description: "苏州街入口连接后湖商业街区，适合文化体验、美食和文创购物推荐。", image: IMAGE_POOL[7] },
-      { id: 9, name: "北宫门", lat: 40.0061, lon: 116.2636, type: "gate", spot_id: 9, description: "北宫门靠近地铁和外部服务区，适合作为返程或多点游览终点。", image: IMAGE_POOL[0] },
-      { id: 10, name: "万寿山后湖", lat: 40.0048, lon: 116.2676, type: "waterfront", spot_id: 10, description: "后湖区域较安静，适合避开高峰人流的休闲路线。", image: IMAGE_POOL[8] },
-      { id: 11, name: "昆明湖东堤", lat: 39.9926, lon: 116.2715, type: "path", spot_id: 11, description: "昆明湖东堤视野开阔，适合拍照、骑行和湖岸观景。", image: IMAGE_POOL[1] },
-      { id: 12, name: "知春亭", lat: 39.9949, lon: 116.2739, type: "landmark", spot_id: 12, description: "知春亭临近昆明湖，是连接东宫门和湖岸景观的轻量停留点。", image: IMAGE_POOL[8] },
-      { id: 13, name: "十七孔桥", lat: 39.9887, lon: 116.2772, type: "bridge", spot_id: 13, description: "十七孔桥是昆明湖最具辨识度的桥梁景观，适合夕阳和摄影路线。", image: IMAGE_POOL[4] },
-      { id: 14, name: "南湖岛", lat: 39.9893, lon: 116.2753, type: "island", spot_id: 14, description: "南湖岛通过十七孔桥与东堤相连，适合安排湖区环线。", image: IMAGE_POOL[5] },
-      { id: 15, name: "西堤", lat: 39.9928, lon: 116.2608, type: "path", spot_id: 15, description: "西堤横贯昆明湖西侧，适合长距离步行和低拥挤度路线。", image: IMAGE_POOL[6] },
-      { id: 16, name: "谐趣园", lat: 40.0023, lon: 116.2706, type: "garden", spot_id: 16, description: "谐趣园有江南园林风格，适合文化、建筑和安静游览偏好。", image: IMAGE_POOL[6] },
-      { id: 17, name: "乐寿堂", lat: 39.9989, lon: 116.2727, type: "building", spot_id: 17, description: "乐寿堂靠近核心建筑群，适合和仁寿殿、德和园一起推荐。", image: IMAGE_POOL[3] },
-      { id: 18, name: "文昌院", lat: 39.9966, lon: 116.2769, type: "museum", spot_id: 18, description: "文昌院适合室内展陈、文物和雨天备选路线。", image: IMAGE_POOL[10] },
-      { id: 19, name: "铜牛广场", lat: 39.9910, lon: 116.2777, type: "square", spot_id: 19, description: "铜牛广场位于湖区东南侧，可作为十七孔桥和东堤之间的休息点。", image: IMAGE_POOL[9] },
-      { id: 20, name: "新建宫门", lat: 39.9904, lon: 116.2818, type: "gate", spot_id: 20, description: "新建宫门临近外部交通与服务设施，适合作为南侧入园起点。", image: IMAGE_POOL[0] }
+      node(1, "颐和园东宫门", 39.9973, 116.2753, "gate", "颐和园东宫门是游客入园和路线规划的主要起点，适合连接仁寿殿、德和园和昆明湖东堤。", REAL_IMAGES.eastPalaceGate),
+      node(2, "仁寿殿", 39.9994, 116.2740, "building", "仁寿殿是清代皇家园林的政务活动空间，适合文化类推荐和室内参观。", REAL_IMAGES.renshouHall),
+      node(3, "德和园", 39.9987, 116.2720, "building", "德和园以戏楼和园林院落著称，适合对戏曲、建筑和历史感兴趣的游客。", REAL_IMAGES.deheyuan),
+      node(4, "长廊东口", 39.9982, 116.2695, "path", "长廊连接东部建筑群和万寿山前景区，是步行游览的核心通道。", REAL_IMAGES.longCorridor),
+      node(5, "排云门", 39.9991, 116.2665, "junction", "排云门位于万寿山中轴线上，是前往佛香阁和昆明湖的重要节点。", REAL_IMAGES.paiyunGate),
+      node(6, "佛香阁", 39.9997, 116.2662, "landmark", "佛香阁是颐和园标志性建筑，可俯瞰昆明湖和长堤景观。", REAL_IMAGES.foxiangge),
+      node(7, "石舫", 40.0007, 116.2630, "landmark", "石舫位于昆明湖北岸，适合拍照、休息和湖岸路线衔接。", REAL_IMAGES.marbleBoat),
+      node(8, "苏州街入口", 40.0046, 116.2638, "poi", "苏州街入口连接后湖商业街区，适合文化体验、美食和文创购物推荐。", REAL_IMAGES.suzhouStreet),
+      node(9, "北宫门", 40.0061, 116.2636, "gate", "北宫门靠近地铁和外部服务区，适合作为返程或多点游览终点。", REAL_IMAGES.northPalaceGate),
+      node(10, "万寿山后湖", 40.0048, 116.2676, "waterfront", "后湖区域较安静，适合避开高峰人流的休闲路线。", REAL_IMAGES.backLake),
+      node(11, "昆明湖东堤", 39.9926, 116.2715, "path", "昆明湖东堤视野开阔，适合拍照、骑行和湖岸观景。", REAL_IMAGES.kunmingLakeEastDike),
+      node(12, "知春亭", 39.9949, 116.2739, "landmark", "知春亭临近昆明湖，是连接东宫门和湖岸景观的轻量停留点。", REAL_IMAGES.zhichunPavilion),
+      node(13, "十七孔桥", 39.9887, 116.2772, "bridge", "十七孔桥是昆明湖最具辨识度的桥梁景观，适合夕阳和摄影路线。", REAL_IMAGES.seventeenArchBridge),
+      node(14, "南湖岛", 39.9893, 116.2753, "island", "南湖岛通过十七孔桥与东堤相连，适合安排湖区环线。", REAL_IMAGES.nanhuIsland),
+      node(15, "西堤", 39.9928, 116.2608, "path", "西堤横贯昆明湖西侧，适合长距离步行和低拥挤度路线。", REAL_IMAGES.westDike),
+      node(16, "谐趣园", 40.0023, 116.2706, "garden", "谐趣园有江南园林风格，适合文化、建筑和安静游览偏好。", REAL_IMAGES.harmoniousInterestsGarden),
+      node(17, "乐寿堂", 39.9989, 116.2727, "building", "乐寿堂靠近核心建筑群，适合和仁寿殿、德和园一起推荐。", REAL_IMAGES.leshouHall),
+      node(18, "文昌院", 39.9966, 116.2769, "museum", "文昌院适合室内展陈、文物和雨天备选路线。", REAL_IMAGES.wenchangGallery),
+      node(19, "铜牛广场", 39.9910, 116.2777, "square", "铜牛广场位于湖区东南侧，可作为十七孔桥和东堤之间的休息点。", REAL_IMAGES.bronzeOx),
+      node(20, "新建宫门", 39.9904, 116.2818, "gate", "新建宫门临近外部交通与服务设施，适合作为南侧入园起点。", REAL_IMAGES.newPalaceGate)
     ],
-    namedEdges: [
-      [1, 2, "东宫门入园路"], [2, 17, "仁寿殿联络路"], [17, 3, "乐寿堂德和园路"],
-      [3, 4, "德和园长廊路"], [4, 5, "长廊步行路"], [5, 6, "排云门登高路"],
-      [6, 7, "万寿山湖岸路"], [7, 8, "后湖苏州街路"], [8, 9, "苏州街北宫门路"],
-      [8, 10, "后湖环线"], [10, 16, "谐趣园后湖路"], [16, 3, "谐趣园联络路"],
-      [1, 18, "东宫门文昌院路"], [18, 12, "文昌院知春亭路"], [12, 11, "知春亭东堤路"],
-      [11, 19, "昆明湖东堤"], [19, 13, "铜牛十七孔桥路"], [13, 14, "十七孔桥"],
-      [14, 15, "南湖岛西堤联络路"], [15, 7, "西堤石舫路"], [11, 4, "东堤长廊联络路"],
-      [20, 19, "新建宫门铜牛路"], [20, 13, "新建宫门十七孔桥路"], [1, 12, "东宫门知春亭路"]
-    ]
+    highLevelEdges: [
+      [1, 2], [2, 17], [17, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 8], [8, 9],
+      [8, 10], [10, 16], [16, 3], [1, 18], [18, 12], [12, 11], [11, 19], [19, 13],
+      [13, 14], [14, 15], [15, 7], [11, 4], [20, 19], [20, 13], [1, 12]
+    ],
+    facilityCount: 60,
+    restaurantCount: 50,
+    usersCount: 10,
+    diariesCount: 12
+  },
+  "tsinghua-campus": {
+    label: "清华大学",
+    source: "local-pack",
+    sourceSubdir: "regions/tsinghua_campus",
+    outputSubdir: "regions/tsinghua_campus",
+    minRoadNodes: 400,
+    maxRoadNodes: 700,
+    maxSegmentM: 120,
+    minEdges: 400,
+    sampleRoutes: [[1, 4], [14, 10], [3, 8]],
+    diariesCount: 10
   }
 };
 
-const sceneId = process.argv[2] || "summer-palace";
-const scene = SCENES[sceneId];
-if (!scene) {
-  throw new Error(`Unknown scene "${sceneId}". Available scenes: ${Object.keys(SCENES).join(", ")}`);
+function node(id, name, lat, lon, type, description, image) {
+  return { id, name, lat, lon, type, spot_id: id, description, image };
 }
 
-const [south, west, north, east] = scene.bbox;
-const query = `[out:json][timeout:40];
-way["highway"~"footway|path|pedestrian|cycleway|service|residential|living_street|unclassified|tertiary"](${south},${west},${north},${east});
-(._;>;);
-out body qt;`;
-
-function pushBidirectional(edges, from, to, distance, mode, roadName) {
-  edges.push({ from, to, distance: round(distance, 1), mode, road_name: roadName });
-  edges.push({ from: to, to: from, distance: round(distance, 1), mode, road_name: roadName });
+function spot(id, name, category, tags, rating, heat) {
+  return { id, name, category, rating, heat, tags };
 }
 
-function round(value, digits = 1) {
-  const factor = 10 ** digits;
-  return Math.round(value * factor) / factor;
+function facility(name, type, nearSpotId, lat, lon) {
+  return { name, type, near_spot_id: nearSpotId, lat, lon };
 }
 
-function clamp(value, min, max) {
-  return Math.max(min, Math.min(max, value));
+const sceneArg = process.argv[2] || "summer-palace";
+const sceneIds = sceneArg === "all" ? Object.keys(SCENES) : [sceneArg];
+for (const id of sceneIds) {
+  if (!SCENES[id]) {
+    throw new Error(`Unknown scene "${id}". Available scenes: all, ${Object.keys(SCENES).join(", ")}`);
+  }
 }
 
-function offsetPoint(base, index, step = 0.00018) {
-  const ring = Math.floor(index / 8) + 1;
-  const angle = (index % 8) * Math.PI / 4;
-  return {
-    lat: round(clamp(base.lat + Math.sin(angle) * step * ring, south, north), 6),
-    lon: round(clamp(base.lon + Math.cos(angle) * step * ring, west, east), 6)
-  };
+function overpassQueryForBbox(bbox) {
+  const [south, west, north, east] = bbox;
+  return `[out:json][timeout:45];
+way["highway"~"${ROAD_HIGHWAYS}"](${south},${west},${north},${east});
+out body qt;
+>;
+out skel qt;`;
 }
 
-function haversineM(a, b) {
-  const rad = Math.PI / 180;
-  const dlat = (b.lat - a.lat) * rad;
-  const dlon = (b.lon - a.lon) * rad;
-  const lat1 = a.lat * rad;
-  const lat2 = b.lat * rad;
-  const h = Math.sin(dlat / 2) ** 2 +
-    Math.cos(lat1) * Math.cos(lat2) * Math.sin(dlon / 2) ** 2;
-  return 6371000 * 2 * Math.atan2(Math.sqrt(h), Math.sqrt(1 - h));
+async function fetchOverpass(scene) {
+  const boxes = sceneBboxes(scene);
+  const responses = [];
+  for (let index = 0; index < boxes.length; ++index) {
+    const label = `${scene.label} tile ${index + 1}/${boxes.length}`;
+    responses.push(scene.source === "osm-api"
+      ? await fetchOsmApiMapWithSplit(boxes[index], label)
+      : await fetchOverpassBboxWithSplit(boxes[index], label));
+  }
+  return mergeOverpassResponses(responses);
 }
 
-async function fetchOverpass() {
-  const body = new URLSearchParams({ data: query });
+function sceneBboxes(scene) {
+  if (!scene.tiles) return [scene.bbox];
+  const [rows, cols] = Array.isArray(scene.tiles) ? scene.tiles : [scene.tiles, scene.tiles];
+  const [south, west, north, east] = scene.bbox;
+  const boxes = [];
+  const overlap = 0.00008;
+  for (let row = 0; row < rows; ++row) {
+    const tileSouth = south + (north - south) * row / rows;
+    const tileNorth = south + (north - south) * (row + 1) / rows;
+    for (let col = 0; col < cols; ++col) {
+      const tileWest = west + (east - west) * col / cols;
+      const tileEast = west + (east - west) * (col + 1) / cols;
+      boxes.push([
+        clamp(tileSouth - overlap, south, north),
+        clamp(tileWest - overlap, west, east),
+        clamp(tileNorth + overlap, south, north),
+        clamp(tileEast + overlap, west, east)
+      ]);
+    }
+  }
+  return boxes;
+}
+
+async function fetchOverpassBbox(bbox, label) {
+  const body = new URLSearchParams({ data: overpassQueryForBbox(bbox) });
   let lastError = null;
   for (const endpoint of ENDPOINTS) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
     try {
       const response = await fetch(endpoint, {
         method: "POST",
-        headers: { "User-Agent": "PersonalizationTripSystem-course-demo/2.0 (local data generation)" },
-        body
+        headers: { "User-Agent": "PersonalizationTripSystem-course-demo/3.0 (local data generation)" },
+        body,
+        signal: controller.signal
       });
       const text = await response.text();
       if (!response.ok) {
@@ -130,10 +268,195 @@ async function fetchOverpass() {
       return JSON.parse(text);
     } catch (error) {
       lastError = error;
-      console.warn(`Overpass endpoint failed: ${endpoint}: ${error.message}`);
+      console.warn(`Overpass endpoint failed for ${label}: ${endpoint}: ${error.message}`);
+    } finally {
+      clearTimeout(timeout);
     }
   }
   throw lastError || new Error("No Overpass endpoint responded");
+}
+
+async function fetchOverpassBboxWithSplit(bbox, label, depth = 0) {
+  try {
+    return await fetchOverpassBbox(bbox, label);
+  } catch (error) {
+    if (depth >= MAX_TILE_SPLIT_DEPTH) throw error;
+    const subtiles = splitBbox(bbox);
+    console.warn(`Splitting ${label} into ${subtiles.length} smaller Overpass tiles.`);
+    const responses = [];
+    for (let index = 0; index < subtiles.length; ++index) {
+      responses.push(await fetchOverpassBboxWithSplit(
+        subtiles[index],
+        `${label}.${index + 1}`,
+        depth + 1
+      ));
+    }
+    return mergeOverpassResponses(responses);
+  }
+}
+
+function facilityOverpassQuery(scene) {
+  const [south, west, north, east] = scene.bbox;
+  return `[out:json][timeout:35];
+(
+  nwr["amenity"~"toilets|drinking_water|parking|clinic|first_aid|ticket_booth"](${south},${west},${north},${east});
+  nwr["tourism"~"information|viewpoint"](${south},${west},${north},${east});
+  nwr["shop"](${south},${west},${north},${east});
+  nwr["railway"="subway_entrance"](${south},${west},${north},${east});
+  nwr["public_transport"="station"](${south},${west},${north},${east});
+);
+out center tags 300;`;
+}
+
+async function fetchFacilityPois(scene) {
+  if (scene.outputSubdir || !scene.bbox) return [];
+  const body = new URLSearchParams({ data: facilityOverpassQuery(scene) });
+  for (const endpoint of ENDPOINTS) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "User-Agent": "PersonalizationTripSystem-course-demo/3.0 (facility data verification)" },
+        body,
+        signal: controller.signal
+      });
+      const text = await response.text();
+      if (!response.ok) throw new Error(`${endpoint} ${response.status}: ${text.slice(0, 120)}`);
+      return JSON.parse(text).elements || [];
+    } catch (error) {
+      console.warn(`Facility POI endpoint failed for ${scene.label}: ${endpoint}: ${error.message}`);
+    } finally {
+      clearTimeout(timeout);
+    }
+  }
+  return [];
+}
+
+async function fetchOsmApiMapWithSplit(bbox, label, depth = 0) {
+  try {
+    return await fetchOsmApiMap(bbox, label);
+  } catch (error) {
+    if (depth >= MAX_TILE_SPLIT_DEPTH) throw error;
+    const subtiles = splitBbox(bbox);
+    console.warn(`Splitting ${label} into ${subtiles.length} smaller OSM API tiles.`);
+    const responses = [];
+    for (let index = 0; index < subtiles.length; ++index) {
+      responses.push(await fetchOsmApiMapWithSplit(
+        subtiles[index],
+        `${label}.${index + 1}`,
+        depth + 1
+      ));
+    }
+    return mergeOverpassResponses(responses);
+  }
+}
+
+async function fetchOsmApiMap(bbox, label) {
+  const [south, west, north, east] = bbox;
+  const url = `${OSM_MAP_ENDPOINT}?bbox=${west},${south},${east},${north}`;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  try {
+    const response = await fetch(url, {
+      headers: { "User-Agent": "PersonalizationTripSystem-course-demo/3.0 (local data generation)" },
+      signal: controller.signal
+    });
+    const text = await response.text();
+    if (!response.ok) {
+      throw new Error(`${label} ${response.status}: ${text.slice(0, 180)}`);
+    }
+    return parseOsmMapXml(text);
+  } catch (error) {
+    console.warn(`OSM API tile failed for ${label}: ${error.message}`);
+    throw error;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+function parseOsmMapXml(xml) {
+  const elements = [];
+  const nodeRegex = /<node\b([^>]*?)(?:\/>|>([\s\S]*?)<\/node>)/g;
+  for (const match of xml.matchAll(nodeRegex)) {
+    const attrs = parseXmlAttributes(match[1]);
+    if (!attrs.id || !attrs.lat || !attrs.lon) continue;
+    elements.push({
+      type: "node",
+      id: Number(attrs.id),
+      lat: Number(attrs.lat),
+      lon: Number(attrs.lon),
+      tags: parseXmlTags(match[2] || "")
+    });
+  }
+
+  const wayRegex = /<way\b([^>]*?)>([\s\S]*?)<\/way>/g;
+  for (const match of xml.matchAll(wayRegex)) {
+    const attrs = parseXmlAttributes(match[1]);
+    if (!attrs.id) continue;
+    const body = match[2] || "";
+    const nodes = Array.from(body.matchAll(/<nd\b[^>]*\bref="([^"]+)"/g), (item) => Number(item[1]))
+      .filter((value) => Number.isFinite(value));
+    elements.push({
+      type: "way",
+      id: Number(attrs.id),
+      nodes,
+      tags: parseXmlTags(body)
+    });
+  }
+  return { elements };
+}
+
+function parseXmlTags(xml) {
+  const tags = {};
+  const tagRegex = /<tag\b([^>]*?)\/>/g;
+  for (const match of xml.matchAll(tagRegex)) {
+    const attrs = parseXmlAttributes(match[1]);
+    if (attrs.k) tags[attrs.k] = attrs.v || "";
+  }
+  return tags;
+}
+
+function parseXmlAttributes(input) {
+  const attrs = {};
+  for (const match of input.matchAll(/([\w:-]+)="([^"]*)"/g)) {
+    attrs[match[1]] = decodeXml(match[2]);
+  }
+  return attrs;
+}
+
+function decodeXml(value) {
+  return value
+    .replace(/&quot;/g, "\"")
+    .replace(/&apos;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&")
+    .replace(/&#x([0-9a-f]+);/gi, (_, code) => String.fromCodePoint(parseInt(code, 16)))
+    .replace(/&#(\d+);/g, (_, code) => String.fromCodePoint(Number(code)));
+}
+
+function splitBbox(bbox) {
+  const [south, west, north, east] = bbox;
+  const midLat = (south + north) / 2;
+  const midLon = (west + east) / 2;
+  const overlap = 0.00005;
+  return [
+    [south, west, clamp(midLat + overlap, south, north), clamp(midLon + overlap, west, east)],
+    [south, clamp(midLon - overlap, west, east), clamp(midLat + overlap, south, north), east],
+    [clamp(midLat - overlap, south, north), west, north, clamp(midLon + overlap, west, east)],
+    [clamp(midLat - overlap, south, north), clamp(midLon - overlap, west, east), north, east]
+  ];
+}
+
+function mergeOverpassResponses(responses) {
+  const elementsByKey = new Map();
+  for (const response of responses) {
+    for (const element of response.elements || []) {
+      elementsByKey.set(`${element.type}:${element.id}`, element);
+    }
+  }
+  return { elements: Array.from(elementsByKey.values()) };
 }
 
 function buildRoadGraph(overpass) {
@@ -153,7 +476,7 @@ function buildRoadGraph(overpass) {
   for (const way of osmWays) {
     const tags = way.tags || {};
     const roadName = tags.name || highwayLabel(tags.highway) || `OSM way ${way.id}`;
-    const mode = tags.highway === "cycleway" ? "bike" : "both";
+    const mode = edgeMode(tags.highway);
     for (let i = 1; i < way.nodes.length; ++i) {
       const from = way.nodes[i - 1];
       const to = way.nodes[i];
@@ -164,8 +487,12 @@ function buildRoadGraph(overpass) {
       if (!nodeMeta.has(to)) nodeMeta.set(to, { roadName, highway: tags.highway || "road" });
     }
   }
-
   return { osmNodes, graph, nodeMeta, segments };
+}
+
+function edgeMode(highway) {
+  if (["footway", "path", "pedestrian", "cycleway"].includes(highway)) return "both";
+  return "both";
 }
 
 function highwayLabel(highway) {
@@ -175,7 +502,7 @@ function highwayLabel(highway) {
     pedestrian: "步行街",
     cycleway: "骑行道",
     service: "服务道路",
-    residential: "社区道路",
+    residential: "生活区道路",
     living_street: "生活街区道路",
     unclassified: "道路",
     tertiary: "三级道路"
@@ -213,31 +540,64 @@ function largestComponent(graph) {
   return best;
 }
 
-function selectOsmNodes(osmNodes, graph) {
+function selectOsmNodes(scene, osmNodes, graph) {
   const component = largestComponent(graph);
-  if (component.length < scene.targetRoadNodes) {
-    throw new Error(`Only ${component.length} connected OSM nodes found; need ${scene.targetRoadNodes}`);
+  if (component.length < scene.minRoadNodes) {
+    throw new Error(`${scene.label}: only ${component.length} connected OSM nodes found; need ${scene.minRoadNodes}`);
   }
-  const center = averagePoint(scene.namedNodes);
-  let seed = component[0];
-  let seedDistance = Infinity;
-  for (const osmId of component) {
-    const distance = haversineM(center, osmNodes.get(osmId));
-    if (distance < seedDistance) {
-      seed = osmId;
-      seedDistance = distance;
-    }
+  if (!scene.maxRoadNodes && component.length <= scene.minRoadNodes) {
+    return component;
   }
 
-  const inComponent = new Set(component);
-  const selected = [];
-  const seen = new Set([seed]);
-  const queue = [seed];
-  while (queue.length && selected.length < scene.targetRoadNodes) {
+  if (scene.maxRoadNodes) {
+    return selectKeyRouteOsmNodes(scene, component, osmNodes, graph);
+  }
+
+  return component;
+}
+
+function selectKeyRouteOsmNodes(scene, component, osmNodes, graph) {
+  const center = averagePoint(scene.namedNodes);
+  const seedSet = new Set();
+  for (const poi of scene.namedNodes) {
+    nearestOsmIds(poi, component, osmNodes, 2).forEach((id) => seedSet.add(id));
+  }
+
+  const poiById = new Map(scene.namedNodes.map((poi) => [poi.id, poi]));
+  const routePairs = [...(scene.highLevelEdges || []), ...(scene.sampleRoutes || [])];
+  for (const [fromId, toId] of routePairs) {
+    const from = poiById.get(fromId);
+    const to = poiById.get(toId);
+    if (!from || !to) continue;
+    const start = nearestOsmIds(from, component, osmNodes, 1)[0];
+    const goal = nearestOsmIds(to, component, osmNodes, 1)[0];
+    const path = shortestOsmPath(start, goal, graph, osmNodes);
+    if (!path.length) {
+      throw new Error(`${scene.label}: key route ${fromId}->${toId} could not be traced through OSM roads`);
+    }
+    path.forEach((id) => seedSet.add(id));
+  }
+
+  const selected = [...seedSet].sort((a, b) => {
+    const da = haversineM(center, osmNodes.get(a));
+    const db = haversineM(center, osmNodes.get(b));
+    return da - db || a - b;
+  });
+  if (selected.length > scene.maxRoadNodes) {
+    throw new Error(`${scene.label}: key route node set has ${selected.length} transition nodes; max is ${scene.maxRoadNodes}`);
+  }
+
+  const seen = new Set(seedSet);
+  const componentSet = new Set(component);
+  const queue = [...selected].sort((a, b) => {
+    const da = haversineM(center, osmNodes.get(a));
+    const db = haversineM(center, osmNodes.get(b));
+    return da - db || a - b;
+  });
+  while (queue.length && selected.length < scene.minRoadNodes) {
     const current = queue.shift();
-    selected.push(current);
     const neighbors = Array.from(graph.get(current) || [])
-      .filter((id) => inComponent.has(id))
+      .filter((id) => componentSet.has(id))
       .sort((a, b) => {
         const da = haversineM(center, osmNodes.get(a));
         const db = haversineM(center, osmNodes.get(b));
@@ -246,22 +606,59 @@ function selectOsmNodes(osmNodes, graph) {
     for (const next of neighbors) {
       if (!seen.has(next)) {
         seen.add(next);
+        selected.push(next);
         queue.push(next);
       }
     }
   }
-  return selected.slice(0, scene.targetRoadNodes);
+  return selected;
 }
 
-function buildOsmOutput(overpass) {
+function shortestOsmPath(start, goal, graph, osmNodes) {
+  if (start == null || goal == null) return [];
+  const dist = new Map([[start, 0]]);
+  const prev = new Map();
+  const queue = [{ node: start, distance: 0 }];
+  const seen = new Set();
+  while (queue.length) {
+    queue.sort((a, b) => a.distance - b.distance);
+    const current = queue.shift();
+    if (seen.has(current.node)) continue;
+    seen.add(current.node);
+    if (current.node === goal) break;
+    for (const next of graph.get(current.node) || []) {
+      const a = osmNodes.get(current.node);
+      const b = osmNodes.get(next);
+      if (!a || !b) continue;
+      const nextDistance = current.distance + haversineM(a, b);
+      if (!dist.has(next) || nextDistance < dist.get(next)) {
+        dist.set(next, nextDistance);
+        prev.set(next, current.node);
+        queue.push({ node: next, distance: nextDistance });
+      }
+    }
+  }
+  if (!dist.has(goal)) return [];
+  const path = [];
+  for (let node = goal; node != null; node = prev.get(node)) {
+    path.unshift(node);
+    if (node === start) break;
+  }
+  return path;
+}
+
+function buildOsmOutput(scene, overpass) {
   const { osmNodes, graph, nodeMeta, segments } = buildRoadGraph(overpass);
-  const selectedOsmIds = selectOsmNodes(osmNodes, graph);
+  const selectedOsmIds = selectOsmNodes(scene, osmNodes, graph);
   const selected = new Set(selectedOsmIds);
   const localIdByOsmId = new Map();
   const nodes = [...scene.namedNodes];
+  const reservedNodeIds = [...scene.namedNodes, ...(scene.displayNodes || [])].map((item) => Number(item.id));
+  const roadIdStart = Math.max(...reservedNodeIds) + 1;
+  let nextVirtualRoadId = roadIdStart + selectedOsmIds.length;
 
   selectedOsmIds.forEach((osmId, index) => {
-    const localId = scene.namedNodes.length + 1 + index;
+    const localId = roadIdStart + index;
     localIdByOsmId.set(osmId, localId);
     const osmNode = osmNodes.get(osmId);
     const meta = nodeMeta.get(osmId) || {};
@@ -272,18 +669,13 @@ function buildOsmOutput(overpass) {
       lon: round(osmNode.lon, 6),
       type: meta.highway || "road",
       spot_id: 0,
-      description: `来自 OpenStreetMap 的真实道路节点，OSM node id ${osmId}，关联道路：${meta.roadName || "未命名道路"}。`,
+      description: `来自 OpenStreetMap 的真实道路过渡节点，OSM node id ${osmId}，关联道路：${meta.roadName || "未命名道路"}。`,
       image: IMAGE_POOL[index % IMAGE_POOL.length]
     });
   });
 
   const edges = [];
-  for (const [from, to, roadName] of scene.namedEdges) {
-    const a = nodes.find((node) => node.id === from);
-    const b = nodes.find((node) => node.id === to);
-    pushBidirectional(edges, from, to, Math.max(30, haversineM(a, b) * 1.18), "both", roadName);
-  }
-
+  const nodeById = new Map(nodes.map((node) => [Number(node.id), node]));
   const pairSeen = new Set();
   for (const segment of segments) {
     if (!selected.has(segment.from) || !selected.has(segment.to)) continue;
@@ -294,48 +686,311 @@ function buildOsmOutput(overpass) {
     pairSeen.add(key);
     const a = osmNodes.get(segment.from);
     const b = osmNodes.get(segment.to);
-    pushBidirectional(edges, from, to, haversineM(a, b), segment.mode, segment.roadName);
+    nextVirtualRoadId = pushSegmentedBidirectional({
+      nodes,
+      nodeById,
+      edges,
+      from,
+      to,
+      distance: haversineM(a, b),
+      mode: segment.mode,
+      roadName: segment.roadName,
+      maxSegmentM: scene.maxSegmentM,
+      nextVirtualRoadId
+    });
   }
 
-  for (const named of scene.namedNodes) {
-    let nearest = null;
-    let bestDistance = Infinity;
-    for (const osmId of selectedOsmIds) {
-      const distance = haversineM(named, osmNodes.get(osmId));
-      if (distance < bestDistance) {
-        nearest = localIdByOsmId.get(osmId);
-        bestDistance = distance;
-      }
+  for (const poi of scene.namedNodes) {
+    const nearest = nearestOsmIds(poi, selectedOsmIds, osmNodes, 2);
+    for (const osmId of nearest) {
+      const localRoadId = localIdByOsmId.get(osmId);
+      const roadNode = osmNodes.get(osmId);
+      nextVirtualRoadId = pushSegmentedBidirectional({
+        nodes,
+        nodeById,
+        edges,
+        from: poi.id,
+        to: localRoadId,
+        distance: Math.max(8, haversineM(poi, roadNode)),
+        mode: "both",
+        roadName: "景点接入真实路网",
+        maxSegmentM: scene.maxSegmentM,
+        nextVirtualRoadId
+      });
     }
-    pushBidirectional(edges, named.id, nearest, Math.max(20, bestDistance), "both", "景点接入真实路网");
+  }
+
+  if (scene.displayNodes?.length) {
+    nodes.push(...scene.displayNodes);
   }
 
   return { nodes, edges };
 }
 
-function buildSpots() {
-  const extra = [
-    ["智慧导览服务中心", "服务", "咨询,导览,入口", 4.3, 780],
-    ["长廊彩画讲解点", "文化", "彩画,讲解,历史", 4.5, 840],
-    ["昆明湖观景台", "观景", "湖景,拍照,休闲", 4.7, 1010],
-    ["后湖安静步道", "自然", "徒步,低拥挤,树荫", 4.4, 690]
+async function generateLocalScene(scene) {
+  const sourceDir = path.join(dataRoots[1], scene.sourceSubdir);
+  const source = {
+    nodes: await readJson(path.join(sourceDir, "osm_nodes.json")),
+    edges: await readJson(path.join(sourceDir, "osm_edges.json")),
+    spots: await readJson(path.join(sourceDir, "spots.json")),
+    roads: await readJson(path.join(sourceDir, "roads.json")),
+    facilities: await readJson(path.join(sourceDir, "facilities.json")),
+    restaurants: await readJson(path.join(sourceDir, "restaurants.json"))
+  };
+  const localScene = {
+    ...scene,
+    namedNodes: source.nodes
+      .filter((node) => Number(node.spot_id) > 0)
+      .map((node) => ({ ...node })),
+    highLevelEdges: source.roads.map((road) => [Number(road.from), Number(road.to)])
+  };
+
+  const { nodes, edges } = buildLocalPackOutput(localScene, source.nodes, source.edges);
+  const roads = buildRoads(localScene, nodes, edges);
+  const diaries = buildCampusDiaryIndex(localScene);
+  validateScene(localScene, nodes, edges, source.spots);
+  await writeScene(localScene, {
+    nodes,
+    edges,
+    spots: source.spots,
+    roads,
+    facilities: source.facilities,
+    restaurants: source.restaurants,
+    diaries
+  });
+  console.log(`Generated ${scene.label}: ${nodes.length} nodes, ${edges.length} directed edges, ${source.spots.length} spots.`);
+}
+
+function buildLocalPackOutput(scene, sourceNodes, sourceEdges) {
+  const nodeById = new Map(sourceNodes.map((node) => [Number(node.id), node]));
+  const roadNodeIds = sourceNodes
+    .filter((node) => Number(node.spot_id) === 0)
+    .map((node) => Number(node.id));
+  const roadNodeSet = new Set(roadNodeIds);
+  const selected = selectLocalRoadNodes(scene, sourceNodes, sourceEdges);
+  const outputNodes = [
+    ...scene.namedNodes.map((node) => ({ ...node })),
+    ...Array.from(selected)
+      .sort((a, b) => a - b)
+      .map((id) => ({ ...nodeById.get(id) }))
   ];
-  const base = scene.namedNodes.map((node) => ({
-    id: node.spot_id,
-    name: node.name,
-    category: spotCategory(node.type),
-    rating: round(4.1 + ((node.id * 7) % 9) / 10, 1),
-    heat: 520 + ((node.id * 137) % 820),
-    tags: spotTags(node)
+  const outputNodeById = new Map(outputNodes.map((node) => [Number(node.id), node]));
+  const outputEdges = [];
+  const pairSeen = new Set();
+  let nextVirtualRoadId = Math.max(...sourceNodes.map((node) => Number(node.id))) + 1;
+
+  for (const edge of sourceEdges) {
+    const from = Number(edge.from);
+    const to = Number(edge.to);
+    const fromNode = nodeById.get(from);
+    const toNode = nodeById.get(to);
+    if (!fromNode || !toNode) continue;
+    if (Number(fromNode.spot_id) > 0 && Number(toNode.spot_id) > 0) continue;
+    const fromAllowed = Number(fromNode.spot_id) > 0 || (roadNodeSet.has(from) && selected.has(from));
+    const toAllowed = Number(toNode.spot_id) > 0 || (roadNodeSet.has(to) && selected.has(to));
+    if (!fromAllowed || !toAllowed) continue;
+    const key = from < to ? `${from}:${to}:${edge.mode}` : `${to}:${from}:${edge.mode}`;
+    if (pairSeen.has(key)) continue;
+    pairSeen.add(key);
+    nextVirtualRoadId = pushSegmentedBidirectional({
+      nodes: outputNodes,
+      nodeById: outputNodeById,
+      edges: outputEdges,
+      from,
+      to,
+      distance: Number(edge.distance || haversineM(fromNode, toNode)),
+      mode: edge.mode || "both",
+      roadName: edge.road_name || "校园道路",
+      maxSegmentM: scene.maxSegmentM,
+      nextVirtualRoadId
+    });
+  }
+
+  return { nodes: outputNodes, edges: outputEdges };
+}
+
+function selectLocalRoadNodes(scene, sourceNodes, sourceEdges) {
+  const nodeById = new Map(sourceNodes.map((node) => [Number(node.id), node]));
+  const roadNodeSet = new Set(sourceNodes.filter((node) => Number(node.spot_id) === 0).map((node) => Number(node.id)));
+  const selected = new Set();
+  const center = averagePoint(scene.namedNodes);
+
+  for (const poi of scene.namedNodes) {
+    const accessIds = [];
+    sourceEdges
+      .filter((edge) => Number(edge.from) === Number(poi.id) || Number(edge.to) === Number(poi.id))
+      .sort((a, b) => Number(a.distance || 0) - Number(b.distance || 0))
+      .forEach((edge) => {
+        const id = Number(edge.from) === Number(poi.id) ? Number(edge.to) : Number(edge.from);
+        if (roadNodeSet.has(id) && !accessIds.includes(id)) accessIds.push(id);
+      });
+    accessIds.slice(0, 2).forEach((id) => selected.add(id));
+  }
+
+  const routePairs = [...(scene.highLevelEdges || []), ...(scene.sampleRoutes || [])];
+  for (const [from, to] of routePairs) {
+    const path = shortestPathNodeIdsFromEdges(sourceEdges, Number(from), Number(to), "walk");
+    if (!path.length) {
+      throw new Error(`${scene.label}: local key route ${from}->${to} could not be traced`);
+    }
+    path.filter((id) => roadNodeSet.has(id)).forEach((id) => selected.add(id));
+  }
+
+  if (selected.size > scene.maxRoadNodes) {
+    throw new Error(`${scene.label}: selected ${selected.size} local road nodes; max is ${scene.maxRoadNodes}`);
+  }
+
+  const graph = buildLocalRoadGraph(sourceEdges, roadNodeSet);
+  const queue = Array.from(selected).sort((a, b) => {
+    const da = haversineM(center, nodeById.get(a));
+    const db = haversineM(center, nodeById.get(b));
+    return da - db || a - b;
+  });
+  while (queue.length && selected.size < scene.minRoadNodes) {
+    const current = queue.shift();
+    const neighbors = Array.from(graph.get(current) || []).sort((a, b) => {
+      const da = haversineM(center, nodeById.get(a));
+      const db = haversineM(center, nodeById.get(b));
+      return da - db || a - b;
+    });
+    for (const next of neighbors) {
+      if (!selected.has(next)) {
+        selected.add(next);
+        queue.push(next);
+        if (selected.size >= scene.minRoadNodes) break;
+      }
+    }
+  }
+
+  return selected;
+}
+
+function buildLocalRoadGraph(edges, roadNodeSet) {
+  const graph = new Map();
+  for (const edge of edges) {
+    const from = Number(edge.from);
+    const to = Number(edge.to);
+    if (!roadNodeSet.has(from) || !roadNodeSet.has(to)) continue;
+    if (!graph.has(from)) graph.set(from, new Set());
+    if (!graph.has(to)) graph.set(to, new Set());
+    graph.get(from).add(to);
+    graph.get(to).add(from);
+  }
+  return graph;
+}
+
+function shortestPathNodeIdsFromEdges(edges, start, goal, mode) {
+  const adjacency = new Map();
+  for (const edge of edges) {
+    if (edge.mode !== "both" && edge.mode !== mode) continue;
+    const from = Number(edge.from);
+    if (!adjacency.has(from)) adjacency.set(from, []);
+    adjacency.get(from).push(edge);
+  }
+  const dist = new Map([[start, 0]]);
+  const prev = new Map();
+  const queue = [{ node: start, distance: 0 }];
+  const seen = new Set();
+  while (queue.length) {
+    queue.sort((a, b) => a.distance - b.distance);
+    const current = queue.shift();
+    if (seen.has(current.node)) continue;
+    seen.add(current.node);
+    if (current.node === goal) break;
+    for (const edge of adjacency.get(current.node) || []) {
+      const to = Number(edge.to);
+      const nextDistance = current.distance + Number(edge.distance || 0);
+      if (!dist.has(to) || nextDistance < dist.get(to)) {
+        dist.set(to, nextDistance);
+        prev.set(to, current.node);
+        queue.push({ node: to, distance: nextDistance });
+      }
+    }
+  }
+  if (!dist.has(goal)) return [];
+  const path = [];
+  for (let node = goal; node != null; node = prev.get(node)) {
+    path.unshift(node);
+    if (node === start) break;
+  }
+  return path;
+}
+
+function nearestOsmIds(point, ids, osmNodes, count) {
+  return ids
+    .map((osmId) => ({ osmId, distance: haversineM(point, osmNodes.get(osmId)) }))
+    .sort((a, b) => a.distance - b.distance || a.osmId - b.osmId)
+    .slice(0, count)
+    .map((item) => item.osmId);
+}
+
+function pushBidirectional(edges, from, to, distance, mode, roadName) {
+  if (from == null || to == null || from === to) return;
+  edges.push({ from, to, distance: round(distance, 1), mode, road_name: roadName });
+  edges.push({ from: to, to: from, distance: round(distance, 1), mode, road_name: roadName });
+}
+
+function pushSegmentedBidirectional({
+  nodes,
+  nodeById,
+  edges,
+  from,
+  to,
+  distance,
+  mode,
+  roadName,
+  maxSegmentM,
+  nextVirtualRoadId
+}) {
+  if (!maxSegmentM || distance <= maxSegmentM) {
+    pushBidirectional(edges, from, to, distance, mode, roadName);
+    return nextVirtualRoadId;
+  }
+  const start = nodeById.get(Number(from));
+  const end = nodeById.get(Number(to));
+  if (!start || !end) {
+    pushBidirectional(edges, from, to, distance, mode, roadName);
+    return nextVirtualRoadId;
+  }
+
+  const pieces = Math.ceil(distance / maxSegmentM);
+  const chain = [from];
+  for (let index = 1; index < pieces; index += 1) {
+    const t = index / pieces;
+    const id = nextVirtualRoadId;
+    nextVirtualRoadId += 1;
+    const virtualNode = {
+      id,
+      name: `Road transition node ${id}`,
+      lat: round(start.lat + (end.lat - start.lat) * t, 6),
+      lon: round(start.lon + (end.lon - start.lon) * t, 6),
+      type: "road_transition",
+      spot_id: 0,
+      description: `Interpolated transition node for ${roadName || "road"}; keeps route drawing below ${maxSegmentM}m per segment.`,
+      image: IMAGE_POOL[id % IMAGE_POOL.length]
+    };
+    nodes.push(virtualNode);
+    nodeById.set(id, virtualNode);
+    chain.push(id);
+  }
+  chain.push(to);
+
+  for (let index = 0; index < chain.length - 1; index += 1) {
+    pushBidirectional(edges, chain[index], chain[index + 1], distance / pieces, mode, roadName);
+  }
+  return nextVirtualRoadId;
+}
+
+function buildSpots(scene) {
+  const base = scene.namedNodes.map((item) => ({
+    id: item.spot_id,
+    name: item.name,
+    category: spotCategory(item.type),
+    rating: round(4.1 + ((item.id * 7) % 9) / 10, 1),
+    heat: 520 + ((item.id * 137) % 820),
+    tags: spotTags(item)
   }));
-  return base.concat(extra.map(([name, category, tags, rating, heat], index) => ({
-    id: scene.namedNodes.length + index + 1,
-    name,
-    category,
-    rating,
-    heat,
-    tags
-  })));
+  return base.concat(scene.extraSpots || []);
 }
 
 function spotCategory(type) {
@@ -350,13 +1005,13 @@ function spotCategory(type) {
     bridge: "景点",
     island: "自然",
     garden: "园林",
-    museum: "文化",
+    museum: "文化展馆",
     square: "服务"
   };
   return categories[type] || "景点";
 }
 
-function spotTags(node) {
+function spotTags(item) {
   const tags = {
     gate: "入口,交通,服务",
     building: "建筑,历史,室内",
@@ -368,69 +1023,140 @@ function spotTags(node) {
     bridge: "桥梁,摄影,夕阳",
     island: "湖区,环线,拍照",
     garden: "园林,安静,文化",
-    museum: "展陈,室内,文物",
+    museum: "展览,室内,文化",
     square: "休息,补给,拍照"
   };
-  return tags[node.type] || "旅游,推荐";
+  return tags[item.type] || "旅游,推荐";
 }
 
-function buildRoads(spots) {
-  const roads = [];
-  for (const [from, to] of scene.namedEdges) {
-    if (from <= spots.length && to <= spots.length) {
-      const a = scene.namedNodes.find((node) => node.spot_id === from);
-      const b = scene.namedNodes.find((node) => node.spot_id === to);
-      const distance = a && b ? Math.max(30, haversineM(a, b) * 1.18) : 180;
-      roads.push({ from, to, dist_walk: round(distance, 1), dist_bike: round(distance * 0.78, 1) });
-    }
+function buildRoads(scene, nodes, edges) {
+  return scene.highLevelEdges.map(([from, to]) => {
+    const walk = shortestDistance(edges, from, to, "walk");
+    const bike = shortestDistance(edges, from, to, "bike");
+    return {
+      from,
+      to,
+      dist_walk: round(Number.isFinite(walk) ? walk : fallbackDistance(nodes, from, to), 1),
+      dist_bike: Number.isFinite(bike) ? round(bike, 1) : 9999
+    };
+  });
+}
+
+function buildFacilities(scene, sourcePois = []) {
+  const types = scene.outputSubdir
+    ? ["游客服务", "卫生间", "图书馆", "咖啡馆", "休息区", "售票处", "商店", "饮水点"]
+    : ["卫生间", "游客服务", "售票处", "纪念品店", "饮水点", "急救点", "停车场", "地铁站", "休息亭", "观景台", "商店", "安检口"];
+  if (!scene.outputSubdir && sourcePois) {
+    return buildVerifiedSummerFacilities(scene, sourcePois);
   }
-  roads.push(
-    { from: 21, to: 1, dist_walk: 90, dist_bike: 75 },
-    { from: 22, to: 4, dist_walk: 120, dist_bike: 95 },
-    { from: 23, to: 11, dist_walk: 80, dist_bike: 65 },
-    { from: 24, to: 10, dist_walk: 110, dist_bike: 90 }
-  );
-  return roads;
-}
-
-function buildFacilities(overpass) {
-  const types = [
-    "卫生间", "游客服务", "售票处", "纪念品店", "饮水点", "急救点",
-    "停车场", "地铁站", "休息亭", "观景台", "商店", "安检口"
-  ];
-  const osmPois = collectPois(overpass).filter((poi) => !isFoodAmenity(poi.tags));
   const facilities = [];
-  for (let i = 0; i < 60; ++i) {
+  for (let i = 0; i < scene.facilityCount; ++i) {
     const anchor = scene.namedNodes[i % scene.namedNodes.length];
-    const poi = osmPois[i % Math.max(1, osmPois.length)];
     const type = types[i % types.length];
-    const point = poi && i < osmPois.length ? poi : offsetPoint(anchor, i);
+    const point = offsetPoint(anchor, i, scene.outputSubdir ? 0.000045 : 0.00018);
     facilities.push({
       id: i + 1,
-      name: poi && poi.name ? poi.name : `${anchor.name}${type}${Math.floor(i / types.length) + 1}`,
+      name: `${anchor.name}${type}${Math.floor(i / types.length) + 1}`,
       type,
       near_spot_id: anchor.spot_id,
-      lat: round(point.lat, 6),
-      lon: round(point.lon, 6),
+      lat: point.lat,
+      lon: point.lon,
       rating: round(4.0 + ((i * 5) % 10) / 10, 1),
       heat: 260 + ((i * 73) % 620),
-      tags: `${type},${anchor.name},颐和园服务设施`
+      tags: `${type},${anchor.name},服务设施`
     });
   }
   return facilities;
 }
 
-function buildRestaurants(overpass) {
-  const cuisines = ["北京菜", "小吃", "咖啡", "面食", "甜品", "简餐", "茶饮", "烤鸭", "素食", "家常菜"];
-  const foodPois = collectPois(overpass).filter((poi) => isFoodAmenity(poi.tags));
+function buildVerifiedSummerFacilities(scene, sourcePois) {
+  const byName = new Map();
+  sourcePois
+    .map((element) => facilityFromOsmElement(scene, element))
+    .filter(Boolean)
+    .forEach((item) => {
+      if (!byName.has(item.name)) byName.set(item.name, item);
+    });
+  SUMMER_PALACE_FACILITY_FALLBACKS.forEach((item) => {
+    if (!byName.has(item.name)) byName.set(item.name, { ...item });
+  });
+  return Array.from(byName.values())
+    .slice(0, scene.facilityCount)
+    .map((item, index) => ({
+      id: index + 1,
+      name: item.name,
+      type: item.type,
+      near_spot_id: item.near_spot_id,
+      lat: round(item.lat, 6),
+      lon: round(item.lon, 6),
+      rating: round(4.0 + ((index * 5) % 10) / 10, 1),
+      heat: 260 + ((index * 73) % 620),
+      tags: `${item.type},${spotNameById(scene, item.near_spot_id)},服务`
+    }));
+}
+
+function facilityFromOsmElement(scene, element) {
+  const tags = element.tags || {};
+  const lat = Number(element.lat ?? element.center?.lat);
+  const lon = Number(element.lon ?? element.center?.lon);
+  if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
+  const type = facilityTypeFromTags(tags);
+  if (!type) return null;
+  const rawName = tags.name || tags["name:zh"] || tags.operator || tags.brand || tags.description || "";
+  const near = nearestNamedNode(scene, { lat, lon });
+  const name = realisticFacilityName(rawName, type, near.name);
+  return {
+    name,
+    type,
+    near_spot_id: near.spot_id,
+    lat: clamp(lat, scene.bbox[0], scene.bbox[2]),
+    lon: clamp(lon, scene.bbox[1], scene.bbox[3])
+  };
+}
+
+function facilityTypeFromTags(tags) {
+  if (tags.railway === "subway_entrance" || tags.public_transport === "station" || /subway/i.test(tags.station || "")) return "地铁站";
+  if (tags.amenity === "toilets") return "卫生间";
+  if (tags.amenity === "drinking_water") return "饮水点";
+  if (tags.amenity === "parking") return "停车场";
+  if (tags.amenity === "clinic" || tags.amenity === "first_aid" || tags.healthcare) return "急救点";
+  if (tags.amenity === "ticket_booth") return "售票处";
+  if (tags.tourism === "information") return "游客服务";
+  if (tags.tourism === "viewpoint") return "观景台";
+  if (tags.shop) return "商店";
+  return null;
+}
+
+function realisticFacilityName(rawName, type, anchorName) {
+  const name = String(rawName || "").trim();
+  if (name && !/^\d+$/.test(name) && !/^(toilets?|parking|shop)$/i.test(name)) {
+    return name.endsWith(type) || name.includes(type) ? name : `${name}${type}`;
+  }
+  const suffix = type === "地铁站" ? "地铁出入口" : type;
+  return `${anchorName}${suffix}`;
+}
+
+function nearestNamedNode(scene, point) {
+  return scene.namedNodes
+    .map((node) => ({ node, distance: haversineM(point, node) }))
+    .sort((a, b) => a.distance - b.distance)[0].node;
+}
+
+function spotNameById(scene, id) {
+  return scene.namedNodes.find((node) => Number(node.spot_id) === Number(id))?.name || "颐和园";
+}
+
+function buildRestaurants(scene) {
+  const cuisines = scene.outputSubdir
+    ? ["校园食堂", "面食", "咖啡", "简餐", "轻食", "茶饮"]
+    : ["北京菜", "小吃", "咖啡", "面食", "甜品", "简餐", "茶饮", "烤鸭", "素食", "家常菜"];
   const restaurants = [];
-  for (let i = 0; i < 50; ++i) {
-    const anchor = scene.namedNodes[i % scene.namedNodes.length];
+  for (let i = 0; i < scene.restaurantCount; ++i) {
+    const anchor = scene.namedNodes[(i + 2) % scene.namedNodes.length];
     const cuisine = cuisines[i % cuisines.length];
-    const poi = foodPois[i % Math.max(1, foodPois.length)];
     restaurants.push({
       id: i + 1,
-      name: poi && poi.name ? poi.name : `${anchor.name}${cuisine}推荐点${Math.floor(i / cuisines.length) + 1}`,
+      name: `${anchor.name}${cuisine}推荐点${Math.floor(i / cuisines.length) + 1}`,
       near_spot_id: anchor.spot_id,
       cuisine,
       rating: round(4.0 + ((i * 7) % 10) / 10, 1),
@@ -440,29 +1166,8 @@ function buildRestaurants(overpass) {
   return restaurants;
 }
 
-function collectPois(overpass) {
-  const pois = [];
-  for (const element of overpass.elements || []) {
-    const tags = element.tags || {};
-    if (!tags.amenity && !tags.shop && !tags.tourism && !tags.leisure) continue;
-    if (typeof element.lat !== "number" || typeof element.lon !== "number") continue;
-    pois.push({
-      name: tags.name || "",
-      lat: element.lat,
-      lon: element.lon,
-      tags
-    });
-  }
-  return pois.filter((poi) => (
-    poi.lat >= south && poi.lat <= north && poi.lon >= west && poi.lon <= east
-  ));
-}
-
-function isFoodAmenity(tags) {
-  return ["restaurant", "cafe", "fast_food", "food_court", "ice_cream", "bar"].includes(tags.amenity);
-}
-
-function buildUsers() {
+function buildUsers(scene) {
+  if (!scene.usersCount) return null;
   const prefs = [
     ["历史", "建筑", "室内"], ["湖景", "拍照", "夕阳"], ["安静", "园林", "低拥挤"],
     ["亲子", "服务", "轻松"], ["美食", "购物", "文化"], ["徒步", "路线", "登高"],
@@ -479,7 +1184,8 @@ function buildUsers() {
   }));
 }
 
-function buildDiaryIndex() {
+function buildDiaryIndex(scene) {
+  if (!scene.diariesCount) return null;
   const titles = [
     "从东宫门到长廊的半日路线",
     "佛香阁登高和昆明湖视野",
@@ -495,22 +1201,165 @@ function buildDiaryIndex() {
     "新建宫门入园路线比较"
   ];
   return titles.map((title, index) => {
-    const node = scene.namedNodes[index % scene.namedNodes.length];
+    const item = scene.namedNodes[index % scene.namedNodes.length];
     const original = 520 + index * 43;
     return {
       id: index + 1,
       title,
       user_id: (index % 10) + 1,
-      destination: node.name,
+      destination: item.name,
       rating: round(4.1 + ((index * 3) % 9) / 10, 1),
       heat: 360 + ((index * 97) % 780),
       created_at: `2026-05-${String(10 + index).padStart(2, "0")} 09:${String((index * 7) % 60).padStart(2, "0")}:00`,
-      tags: spotTags(node).split(","),
-      content: `${title}：本次路线围绕${node.name}展开，结合评分、热度和个人兴趣排序，适合在答辩时展示旅游日记管理、查询、推荐和压缩统计。`,
+      tags: spotTags(item).split(","),
+      content: `${title}：本次路线围绕${item.name}展开，结合评分、热度和个人兴趣排序，适合在答辩时展示旅游日记管理、查询、推荐和压缩统计。`,
+      comments: buildDiaryComments(index, item.name),
       original_bytes: original,
       compressed_bytes: Math.round(original * (0.44 + (index % 4) * 0.04))
     };
   });
+}
+
+function buildCampusDiaryIndex(scene) {
+  const titles = [
+    "二校门到主楼的校园步行路线",
+    "图书馆老馆和大礼堂的建筑打卡",
+    "荷塘到水木清华的安静散步",
+    "艺术博物馆半日参观记录",
+    "校医院到紫荆公寓区服务路线",
+    "清芬园食堂午餐推荐",
+    "教学楼区到综合体育馆通勤体验",
+    "近春园和荷塘的校园慢游",
+    "学生服务中心办事路线",
+    "主楼到艺术博物馆的东区路线"
+  ];
+  return titles.slice(0, scene.diariesCount || titles.length).map((title, index) => {
+    const item = scene.namedNodes[index % scene.namedNodes.length];
+    const original = 460 + index * 37;
+    return {
+      id: index + 1,
+      title,
+      user_id: (index % 10) + 1,
+      destination: item.name,
+      rating: round(4.1 + ((index * 5) % 8) / 10, 1),
+      heat: 320 + ((index * 83) % 640),
+      created_at: `2026-05-${String(12 + index).padStart(2, "0")} 10:${String((index * 9) % 60).padStart(2, "0")}:00`,
+      tags: ["校园", "路线", item.type],
+      content: `${title}：本次路线围绕${item.name}展开，适合展示清华大学区域的路线规划、设施查询、美食推荐和日记检索。`,
+      comments: buildDiaryComments(index, item.name),
+      original_bytes: original,
+      compressed_bytes: Math.round(original * (0.45 + (index % 3) * 0.05))
+    };
+  });
+}
+
+function buildDiaryComments(index, destination) {
+  const voices = [
+    "路线提示很实用，适合第一次来的人照着走。",
+    "照片点位和停留节奏都清楚，收藏后规划方便很多。",
+    "评论里提到的补给点很有帮助，实际走起来不赶。",
+    "这个目的地适合慢慢逛，避开高峰体验会更好。"
+  ];
+  return [
+    {
+      user_id: (index % 10) + 1,
+      user_name: `游客${String((index % 10) + 1).padStart(2, "0")}`,
+      rating: round(4.2 + (index % 4) * 0.2, 1),
+      content: `${destination}${voices[index % voices.length]}`,
+      created_at: `2026-05-${String(20 + (index % 8)).padStart(2, "0")} 18:00:00`
+    }
+  ];
+}
+
+function shortestDistance(edges, start, goal, mode) {
+  const dist = new Map([[start, 0]]);
+  const queue = [{ node: start, distance: 0 }];
+  while (queue.length) {
+    queue.sort((a, b) => a.distance - b.distance);
+    const current = queue.shift();
+    if (current.distance !== dist.get(current.node)) continue;
+    if (current.node === goal) break;
+    for (const edge of edges) {
+      if (Number(edge.from) !== Number(current.node)) continue;
+      if (!(edge.mode === "both" || edge.mode === mode)) continue;
+      const next = current.distance + Number(edge.distance || 0);
+      if (!dist.has(edge.to) || next < dist.get(edge.to)) {
+        dist.set(edge.to, next);
+        queue.push({ node: edge.to, distance: next });
+      }
+    }
+  }
+  return dist.get(goal) ?? Infinity;
+}
+
+function fallbackDistance(nodes, from, to) {
+  const a = nodes.find((item) => item.id === from);
+  const b = nodes.find((item) => item.id === to);
+  return a && b ? Math.max(30, haversineM(a, b) * 1.18) : 9999;
+}
+
+function validateScene(scene, nodes, edges, spots) {
+  const roadNodes = nodes.filter((item) => Number(item.spot_id) === 0);
+  if (roadNodes.length < scene.minRoadNodes) {
+    throw new Error(`${scene.label}: expected at least ${scene.minRoadNodes} transition nodes, got ${roadNodes.length}`);
+  }
+  if (scene.maxRoadNodes && roadNodes.length > scene.maxRoadNodes) {
+    throw new Error(`${scene.label}: expected at most ${scene.maxRoadNodes} transition nodes, got ${roadNodes.length}`);
+  }
+  if (edges.length < scene.minEdges) {
+    throw new Error(`${scene.label}: expected at least ${scene.minEdges} directed edges, got ${edges.length}`);
+  }
+  if (spots.length < scene.namedNodes.length) {
+    throw new Error(`${scene.label}: expected at least ${scene.namedNodes.length} spots, got ${spots.length}`);
+  }
+  const byId = new Map(nodes.map((item) => [Number(item.id), item]));
+  const directPoi = edges.find((edge) => {
+    const from = byId.get(Number(edge.from));
+    const to = byId.get(Number(edge.to));
+    return from && to && Number(from.spot_id) > 0 && Number(to.spot_id) > 0;
+  });
+  if (directPoi) {
+    throw new Error(`${scene.label}: direct POI edge remains: ${directPoi.from}->${directPoi.to}`);
+  }
+  for (const poi of scene.namedNodes) {
+    const hasAccess = edges.some((edge) => {
+      if (Number(edge.from) !== poi.id && Number(edge.to) !== poi.id) return false;
+      const other = byId.get(Number(edge.from) === poi.id ? Number(edge.to) : Number(edge.from));
+      return other && Number(other.spot_id) === 0;
+    });
+    if (!hasAccess) {
+      throw new Error(`${scene.label}: POI has no road access edge: ${poi.name}`);
+    }
+  }
+}
+
+function round(value, digits = 1) {
+  const factor = 10 ** digits;
+  return Math.round(value * factor) / factor;
+}
+
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
+function offsetPoint(base, index, step) {
+  const ring = Math.floor(index / 8) + 1;
+  const angle = (index % 8) * Math.PI / 4;
+  return {
+    lat: round(clamp(base.lat + Math.sin(angle) * step * ring, base.lat - 0.0012, base.lat + 0.0012), 6),
+    lon: round(clamp(base.lon + Math.cos(angle) * step * ring, base.lon - 0.0012, base.lon + 0.0012), 6)
+  };
+}
+
+function haversineM(a, b) {
+  const rad = Math.PI / 180;
+  const dlat = (b.lat - a.lat) * rad;
+  const dlon = (b.lon - a.lon) * rad;
+  const lat1 = a.lat * rad;
+  const lat2 = b.lat * rad;
+  const h = Math.sin(dlat / 2) ** 2 +
+    Math.cos(lat1) * Math.cos(lat2) * Math.sin(dlon / 2) ** 2;
+  return 6371000 * 2 * Math.atan2(Math.sqrt(h), Math.sqrt(1 - h));
 }
 
 function averagePoint(points) {
@@ -522,39 +1371,88 @@ function averagePoint(points) {
   return { lat: sum.lat / points.length, lon: sum.lon / points.length };
 }
 
-async function writeJson(relativePath, value) {
-  const filePath = path.join(dataDir, relativePath);
+async function readJson(filePath) {
+  return JSON.parse(await readFile(filePath, "utf8"));
+}
+
+async function writeJson(root, relativePath, value) {
+  const filePath = path.join(root, relativePath);
   await mkdir(path.dirname(filePath), { recursive: true });
   await writeFile(filePath, `${JSON.stringify(value, null, 2)}\n`, "utf8");
 }
 
+async function writeScene(scene, output) {
+  const relativeBase = scene.outputSubdir || "";
+  for (const root of dataRoots) {
+    await writeJson(root, path.join(relativeBase, "osm_nodes.json"), output.nodes);
+    await writeJson(root, path.join(relativeBase, "osm_edges.json"), output.edges);
+    await writeJson(root, path.join(relativeBase, "spots.json"), output.spots);
+    await writeJson(root, path.join(relativeBase, "roads.json"), output.roads);
+    await writeJson(root, path.join(relativeBase, "facilities.json"), output.facilities);
+    await writeJson(root, path.join(relativeBase, "restaurants.json"), output.restaurants);
+    if (output.users) await writeJson(root, "users.json", output.users);
+    if (output.diaries) await writeJson(root, path.join(relativeBase, "diaries", "index.json"), output.diaries);
+  }
+}
+
+async function writeManifest() {
+  const manifests = new Map([
+    [path.join(repoRoot, "web", "data"), [
+      regionManifestEntry("summer_palace", "颐和园", "./data"),
+      regionManifestEntry("tsinghua_campus", "清华大学", "./data/regions/tsinghua_campus")
+    ]],
+    [path.join(repoRoot, "cpp", "data"), [
+      regionManifestEntry("summer_palace", "颐和园", "../cpp/data"),
+      regionManifestEntry("tsinghua_campus", "清华大学", "../cpp/data/regions/tsinghua_campus")
+    ]]
+  ]);
+  for (const [root, manifest] of manifests) {
+    await writeJson(root, path.join("regions", "manifest.json"), manifest);
+  }
+}
+
+function regionManifestEntry(id, name, basePath) {
+  return {
+    id,
+    name,
+    city: "北京",
+    status: "active",
+    map_region: "dataset",
+    description: `${name}旅行区域，包含可选目的地、真实路网过渡节点、设施、美食和日记数据。`,
+    nodes_path: `${basePath}/osm_nodes.json`,
+    edges_path: `${basePath}/osm_edges.json`,
+    spots_path: `${basePath}/spots.json`,
+    roads_path: `${basePath}/roads.json`,
+    facilities_path: `${basePath}/facilities.json`,
+    restaurants_path: `${basePath}/restaurants.json`,
+    diaries_path: `${basePath}/diaries/index.json`
+  };
+}
+
+async function generateScene(scene) {
+  if (scene.source === "local-pack") {
+    await generateLocalScene(scene);
+    return;
+  }
+  const overpass = await fetchOverpass(scene);
+  const { nodes, edges } = buildOsmOutput(scene, overpass);
+  const spots = buildSpots(scene);
+  const roads = buildRoads(scene, nodes, edges);
+  const facilityPois = await fetchFacilityPois(scene);
+  const facilities = buildFacilities(scene, facilityPois);
+  const restaurants = buildRestaurants(scene);
+  const users = buildUsers(scene);
+  const diaries = buildDiaryIndex(scene);
+  validateScene(scene, nodes, edges, spots);
+  await writeScene(scene, { nodes, edges, spots, roads, facilities, restaurants, users, diaries });
+  console.log(`Generated ${scene.label}: ${nodes.length} nodes, ${edges.length} directed edges, ${spots.length} spots.`);
+}
+
 async function main() {
-  await mkdir(dataDir, { recursive: true });
-  const overpass = await fetchOverpass();
-  const { nodes, edges } = buildOsmOutput(overpass);
-  const spots = buildSpots();
-  const roads = buildRoads(spots);
-  const restaurants = buildRestaurants(overpass);
-  const facilities = buildFacilities(overpass);
-  const users = buildUsers();
-  const diaries = buildDiaryIndex();
-
-  if (nodes.length < 220) throw new Error(`Expected at least 220 nodes, got ${nodes.length}`);
-  if (edges.length < 400) throw new Error(`Expected at least 400 directed edges, got ${edges.length}`);
-  if (spots.length < 20) throw new Error(`Expected at least 20 spots, got ${spots.length}`);
-  if (restaurants.length < 50) throw new Error(`Expected at least 50 restaurants, got ${restaurants.length}`);
-  if (facilities.length < 50) throw new Error(`Expected at least 50 facilities, got ${facilities.length}`);
-
-  await writeJson("osm_nodes.json", nodes);
-  await writeJson("osm_edges.json", edges);
-  await writeJson("spots.json", spots);
-  await writeJson("roads.json", roads);
-  await writeJson("restaurants.json", restaurants);
-  await writeJson("facilities.json", facilities);
-  await writeJson("users.json", users);
-  await writeJson(path.join("diaries", "index.json"), diaries);
-
-  console.log(`Generated ${scene.label}: ${nodes.length} OSM nodes, ${edges.length} directed edges, ${spots.length} spots, ${restaurants.length} restaurants, ${facilities.length} facilities.`);
+  for (const id of sceneIds) {
+    await generateScene(SCENES[id]);
+  }
+  await writeManifest();
 }
 
 main().catch((error) => {

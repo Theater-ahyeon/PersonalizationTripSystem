@@ -138,7 +138,7 @@ DOMContentLoaded
 
 ### 决策 2：为什么 GeoHash 和 LSH 只在前端？
 
-这些算法主要用于缩小候选集以提高查询效率，在前端实现可以直接绑定地图交互（范围过滤、标记更新）。C++ CLI 的数据规模较小（200 个目的地），线性扫描已足够快，不需要这些高级索引结构。
+这些算法主要用于缩小候选集以提高查询效率，在前端实现可以直接绑定地图交互（范围过滤、标记更新）。C++ CLI 的数据规模较小（247 个目的地），线性扫描已足够快，不需要这些高级索引结构。
 
 ### 决策 3：为什么推荐权重 C++ 和前端不同？
 
@@ -154,11 +154,11 @@ C++ 权重（0.4/0.4/0.2）面向通用场景，简单直观。前端权重（0.
 
 | 指标 | 课程要求 | 当前数量 | 文件来源 |
 |------|---------|---------|---------|
-| 景区/校园目的地 | ≥200 | 200 | `spots.json` |
-| 内部建筑/景点 | ≥20 | 24 | 颐和园数据包 |
+| 景区/校园目的地 | ≥200 | 247 | `spots.json` |
+| 内部建筑/景点 | ≥20 | 24 个颐和园可路由节点，另有 53 个北京高校展示节点 | `osm_nodes.json` |
 | 服务设施 | ≥50 | 60 | `facilities.json` |
 | 设施类别 | ≥10 | 12 | 同上 |
-| 道路边 | ≥200 | 526 | `osm_edges.json` |
+| 道路边 | ≥200 | 526 | `osm_edges.json`（颐和园可路由边） |
 | 系统用户 | ≥10 | 10 | `users.json` |
 | 旅游日记 | ≥1 | 12 | `diaries/index.json` |
 
@@ -172,10 +172,11 @@ C++ 权重（0.4/0.4/0.2）面向通用场景，简单直观。前端权重（0.
 {
   "regions": [
     {"id": "summer_palace", "name": "颐和园", "status": "active"},
+    {"id": "tsinghua_campus", "name": "清华大学校园数据包", "status": "active"},
     {"id": "beijing_city", "name": "北京城区", "status": "planned"},
     {"id": "campus_template", "name": "校园模板", "status": "template"}
   ]
 }
 ```
 
-每个数据包包含独立的 spots、nodes、edges、facilities、restaurants。算法层复用现有 Dijkstra、TSP-DP、GeoHash、LSH、Top-K。
+每个数据包包含独立的 spots、nodes、edges、roads、facilities、restaurants。前端选择已激活数据包后会加载对应 JSON，并重建地图、路线下拉、设施和美食推荐；算法层复用现有 Dijkstra、TSP-DP、GeoHash、LSH、Top-K。

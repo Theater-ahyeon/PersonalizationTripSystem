@@ -296,7 +296,9 @@ private:
             double* best = dist.get(cur.node);
             if (!best || std::abs(*best - cur.dist) > 1e-9) continue;
             if (cur.node == goal) break;
-            for (const auto& e : data.graph.neighbors(cur.node)) {
+            const auto* edges = data.graph.neighbors(cur.node);
+            if (!edges) continue;
+            for (const auto& e : *edges) {
                 double w = bike ? e.distBike : e.distWalk;
                 double nd = cur.dist + w;
                 double* old = dist.get(e.to);
@@ -327,10 +329,20 @@ private:
             std::cout << "未找到 OSM 离线数据，请检查 cpp/data/osm_nodes.json 和 osm_edges.json。\n";
             return;
         }
-        std::cout << "OSM 节点列表:\n";
+        std::cout << "OSM 可选 POI 节点列表:\n";
+        int hiddenTransitionNodes = 0;
         for (const auto& n : data.osmNodes) {
+            const auto* edges = data.osmNeighbors(n.id);
+            if (n.spotId <= 0 || !edges || edges->empty()) {
+                ++hiddenTransitionNodes;
+                continue;
+            }
             std::cout << n.id << ". " << n.name << " [" << n.type << "] "
                       << n.lat << "," << n.lon << "\n";
+        }
+        if (hiddenTransitionNodes > 0) {
+            std::cout << "已隐藏 " << hiddenTransitionNodes
+                      << " 个仅用于路网过渡的节点。\n";
         }
         int start = readInt("起点 OSM node id: ");
         int goal = readInt("终点 OSM node id: ");
@@ -583,12 +595,20 @@ public:
 class DiaryService {
 public:
     void run(DataManager& data) {
-        std::cout << "1 写日记\n2 浏览日记\n3 搜索日记\n请选择: ";
+        std::cout << "Current user: " << data.currentUserLabel() << "\n"
+                  << "1 写日记\n"
+                  << "2 浏览我的日记 / My diaries\n"
+                  << "3 浏览全部日记 / All diaries\n"
+                  << "4 搜索我的日记\n"
+                  << "5 删除我的日记\n"
+                  << "0 返回\n请选择: ";
         std::string c;
         std::getline(std::cin, c);
         if (c == "1") writeDiary(data);
-        else if (c == "2") listDiaries(data);
-        else if (c == "3") searchDiaries(data);
+        else if (c == "2") listDiaries(data, true);
+        else if (c == "3") listDiaries(data, false);
+        else if (c == "4") searchDiaries(data, true);
+        else if (c == "5") deleteDiary(data);
     }
 
 private:
@@ -598,6 +618,7 @@ private:
         std::cout << "标题（可留空）: ";
         std::getline(std::cin, d.title);
         if (trim(d.title).empty()) d.title = "未命名日记";
+        d.userId = data.currentUserId;
         d.rating = readDouble("评分 0-5（默认 4.5）: ", 4.5);
         if (d.rating < 0) d.rating = 0;
         if (d.rating > 5) d.rating = 5;
@@ -618,24 +639,30 @@ private:
         std::cout << "压缩正文: " << binPath.string() << "\n";
     }
 
-    void listDiaries(DataManager& data) {
+    void listDiaries(DataManager& data, bool mineOnly) {
         if (data.diaries.empty()) {
             std::cout << "暂无日记，请先写入一篇日记。\n";
             return;
         }
         std::multimap<double, Diary, std::greater<double>> ordered;
-        for (const auto& d : data.diaries) ordered.insert({d.rating, d});
-        std::cout << "日记列表（按评分降序）:\n";
+        for (const auto& d : data.diaries) {
+            if (!mineOnly || d.userId == data.currentUserId) ordered.insert({d.rating, d});
+        }
+        std::cout << (mineOnly ? "My diaries / 我的日记" : "All diaries / 全部日记") << "（按评分降序）:\n";
+        if (ordered.empty()) {
+            std::cout << "  暂无可展示日记。\n";
+            return;
+        }
         for (const auto& p : ordered) {
             const Diary& d = p.second;
-            std::cout << d.id << ". " << d.title << " rating=" << d.rating
+            std::cout << d.id << ". " << d.title << " user=" << d.userId << " rating=" << d.rating
                       << " created=" << d.createdAt;
             if (!d.decodeOk) std::cout << " [" << d.loadMessage << "]";
             std::cout << "\n   " << summary(d.content) << "\n";
         }
     }
 
-    void searchDiaries(DataManager& data) {
+    void searchDiaries(DataManager& data, bool mineOnly) {
         std::cout << "关键词: ";
         std::string q;
         std::getline(std::cin, q);
@@ -646,12 +673,22 @@ private:
         }
         bool any = false;
         for (const auto& d : data.diaries) {
+            if (mineOnly && d.userId != data.currentUserId) continue;
             if (kmpContains(d.title, q) || kmpContains(d.content, q)) {
                 std::cout << d.id << ". " << d.title << " -> " << summary(d.content) << "\n";
                 any = true;
             }
         }
         if (!any) std::cout << "未找到匹配日记。\n";
+    }
+
+    void deleteDiary(DataManager& data) {
+        int id = readInt("要删除的日记 id: ");
+        if (data.deleteDiary(id)) {
+            std::cout << "Deleted diary / 删除成功: " << id << "\n";
+        } else {
+            std::cout << "删除失败：只能删除当前用户自己的日记。\n";
+        }
     }
 
     static std::string summary(const std::string& content) {
@@ -672,6 +709,65 @@ private:
 #endif
         std::ostringstream out;
         out << std::put_time(&tm, "%Y-%m-%d %H:%M:%S");
+        return out.str();
+    }
+};
+
+class AccountService {
+public:
+    void run(DataManager& data) {
+        std::cout << "Current user: " << data.currentUserLabel() << "\n"
+                  << "1 切换用户\n"
+                  << "2 注册用户\n"
+                  << "3 查看用户\n"
+                  << "0 返回\n请选择: ";
+        std::string c;
+        std::getline(std::cin, c);
+        if (c == "1") switchUser(data);
+        else if (c == "2") registerUser(data);
+        else if (c == "3") listUsers(data);
+    }
+
+private:
+    void listUsers(const DataManager& data) const {
+        std::cout << "用户列表:\n";
+        for (const auto& user : data.users) {
+            std::cout << user.id << ". " << user.name
+                      << " mode=" << (user.routeMode.empty() ? "walk" : user.routeMode)
+                      << " tags=" << join(user.preferenceTags, "/") << "\n";
+        }
+    }
+
+    void switchUser(DataManager& data) {
+        listUsers(data);
+        int id = readInt("用户 id: ");
+        if (data.setCurrentUser(id)) {
+            std::cout << "Switched user / 已切换用户: " << data.currentUserLabel() << "\n";
+        } else {
+            std::cout << "未找到用户。\n";
+        }
+    }
+
+    void registerUser(DataManager& data) {
+        std::cout << "用户名: ";
+        std::string name;
+        std::getline(std::cin, name);
+        std::cout << "偏好标签（逗号分隔）: ";
+        std::string tagText;
+        std::getline(std::cin, tagText);
+        std::cout << "默认交通方式 walk/bike: ";
+        std::string routeMode;
+        std::getline(std::cin, routeMode);
+        User user = data.registerUser(name, split(tagText, ','), trim(routeMode));
+        std::cout << "Registered user / 注册成功: " << user.name << " (ID " << user.id << ")\n";
+    }
+
+    static std::string join(const std::vector<std::string>& values, const std::string& sep) {
+        std::ostringstream out;
+        for (size_t i = 0; i < values.size(); ++i) {
+            if (i) out << sep;
+            out << values[i];
+        }
         return out.str();
     }
 };

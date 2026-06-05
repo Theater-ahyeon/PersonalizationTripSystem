@@ -7,6 +7,13 @@
 # Server logs
 .server-err.log
 .server-out.log
+server-*.log
+server-*.err.log
+.codex-server/
+
+# AIGC secrets
+.env
+web/.env
 
 # C++ build output
 cpp/build/

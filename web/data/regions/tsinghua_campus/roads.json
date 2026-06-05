@@ -1,0 +1,110 @@
+[
+  {
+    "from": 1,
+    "to": 2,
+    "dist_walk": 394.9,
+    "dist_bike": 394.9
+  },
+  {
+    "from": 2,
+    "to": 3,
+    "dist_walk": 143.3,
+    "dist_bike": 143.3
+  },
+  {
+    "from": 3,
+    "to": 5,
+    "dist_walk": 802.4,
+    "dist_bike": 802.4
+  },
+  {
+    "from": 5,
+    "to": 6,
+    "dist_walk": 88.1,
+    "dist_bike": 88.1
+  },
+  {
+    "from": 6,
+    "to": 7,
+    "dist_walk": 509.8,
+    "dist_bike": 509.8
+  },
+  {
+    "from": 7,
+    "to": 2,
+    "dist_walk": 199.3,
+    "dist_bike": 199.3
+  },
+  {
+    "from": 2,
+    "to": 13,
+    "dist_walk": 656,
+    "dist_bike": 656
+  },
+  {
+    "from": 13,
+    "to": 4,
+    "dist_walk": 435.3,
+    "dist_bike": 435.3
+  },
+  {
+    "from": 4,
+    "to": 9,
+    "dist_walk": 1315.2,
+    "dist_bike": 1315.2
+  },
+  {
+    "from": 9,
+    "to": 11,
+    "dist_walk": 600.9,
+    "dist_bike": 600.9
+  },
+  {
+    "from": 11,
+    "to": 10,
+    "dist_walk": 753.7,
+    "dist_bike": 753.7
+  },
+  {
+    "from": 10,
+    "to": 14,
+    "dist_walk": 1729.7,
+    "dist_bike": 1729.7
+  },
+  {
+    "from": 14,
+    "to": 12,
+    "dist_walk": 1336.7,
+    "dist_bike": 1336.7
+  },
+  {
+    "from": 12,
+    "to": 3,
+    "dist_walk": 809.1,
+    "dist_bike": 809.1
+  },
+  {
+    "from": 4,
+    "to": 8,
+    "dist_walk": 421.2,
+    "dist_bike": 421.2
+  },
+  {
+    "from": 8,
+    "to": 10,
+    "dist_walk": 1381.9,
+    "dist_bike": 1381.9
+  },
+  {
+    "from": 11,
+    "to": 12,
+    "dist_walk": 517.5,
+    "dist_bike": 517.5
+  },
+  {
+    "from": 1,
+    "to": 13,
+    "dist_walk": 613.9,
+    "dist_bike": 613.9
+  }
+]

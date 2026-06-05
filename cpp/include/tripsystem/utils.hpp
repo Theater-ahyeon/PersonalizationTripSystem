@@ -75,6 +75,9 @@ inline std::vector<std::string> split(const std::string& s, char sep) {
 }
 
 inline std::vector<std::string> jsonObjects(const std::string& text) {
+    // Lightweight scanner for the project data files. It tracks quoted strings so
+    // braces inside text fields do not split objects; nested objects are not used
+    // by the current schema and should be added here before changing data shape.
     std::vector<std::string> objects;
     int depth = 0;
     bool inString = false;
@@ -97,6 +100,9 @@ inline std::vector<std::string> jsonObjects(const std::string& text) {
 }
 
 inline std::string jsonString(const std::string& obj, const std::string& key, const std::string& def = "") {
+    // Covers escaped quotes, backslashes and simple control escapes emitted by
+    // escapeJson(). If new JSON fields store nested arrays/objects as strings,
+    // add cases here and in unescapeJson() before consuming them in DataManager.
     std::regex re("\\\"" + key + "\\\"\\s*:\\s*\\\"((?:\\\\.|[^\\\"])*)\\\"");
     std::smatch m;
     if (std::regex_search(obj, m, re)) return unescapeJson(m[1]);
@@ -108,6 +114,34 @@ inline double jsonNumber(const std::string& obj, const std::string& key, double 
     std::smatch m;
     if (std::regex_search(obj, m, re)) return std::stod(m[1]);
     return def;
+}
+
+inline std::vector<std::string> jsonStringArray(const std::string& obj, const std::string& key) {
+    // Current arrays are flat: ["tag", "tag2"]. Nested arrays are intentionally
+    // unsupported to keep the no-external-library parser predictable.
+    std::regex arrayRe("\\\"" + key + "\\\"\\s*:\\s*\\[([^\\]]*)\\]");
+    std::smatch m;
+    if (!std::regex_search(obj, m, arrayRe)) return {};
+    std::vector<std::string> values;
+    std::string body = m[1];
+    std::regex itemRe("\\\"((?:\\\\.|[^\\\"])*)\\\"");
+    for (auto it = std::sregex_iterator(body.begin(), body.end(), itemRe); it != std::sregex_iterator(); ++it) {
+        values.push_back(unescapeJson((*it)[1]));
+    }
+    return values;
+}
+
+inline std::vector<int> jsonNumberArray(const std::string& obj, const std::string& key) {
+    std::regex arrayRe("\\\"" + key + "\\\"\\s*:\\s*\\[([^\\]]*)\\]");
+    std::smatch m;
+    if (!std::regex_search(obj, m, arrayRe)) return {};
+    std::vector<int> values;
+    std::string body = m[1];
+    std::regex itemRe("-?[0-9]+");
+    for (auto it = std::sregex_iterator(body.begin(), body.end(), itemRe); it != std::sregex_iterator(); ++it) {
+        values.push_back(std::stoi((*it).str()));
+    }
+    return values;
 }
 
 inline std::vector<int> kmpTable(const std::string& pat) {

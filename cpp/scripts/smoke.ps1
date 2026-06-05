@@ -41,6 +41,26 @@ $InputLines = @(
   "0",
   "4",
   "2",
+  "6",
+  "2",
+  "SmokeUser",
+  "history,photo",
+  "walk",
+  "6",
+  "1",
+  "11",
+  "4",
+  "1",
+  "Smoke User Diary",
+  "4.8",
+  "user11-private-keyword",
+  "4",
+  "2",
+  "4",
+  "3",
+  "4",
+  "5",
+  "4",
   "0"
 )
 
@@ -60,7 +80,14 @@ $Expected = @(
   "Top-10",
   "KMP",
   "Top-5",
-  "rating="
+  "rating=",
+  "Current user",
+  "Registered user",
+  "Switched user",
+  "My diaries",
+  "All diaries",
+  "Smoke User Diary",
+  "Deleted diary"
 )
 
 foreach ($Text in $Expected) {
@@ -71,3 +98,46 @@ foreach ($Text in $Expected) {
 }
 
 Write-Host "Smoke verification passed."
+
+$CampusData = Join-Path $SourceData "regions\tsinghua_campus"
+if (-not (Test-Path $CampusData)) {
+  throw "Missing Tsinghua region data for C++ smoke: $CampusData"
+}
+
+$CampusSmokeData = Join-Path ([System.IO.Path]::GetTempPath()) "tripsystem-tsinghua-smoke-data"
+if (Test-Path $CampusSmokeData) {
+  Remove-Item -LiteralPath $CampusSmokeData -Recurse -Force
+}
+Copy-Item -Path $CampusData -Destination $CampusSmokeData -Recurse
+
+$CampusInputLines = @(
+  "2",
+  "2",
+  "1",
+  "4",
+  "walk",
+  "1",
+  "",
+  "0",
+  "5",
+  "3",
+  "",
+  "0"
+)
+
+$CampusInputText = ($CampusInputLines -join [Environment]::NewLine) + [Environment]::NewLine
+$CampusOutput = $CampusInputText | & $Exe $CampusSmokeData 2>&1 | Out-String
+
+if ($LASTEXITCODE -ne 0) {
+  Write-Host $CampusOutput
+  throw "Tsinghua smoke run exited with code $LASTEXITCODE"
+}
+
+foreach ($Text in @("OSM A*", "Top-10", "Top-5", "rating=")) {
+  if ($CampusOutput -notlike "*$Text*") {
+    Write-Host $CampusOutput
+    throw "Tsinghua smoke output did not contain expected text: $Text"
+  }
+}
+
+Write-Host "Tsinghua smoke verification passed."
