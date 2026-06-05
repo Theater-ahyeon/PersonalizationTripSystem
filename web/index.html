@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Vagabond 个性化旅行</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23f9f9ff'/%3E%3Ccircle cx='22' cy='32' r='10' fill='%230058bc'/%3E%3Cpath d='M28 42c9-18 18-25 30-26-5 15-15 27-30 26Z' fill='%23008733'/%3E%3Ccircle cx='46' cy='19' r='6' fill='%23fd8b00'/%3E%3C/svg%3E">
+  <title>个性化旅游系统</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23f9f9ff'/%3E%3Cpath d='M22 10c-8 0-14 6.2-14 14 0 11 14 25 14 25s14-14 14-25c0-7.8-6-14-14-14Z' fill='%230058bc'/%3E%3Ccircle cx='22' cy='24' r='5' fill='%23f9f9ff'/%3E%3Cpath d='M29 44c6-4 12-5 18-3 4 1 8 0 10-3' fill='none' stroke='%23008733' stroke-width='5' stroke-linecap='round'/%3E%3Ccircle cx='50' cy='34' r='5' fill='%23fd8b00'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="./vendor/leaflet.css">
   <link rel="stylesheet" href="./styles.css?v=20260605-account-center">
 </head>
@@ -12,8 +12,13 @@
   <div class="app-shell">
     <header class="top-nav">
       <a class="brand-mark" href="#recommendView" data-view="recommendView" aria-label="返回探索页">
-        <span class="brand-dot"></span>
-        <span>Vagabond</span>
+        <svg class="brand-logo" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+          <path d="M22 10c-8 0-14 6.2-14 14 0 11 14 25 14 25s14-14 14-25c0-7.8-6-14-14-14Z" fill="currentColor"></path>
+          <circle cx="22" cy="24" r="5" fill="#f9f9ff"></circle>
+          <path d="M29 44c6-4 12-5 18-3 4 1 8 0 10-3" fill="none" stroke="#008733" stroke-width="5" stroke-linecap="round"></path>
+          <circle cx="50" cy="34" r="5" fill="#fd8b00"></circle>
+        </svg>
+        <span>个性化旅游系统</span>
       </a>
       <nav id="tourTabs" class="tour-tabs" aria-label="功能切换">
         <button type="button" class="tab-button active" data-view="recommendView">探索</button>
@@ -89,8 +94,7 @@
             <div id="loadingState" class="loading-state">正在加载目的地地图和道路...</div>
             <div class="map-floating glass-panel">
               <label>地图范围</label>
-              <div class="fixed-map-region" aria-label="当前地图范围">颐和园数据集</div>
-              <div id="mapDataNotice" class="map-data-notice">当前路线基于已加载的目的地道路数据生成。</div>
+              <div class="fixed-map-region" aria-label="当前地图范围">颐和园</div>
               <label for="nodeSearchInput">地图节点搜索</label>
               <input id="nodeSearchInput" type="search" placeholder="东宫门、长廊、苏州街..." autocomplete="off">
             </div>
@@ -102,13 +106,11 @@
                 <h1>路线规划</h1>
                 <p>选择起点和想去的地方，生成一条更顺路的游览动线。</p>
               </div>
-              <button id="clearRouteButton" type="button" class="icon-button" title="清除路线">×</button>
             </div>
 
             <div class="planner-card glass-panel">
               <p class="eyebrow">当前目的地</p>
               <label>旅行区域<select id="regionPackSelect"></select></label>
-              <div id="regionPackStatus" class="region-pack-status">正在读取区域数据包清单...</div>
             </div>
 
             <div class="planner-card glass-panel">
@@ -286,8 +288,8 @@
     <footer class="site-footer" aria-label="全局页脚">
       <div class="footer-inner">
         <div class="footer-brand">
-          <strong>Vagabond</strong>
-          <p>© 2026 Vagabond Travel. Boundless Possibility.</p>
+          <strong>个性化旅游系统</strong>
+          <p>© 2026 个性化旅游系统. 按你的方式探索下一段旅程。</p>
         </div>
         <nav class="footer-links" aria-label="辅助链接">
           <a href="#recommendView" data-view="recommendView">About Us</a>
@@ -342,7 +344,7 @@
         <div class="modal-heading account-heading">
           <div>
             <p class="eyebrow">Account</p>
-            <h2 id="accountModalTitle">我的 Vagabond</h2>
+            <h2 id="accountModalTitle">我的个性化旅游系统</h2>
           </div>
           <span id="accountIdBadge" class="account-id-badge">ID --</span>
         </div>

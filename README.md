@@ -1,4 +1,4 @@
-# 🗺️ Vagabond — 个性化旅游系统
+# 🗺️ 个性化旅游系统
 
 <div align="center">
 
@@ -16,7 +16,7 @@
 
 ## 📖 项目概述
 
-**Vagabond**（原 TripSystem）是一个从零构建的个性化旅游系统，作为大学课程设计项目。核心特点：
+**个性化旅游系统** 是一个从零构建的大学课程设计项目。核心特点：
 
 - 🧠 **手写算法**：Dijkstra、A\*、TSP 状态压缩 DP、KMP、Trie、Huffman 全部从零实现
 - 🧱 **手写数据结构**：HashMap（链地址法）、MinHeap（二叉堆）、Trie（前缀树）、Graph（邻接表）
@@ -166,7 +166,7 @@ PersonalizationTripSystem/
 │   │   ├── facilities.json       # 60 个服务设施 / 12 种类型
 │   │   ├── users.json            # 10 个用户画像
 │   │   ├── diaries/              # 日记（JSON 元数据 + Huffman .bin 正文）
-│   │   └── regions/              # 多区域数据包清单
+│   │   └── regions/              # 旅行区域清单
 │   └── scripts/
 │       ├── build.ps1             # 编译脚本
 │       └── smoke.ps1             # CLI 验收脚本
@@ -196,13 +196,14 @@ PersonalizationTripSystem/
 |------|------|------|
 | `spots.json` | 旅游景点（评分、热度、标签） | 247 条 |
 | `roads.json` | 景点间加权边（walk\_dist, bike\_dist） | — |
-| `osm_nodes.json` | OSM 节点（经纬度、图片、描述） | 550 个节点（20 POI + 530 路网/过渡节点） |
-| `osm_edges.json` | OSM 有向道路边（步行/骑行模式） | 1156 条 |
+| `osm_nodes.json` | 颐和园 OSM 节点（经纬度、图片、描述） | 550 个节点（20 POI + 530 路网/过渡节点） |
+| `osm_edges.json` | 颐和园 OSM 有向道路边（步行/骑行模式） | 1156 条 |
 | `restaurants.json` | 餐厅（关联景点 ID、10 种菜系） | 50 条 |
 | `facilities.json` | 服务设施（12 种类型） | 60 个 |
 | `users.json` | 用户画像 | 10 个 |
 | `diaries/index.json` | 前端日记交流展示 | 12 条 |
-| `regions/manifest.json` | 区域包清单（`summer_palace` active） | 1 个激活包 |
+| `regions/manifest.json` | 旅行区域清单（`summer_palace`, `tsinghua_campus` active） | 2 个激活区域 |
+| `regions/tsinghua_campus/` | 清华大学区域数据 | 419 个节点（14 POI + 405 路网/过渡节点）、910 条边、8 个设施、6 条餐饮、10 条日记 |
 
 ---
 
@@ -222,7 +223,7 @@ PersonalizationTripSystem/
 
 | 视图 | 功能 | 亮点 |
 |------|------|------|
-| 📊 **数据概览** | 数据包规模、设施分布、用户和日记统计 | 一目了然的仪表盘 |
+| 📊 **数据概览** | 区域规模、设施分布、用户和日记统计 | 一目了然的仪表盘 |
 | 🏆 **推荐** | 兴趣/评分/热度排序 + LSH 相似推荐 | 用户画像 + 综合评分 |
 | 🗺️ **路线** | 起终点最短路径 + 地图高亮 + 4 种策略 | 距离/时间/避开拥挤/混合交通 |
 | 🔍 **查询** | 设施按类型/关键词检索 + 距离排序 | GeoHash 前缀索引 |
@@ -239,10 +240,10 @@ PersonalizationTripSystem/
 
 | 步骤 | 视图 | 操作 | 要点说明 |
 |------|------|------|---------|
-| 1 | **数据** | 展示数据概览 | 颐和园主包规模、60 个设施 / 12 种类型、10 个用户、12 条日记 |
+| 1 | **数据** | 展示数据概览 | 颐和园与清华大学两个旅行区域、设施 / 美食 / 日记随区域切换 |
 | 2 | **推荐** | 切换兴趣标签 | Top-K 推荐、用户画像匹配、LSH 相似推荐 |
 | 3 | **路线** | 默认「东宫门 → 苏州街入口」 | 地图高亮最短路径，沿道路折线行进 |
-| 4 | **路线** | 切换起终点 | 北宫门 → 十七孔桥、新建宫门 → 佛香阁等 |
+| 4 | **路线** | 切换旅行区域 | 清华大学二校门 → 主楼、校医院 → 紫荆公寓区等 |
 | 5 | **查询** | 按类型/关键词查设施 | GeoHash 就近检索 + 图上距离排序 |
 | 6 | **日记 + 美食** | 浏览日记、筛选美食 | KMP 关键词检索、Huffman 压缩率展示、JSON 导出 |
 
@@ -260,7 +261,7 @@ PersonalizationTripSystem/
 node .\web\scripts\generate-osm-data.mjs summer-palace
 ```
 
-重新生成全部数据包：
+重新生成全部旅行区域：
 
 ```powershell
 node .\web\scripts\generate-osm-data.mjs all
@@ -270,7 +271,7 @@ node .\web\scripts\generate-osm-data.mjs all
 
 ### 添加新区域数据
 
-编辑 `cpp/data/regions/manifest.json`，按模板添加区域包即可。每个包包含独立的 `spots`、`nodes`、`edges`、`roads`、`facilities`、`restaurants`。前端切换数据包后自动重建所有视图。
+编辑 `cpp/data/regions/manifest.json`，按模板添加旅行区域即可。每个区域包含独立的 `spots`、`nodes`、`edges`、`roads`、`facilities`、`restaurants`、`diaries`。前端切换旅行区域后自动重建路线、设施、美食和日记视图。
 
 ---
 

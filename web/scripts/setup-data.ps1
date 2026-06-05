@@ -20,7 +20,7 @@ foreach ($SubDir in @("", "diaries", "regions")) {
 # Copy all JSON files
 Copy-Item -Path (Join-Path $SourceData "*.json") -Destination $DestData -Force
 Copy-Item -Path (Join-Path $SourceData "diaries\*") -Destination (Join-Path $DestData "diaries") -Force
-Copy-Item -Path (Join-Path $SourceData "regions\*") -Destination (Join-Path $DestData "regions") -Force
+Copy-Item -Path (Join-Path $SourceData "regions\*") -Destination (Join-Path $DestData "regions") -Recurse -Force
 
 Write-Host "Data files copied to $DestData"
 Write-Host "Done. Run 'python -m http.server 5173 --directory web' to start the frontend."

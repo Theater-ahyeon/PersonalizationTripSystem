@@ -25,7 +25,7 @@
   font-family: Inter, "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
 }
 
-/* Vagabond visual refresh: align the working app with the Stitch travel product direction. */
+/* Visual refresh: align the working app with the Stitch travel product direction. */
 body {
   background: #f9f9ff;
 }
@@ -44,6 +44,14 @@ body {
   color: #0058bc;
   font-size: 26px;
   letter-spacing: 0;
+}
+
+.brand-logo {
+  display: block;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  color: #0058bc;
 }
 
 .tour-tabs {
@@ -1259,6 +1267,16 @@ select:focus {
   text-decoration: none;
   font-size: 25px;
   font-weight: 800;
+  white-space: nowrap;
+}
+
+.brand-logo {
+  display: block;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  color: var(--primary);
+  filter: drop-shadow(0 5px 12px rgba(0, 88, 188, 0.18));
 }
 
 .brand-dot {
@@ -2570,7 +2588,7 @@ textarea:focus {
   }
 }
 
-/* Final Vagabond overrides. Keep these last so the static prototype follows the Stitch reference. */
+/* Final visual overrides. Keep these last so the static prototype follows the Stitch reference. */
 body {
   background: #f9f9ff;
 }
@@ -2588,6 +2606,12 @@ body {
 .brand-mark {
   color: #0058bc;
   font-size: 26px;
+}
+
+.brand-logo {
+  width: 34px;
+  height: 34px;
+  flex-basis: 34px;
 }
 
 .tour-tabs {

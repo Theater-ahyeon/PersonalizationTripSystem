@@ -1,16 +1,32 @@
 [
   {
     "id": "summer_palace",
-    "name": "\u9890\u548c\u56ed\u6570\u636e\u5305",
-    "city": "\u5317\u4eac",
+    "name": "颐和园",
+    "city": "北京",
     "status": "active",
     "map_region": "dataset",
-    "description": "\u9884\u7f6e\u7684\u9890\u548c\u56ed\u5355\u6570\u636e\u96c6\uff0c\u5305\u542b\u666f\u70b9\u3001\u8def\u7f51\u8fc7\u6e21\u8282\u70b9\u3001\u8bbe\u65bd\u548c\u9910\u996e\u6f14\u793a\u6570\u636e\u3002",
+    "description": "颐和园旅行区域，包含可选目的地、真实路网过渡节点、设施、美食和日记数据。",
     "nodes_path": "../cpp/data/osm_nodes.json",
     "edges_path": "../cpp/data/osm_edges.json",
     "spots_path": "../cpp/data/spots.json",
     "roads_path": "../cpp/data/roads.json",
     "facilities_path": "../cpp/data/facilities.json",
-    "restaurants_path": "../cpp/data/restaurants.json"
+    "restaurants_path": "../cpp/data/restaurants.json",
+    "diaries_path": "../cpp/data/diaries/index.json"
+  },
+  {
+    "id": "tsinghua_campus",
+    "name": "清华大学",
+    "city": "北京",
+    "status": "active",
+    "map_region": "dataset",
+    "description": "清华大学旅行区域，包含可选目的地、真实路网过渡节点、设施、美食和日记数据。",
+    "nodes_path": "../cpp/data/regions/tsinghua_campus/osm_nodes.json",
+    "edges_path": "../cpp/data/regions/tsinghua_campus/osm_edges.json",
+    "spots_path": "../cpp/data/regions/tsinghua_campus/spots.json",
+    "roads_path": "../cpp/data/regions/tsinghua_campus/roads.json",
+    "facilities_path": "../cpp/data/regions/tsinghua_campus/facilities.json",
+    "restaurants_path": "../cpp/data/regions/tsinghua_campus/restaurants.json",
+    "diaries_path": "../cpp/data/regions/tsinghua_campus/diaries/index.json"
   }
 ]

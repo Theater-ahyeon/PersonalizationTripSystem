@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -82,6 +82,18 @@ const SCENES = {
     restaurantCount: 50,
     usersCount: 10,
     diariesCount: 12
+  },
+  "tsinghua-campus": {
+    label: "清华大学",
+    source: "local-pack",
+    sourceSubdir: "regions/tsinghua_campus",
+    outputSubdir: "regions/tsinghua_campus",
+    minRoadNodes: 400,
+    maxRoadNodes: 700,
+    maxSegmentM: 120,
+    minEdges: 400,
+    sampleRoutes: [[1, 4], [14, 10], [3, 8]],
+    diariesCount: 10
   }
 };
 
@@ -586,6 +598,195 @@ function buildOsmOutput(scene, overpass) {
   return { nodes, edges };
 }
 
+async function generateLocalScene(scene) {
+  const sourceDir = path.join(dataRoots[1], scene.sourceSubdir);
+  const source = {
+    nodes: await readJson(path.join(sourceDir, "osm_nodes.json")),
+    edges: await readJson(path.join(sourceDir, "osm_edges.json")),
+    spots: await readJson(path.join(sourceDir, "spots.json")),
+    roads: await readJson(path.join(sourceDir, "roads.json")),
+    facilities: await readJson(path.join(sourceDir, "facilities.json")),
+    restaurants: await readJson(path.join(sourceDir, "restaurants.json"))
+  };
+  const localScene = {
+    ...scene,
+    namedNodes: source.nodes
+      .filter((node) => Number(node.spot_id) > 0)
+      .map((node) => ({ ...node })),
+    highLevelEdges: source.roads.map((road) => [Number(road.from), Number(road.to)])
+  };
+
+  const { nodes, edges } = buildLocalPackOutput(localScene, source.nodes, source.edges);
+  const roads = buildRoads(localScene, nodes, edges);
+  const diaries = buildCampusDiaryIndex(localScene);
+  validateScene(localScene, nodes, edges, source.spots);
+  await writeScene(localScene, {
+    nodes,
+    edges,
+    spots: source.spots,
+    roads,
+    facilities: source.facilities,
+    restaurants: source.restaurants,
+    diaries
+  });
+  console.log(`Generated ${scene.label}: ${nodes.length} nodes, ${edges.length} directed edges, ${source.spots.length} spots.`);
+}
+
+function buildLocalPackOutput(scene, sourceNodes, sourceEdges) {
+  const nodeById = new Map(sourceNodes.map((node) => [Number(node.id), node]));
+  const roadNodeIds = sourceNodes
+    .filter((node) => Number(node.spot_id) === 0)
+    .map((node) => Number(node.id));
+  const roadNodeSet = new Set(roadNodeIds);
+  const selected = selectLocalRoadNodes(scene, sourceNodes, sourceEdges);
+  const outputNodes = [
+    ...scene.namedNodes.map((node) => ({ ...node })),
+    ...Array.from(selected)
+      .sort((a, b) => a - b)
+      .map((id) => ({ ...nodeById.get(id) }))
+  ];
+  const outputNodeById = new Map(outputNodes.map((node) => [Number(node.id), node]));
+  const outputEdges = [];
+  const pairSeen = new Set();
+  let nextVirtualRoadId = Math.max(...sourceNodes.map((node) => Number(node.id))) + 1;
+
+  for (const edge of sourceEdges) {
+    const from = Number(edge.from);
+    const to = Number(edge.to);
+    const fromNode = nodeById.get(from);
+    const toNode = nodeById.get(to);
+    if (!fromNode || !toNode) continue;
+    if (Number(fromNode.spot_id) > 0 && Number(toNode.spot_id) > 0) continue;
+    const fromAllowed = Number(fromNode.spot_id) > 0 || (roadNodeSet.has(from) && selected.has(from));
+    const toAllowed = Number(toNode.spot_id) > 0 || (roadNodeSet.has(to) && selected.has(to));
+    if (!fromAllowed || !toAllowed) continue;
+    const key = from < to ? `${from}:${to}:${edge.mode}` : `${to}:${from}:${edge.mode}`;
+    if (pairSeen.has(key)) continue;
+    pairSeen.add(key);
+    nextVirtualRoadId = pushSegmentedBidirectional({
+      nodes: outputNodes,
+      nodeById: outputNodeById,
+      edges: outputEdges,
+      from,
+      to,
+      distance: Number(edge.distance || haversineM(fromNode, toNode)),
+      mode: edge.mode || "both",
+      roadName: edge.road_name || "校园道路",
+      maxSegmentM: scene.maxSegmentM,
+      nextVirtualRoadId
+    });
+  }
+
+  return { nodes: outputNodes, edges: outputEdges };
+}
+
+function selectLocalRoadNodes(scene, sourceNodes, sourceEdges) {
+  const nodeById = new Map(sourceNodes.map((node) => [Number(node.id), node]));
+  const roadNodeSet = new Set(sourceNodes.filter((node) => Number(node.spot_id) === 0).map((node) => Number(node.id)));
+  const selected = new Set();
+  const center = averagePoint(scene.namedNodes);
+
+  for (const poi of scene.namedNodes) {
+    const accessIds = [];
+    sourceEdges
+      .filter((edge) => Number(edge.from) === Number(poi.id) || Number(edge.to) === Number(poi.id))
+      .sort((a, b) => Number(a.distance || 0) - Number(b.distance || 0))
+      .forEach((edge) => {
+        const id = Number(edge.from) === Number(poi.id) ? Number(edge.to) : Number(edge.from);
+        if (roadNodeSet.has(id) && !accessIds.includes(id)) accessIds.push(id);
+      });
+    accessIds.slice(0, 2).forEach((id) => selected.add(id));
+  }
+
+  const routePairs = [...(scene.highLevelEdges || []), ...(scene.sampleRoutes || [])];
+  for (const [from, to] of routePairs) {
+    const path = shortestPathNodeIdsFromEdges(sourceEdges, Number(from), Number(to), "walk");
+    if (!path.length) {
+      throw new Error(`${scene.label}: local key route ${from}->${to} could not be traced`);
+    }
+    path.filter((id) => roadNodeSet.has(id)).forEach((id) => selected.add(id));
+  }
+
+  if (selected.size > scene.maxRoadNodes) {
+    throw new Error(`${scene.label}: selected ${selected.size} local road nodes; max is ${scene.maxRoadNodes}`);
+  }
+
+  const graph = buildLocalRoadGraph(sourceEdges, roadNodeSet);
+  const queue = Array.from(selected).sort((a, b) => {
+    const da = haversineM(center, nodeById.get(a));
+    const db = haversineM(center, nodeById.get(b));
+    return da - db || a - b;
+  });
+  while (queue.length && selected.size < scene.minRoadNodes) {
+    const current = queue.shift();
+    const neighbors = Array.from(graph.get(current) || []).sort((a, b) => {
+      const da = haversineM(center, nodeById.get(a));
+      const db = haversineM(center, nodeById.get(b));
+      return da - db || a - b;
+    });
+    for (const next of neighbors) {
+      if (!selected.has(next)) {
+        selected.add(next);
+        queue.push(next);
+        if (selected.size >= scene.minRoadNodes) break;
+      }
+    }
+  }
+
+  return selected;
+}
+
+function buildLocalRoadGraph(edges, roadNodeSet) {
+  const graph = new Map();
+  for (const edge of edges) {
+    const from = Number(edge.from);
+    const to = Number(edge.to);
+    if (!roadNodeSet.has(from) || !roadNodeSet.has(to)) continue;
+    if (!graph.has(from)) graph.set(from, new Set());
+    if (!graph.has(to)) graph.set(to, new Set());
+    graph.get(from).add(to);
+    graph.get(to).add(from);
+  }
+  return graph;
+}
+
+function shortestPathNodeIdsFromEdges(edges, start, goal, mode) {
+  const adjacency = new Map();
+  for (const edge of edges) {
+    if (edge.mode !== "both" && edge.mode !== mode) continue;
+    const from = Number(edge.from);
+    if (!adjacency.has(from)) adjacency.set(from, []);
+    adjacency.get(from).push(edge);
+  }
+  const dist = new Map([[start, 0]]);
+  const prev = new Map();
+  const queue = [{ node: start, distance: 0 }];
+  const seen = new Set();
+  while (queue.length) {
+    queue.sort((a, b) => a.distance - b.distance);
+    const current = queue.shift();
+    if (seen.has(current.node)) continue;
+    seen.add(current.node);
+    if (current.node === goal) break;
+    for (const edge of adjacency.get(current.node) || []) {
+      const to = Number(edge.to);
+      const nextDistance = current.distance + Number(edge.distance || 0);
+      if (!dist.has(to) || nextDistance < dist.get(to)) {
+        dist.set(to, nextDistance);
+        prev.set(to, current.node);
+        queue.push({ node: to, distance: nextDistance });
+      }
+    }
+  }
+  if (!dist.has(goal)) return [];
+  const path = [];
+  for (let node = goal; node != null; node = prev.get(node)) {
+    path.unshift(node);
+    if (node === start) break;
+  }
+  return path;
+}
+
 function nearestOsmIds(point, ids, osmNodes, count) {
   return ids
     .map((osmId) => ({ osmId, distance: haversineM(point, osmNodes.get(osmId)) }))
@@ -809,6 +1010,38 @@ function buildDiaryIndex(scene) {
   });
 }
 
+function buildCampusDiaryIndex(scene) {
+  const titles = [
+    "二校门到主楼的校园步行路线",
+    "图书馆老馆和大礼堂的建筑打卡",
+    "荷塘到水木清华的安静散步",
+    "艺术博物馆半日参观记录",
+    "校医院到紫荆公寓区服务路线",
+    "清芬园食堂午餐推荐",
+    "教学楼区到综合体育馆通勤体验",
+    "近春园和荷塘的校园慢游",
+    "学生服务中心办事路线",
+    "主楼到艺术博物馆的东区路线"
+  ];
+  return titles.slice(0, scene.diariesCount || titles.length).map((title, index) => {
+    const item = scene.namedNodes[index % scene.namedNodes.length];
+    const original = 460 + index * 37;
+    return {
+      id: index + 1,
+      title,
+      user_id: (index % 10) + 1,
+      destination: item.name,
+      rating: round(4.1 + ((index * 5) % 8) / 10, 1),
+      heat: 320 + ((index * 83) % 640),
+      created_at: `2026-05-${String(12 + index).padStart(2, "0")} 10:${String((index * 9) % 60).padStart(2, "0")}:00`,
+      tags: ["校园", "路线", item.type],
+      content: `${title}：本次路线围绕${item.name}展开，适合展示清华大学区域的路线规划、设施查询、美食推荐和日记检索。`,
+      original_bytes: original,
+      compressed_bytes: Math.round(original * (0.45 + (index % 3) * 0.05))
+    };
+  });
+}
+
 function shortestDistance(edges, start, goal, mode) {
   const dist = new Map([[start, 0]]);
   const queue = [{ node: start, distance: 0 }];
@@ -909,6 +1142,10 @@ function averagePoint(points) {
   return { lat: sum.lat / points.length, lon: sum.lon / points.length };
 }
 
+async function readJson(filePath) {
+  return JSON.parse(await readFile(filePath, "utf8"));
+}
+
 async function writeJson(root, relativePath, value) {
   const filePath = path.join(root, relativePath);
   await mkdir(path.dirname(filePath), { recursive: true });
@@ -925,11 +1162,49 @@ async function writeScene(scene, output) {
     await writeJson(root, path.join(relativeBase, "facilities.json"), output.facilities);
     await writeJson(root, path.join(relativeBase, "restaurants.json"), output.restaurants);
     if (output.users) await writeJson(root, "users.json", output.users);
-    if (output.diaries) await writeJson(root, path.join("diaries", "index.json"), output.diaries);
+    if (output.diaries) await writeJson(root, path.join(relativeBase, "diaries", "index.json"), output.diaries);
   }
 }
 
+async function writeManifest() {
+  const manifests = new Map([
+    [path.join(repoRoot, "web", "data"), [
+      regionManifestEntry("summer_palace", "颐和园", "./data"),
+      regionManifestEntry("tsinghua_campus", "清华大学", "./data/regions/tsinghua_campus")
+    ]],
+    [path.join(repoRoot, "cpp", "data"), [
+      regionManifestEntry("summer_palace", "颐和园", "../cpp/data"),
+      regionManifestEntry("tsinghua_campus", "清华大学", "../cpp/data/regions/tsinghua_campus")
+    ]]
+  ]);
+  for (const [root, manifest] of manifests) {
+    await writeJson(root, path.join("regions", "manifest.json"), manifest);
+  }
+}
+
+function regionManifestEntry(id, name, basePath) {
+  return {
+    id,
+    name,
+    city: "北京",
+    status: "active",
+    map_region: "dataset",
+    description: `${name}旅行区域，包含可选目的地、真实路网过渡节点、设施、美食和日记数据。`,
+    nodes_path: `${basePath}/osm_nodes.json`,
+    edges_path: `${basePath}/osm_edges.json`,
+    spots_path: `${basePath}/spots.json`,
+    roads_path: `${basePath}/roads.json`,
+    facilities_path: `${basePath}/facilities.json`,
+    restaurants_path: `${basePath}/restaurants.json`,
+    diaries_path: `${basePath}/diaries/index.json`
+  };
+}
+
 async function generateScene(scene) {
+  if (scene.source === "local-pack") {
+    await generateLocalScene(scene);
+    return;
+  }
   const overpass = await fetchOverpass(scene);
   const { nodes, edges } = buildOsmOutput(scene, overpass);
   const spots = buildSpots(scene);
@@ -947,6 +1222,7 @@ async function main() {
   for (const id of sceneIds) {
     await generateScene(SCENES[id]);
   }
+  await writeManifest();
 }
 
 main().catch((error) => {

@@ -213,7 +213,8 @@ function bindStaticControls() {
   byId("routeStrategySelect").addEventListener("change", (event) => {
     state.routeStrategy = event.target.value;
   });
-  byId("clearRouteButton").addEventListener("click", clearRouteLayers);
+  const clearRouteButton = byId("clearRouteButton");
+  if (clearRouteButton) clearRouteButton.addEventListener("click", clearRouteLayers);
   byId("runMultiButton").addEventListener("click", runMultiStopRoute);
   document.querySelectorAll(".facility-chip").forEach((button) => {
     button.addEventListener("click", () => {
@@ -396,11 +397,13 @@ function updateLocalOverlayVisibility() {
 }
 
 function updateMapDataNotice() {
+  const pack = findRegionPack(state.currentRegionPackId);
+  const packName = pack?.name || "当前区域";
+  const label = document.querySelector(".fixed-map-region");
+  if (label) label.textContent = packName;
   const notice = byId("mapDataNotice");
   if (!notice) return;
-  const pack = findRegionPack(state.currentRegionPackId);
-  const packName = pack?.name || "当前数据包";
-  notice.textContent = `当前数据包：${packName}，${selectableRouteNodes().length} 个可选目的地；路线按本包路网计算。`;
+  notice.textContent = `当前区域：${packName}，${selectableRouteNodes().length} 个可选目的地；路线按本区域路网计算。`;
 }
 
 function addMapResetControl() {
@@ -447,9 +450,10 @@ function reloadCurrentDataset({ fit = false } = {}) {
 }
 
 function populateControls() {
-  fillNodeSelect(byId("startSelect"), selectableRouteNodes());
-  fillNodeSelect(byId("goalSelect"), selectableRouteNodes());
-  fillNodeSelect(byId("facilityOriginSelect"), selectableRouteNodes());
+  const routeNodes = selectableRouteNodes();
+  fillNodeSelect(byId("startSelect"), routeNodes);
+  fillNodeSelect(byId("goalSelect"), routeNodes);
+  fillNodeSelect(byId("facilityOriginSelect"), routeNodes);
   fillSpotSelect(byId("foodSpotSelect"), state.spots);
   fillUserSelect();
   fillCategorySelect();
@@ -459,14 +463,32 @@ function populateControls() {
   fillRegionPackSelect();
   renderMultiStopList();
 
-  byId("startSelect").value = "1";
-  byId("goalSelect").value = "8";
-  byId("facilityOriginSelect").value = "1";
-  byId("foodSpotSelect").value = "8";
+  const defaults = defaultRouteSelection(routeNodes);
+  setSelectValueIfPresent("startSelect", defaults.start);
+  setSelectValueIfPresent("goalSelect", defaults.goal);
+  setSelectValueIfPresent("facilityOriginSelect", defaults.start);
+  setSelectValueIfPresent("foodSpotSelect", defaultFoodSpotId());
   const user = selectedUser();
   byId("preferenceInput").value = user ? user.preference_tags.join(" ") : "";
 
   if (state.map) setTimeout(() => state.map.invalidateSize(), 100);
+}
+
+function defaultRouteSelection(routeNodes) {
+  const ids = new Set(routeNodes.map((node) => String(node.id)));
+  const preferred = state.currentRegionPackId === "tsinghua_campus"
+    ? { start: "1", goal: "4" }
+    : { start: "1", goal: "8" };
+  return {
+    start: ids.has(preferred.start) ? preferred.start : String(routeNodes[0]?.id || ""),
+    goal: ids.has(preferred.goal) ? preferred.goal : String(routeNodes[1]?.id || routeNodes[0]?.id || "")
+  };
+}
+
+function defaultFoodSpotId() {
+  const restaurantSpot = state.restaurants.find((restaurant) => findSpot(restaurant.near_spot_id))?.near_spot_id;
+  const firstSpot = state.spots[0]?.id;
+  return String(restaurantSpot || firstSpot || "");
 }
 
 function fillRegionPackSelect() {
@@ -474,7 +496,7 @@ function fillRegionPackSelect() {
   if (!select) return;
   const packs = state.regionPacks.length ? state.regionPacks : [{
     id: "summer_palace",
-    name: "颐和园数据包",
+    name: "颐和园",
     city: "北京",
     status: "active",
     map_region: "dataset",
@@ -484,7 +506,7 @@ function fillRegionPackSelect() {
   packs.forEach((pack) => {
     const option = document.createElement("option");
     option.value = pack.id;
-    option.textContent = `${pack.name} · ${regionPackStatusLabel(pack.status)}`;
+    option.textContent = pack.name;
     select.appendChild(option);
   });
   const current = packs.find((pack) => pack.id === state.currentRegionPackId);
@@ -508,7 +530,7 @@ async function selectRegionPack(packId) {
   }
   const select = byId("regionPackSelect");
   const previousPackId = state.currentRegionPackId;
-  renderRegionPackStatus(pack.id, "正在加载区域数据包...");
+  renderRegionPackStatus(pack.id, "正在加载旅行区域...");
   try {
     await loadRegionPack(pack.id);
     if (pack.map_region) focusMapRegion(pack.map_region, true);
@@ -522,19 +544,21 @@ async function selectRegionPack(packId) {
 
 async function loadRegionPack(packId) {
   const pack = findRegionPack(packId);
-  if (!pack) throw new Error(`未找到区域数据包：${packId}`);
-  const [nodes, edges, spots, facilities, restaurants] = await Promise.all([
+  if (!pack) throw new Error(`未找到旅行区域：${packId}`);
+  const [nodes, edges, spots, facilities, restaurants, diaries] = await Promise.all([
     loadJson(pack.nodes_path),
     loadJson(pack.edges_path),
     loadJson(pack.spots_path),
     loadJson(pack.facilities_path),
-    loadJson(pack.restaurants_path)
+    loadJson(pack.restaurants_path),
+    loadJson(pack.diaries_path || DATA_PATHS.diaries)
   ]);
   state.nodes = nodes;
   state.edges = edges;
   state.spots = spots;
   state.facilities = facilities;
   state.restaurants = restaurants;
+  state.diaries = diaries;
   state.currentRegionPackId = pack.id;
   state.mapRegion = pack.map_region || "dataset";
   reloadCurrentDataset({ fit: true });
@@ -545,7 +569,7 @@ function renderRegionPackStatus(packId, transientMessage = "") {
   if (!container) return;
   const pack = findRegionPack(packId);
   if (!pack) {
-    container.textContent = "区域数据包清单未加载。";
+    container.textContent = "旅行区域清单未加载。";
     return;
   }
   const active = pack.status === "active";
@@ -1045,7 +1069,7 @@ function renderStatusSummary() {
     <span><strong>${state.facilities.length}</strong>服务设施</span>
     <span><strong>${state.diaries.length}</strong>社区日记</span>
     <span><strong>${state.users.length}</strong>账号</span>
-    <p>当前区域：${escapeHtml(pack?.name || "颐和园数据包")}</p>
+    <p>当前区域：${escapeHtml(pack?.name || "颐和园")}</p>
   `;
 }
 
