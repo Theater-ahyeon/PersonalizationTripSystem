@@ -27,6 +27,7 @@ function reloadCurrentDataset({ fit = false } = {}) {
     state.mapFitted = false;
   }
   clearRouteLayers(false);
+  if (typeof updateRouteQuickSummary === "function") updateRouteQuickSummary();
   populateControls();
   renderNodeList(selectableRouteNodes());
   buildFacilityGeoIndex();

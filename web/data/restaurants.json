@@ -6,7 +6,7 @@
     "cuisine": "宫廷菜",
     "rating": 4.8,
     "heat": 1260,
-    "image": "web/assets/food/summer_palace/peking-duck.jpg"
+    "image": "web/assets/food/summer_palace/听鹂馆饭庄.png"
   },
   {
     "id": 2,
@@ -15,7 +15,7 @@
     "cuisine": "咖啡",
     "rating": 4.6,
     "heat": 1035,
-    "image": "web/assets/food/summer_palace/latte.jpg"
+    "image": "web/assets/food/summer_palace/夏宫咖啡·南九卿房.png"
   },
   {
     "id": 3,
@@ -24,7 +24,7 @@
     "cuisine": "小吃",
     "rating": 4.5,
     "heat": 990,
-    "image": "web/assets/food/summer_palace/baozi.jpg"
+    "image": "web/assets/food/summer_palace/苏州街宫廷小吃铺.png"
   },
   {
     "id": 4,
@@ -69,7 +69,7 @@
     "cuisine": "茶饮",
     "rating": 4.5,
     "heat": 860,
-    "image": "web/assets/food/summer_palace/chinese-tea.jpg"
+    "image": "web/assets/food/summer_palace/后湖茶舍.png"
   },
   {
     "id": 9,
@@ -78,7 +78,7 @@
     "cuisine": "茶点",
     "rating": 4.4,
     "heat": 704,
-    "image": "web/assets/food/summer_palace/chinese-tea.jpg"
+    "image": "web/assets/food/summer_palace/知春亭湖景茶点.png"
   },
   {
     "id": 10,
@@ -114,7 +114,7 @@
     "cuisine": "咖啡",
     "rating": 4.3,
     "heat": 702,
-    "image": "web/assets/food/summer_palace/latte.jpg"
+    "image": "web/assets/food/summer_palace/西堤咖啡补给点.png"
   },
   {
     "id": 14,
@@ -123,7 +123,7 @@
     "cuisine": "茶饮",
     "rating": 4.6,
     "heat": 930,
-    "image": "web/assets/food/summer_palace/chinese-tea.jpg"
+    "image": "web/assets/food/summer_palace/谐趣园庭院茶饮.png"
   },
   {
     "id": 15,
@@ -186,7 +186,7 @@
     "cuisine": "北京小吃",
     "rating": 4.3,
     "heat": 1090,
-    "image": "web/assets/food/summer_palace/baozi.jpg"
+    "image": "web/assets/food/summer_palace/北宫门庆丰包子铺.png"
   },
   {
     "id": 22,
@@ -204,7 +204,7 @@
     "cuisine": "快餐",
     "rating": 4.1,
     "heat": 1008,
-    "image": "web/assets/food/summer_palace/light-salad.jpg"
+    "image": "web/assets/food/summer_palace/西苑地铁站肯德基.png"
   },
   {
     "id": 24,
@@ -213,7 +213,7 @@
     "cuisine": "北京小吃",
     "rating": 4.4,
     "heat": 1215,
-    "image": "web/assets/food/summer_palace/baozi.jpg"
+    "image": "web/assets/food/summer_palace/颐和园路护国寺小吃.png"
   },
   {
     "id": 25,
@@ -231,7 +231,7 @@
     "cuisine": "咖啡",
     "rating": 4.5,
     "heat": 1105,
-    "image": "web/assets/food/summer_palace/latte.jpg"
+    "image": "web/assets/food/summer_palace/龙湖星悦荟星巴克.png"
   },
   {
     "id": 27,
@@ -240,7 +240,7 @@
     "cuisine": "茶饮",
     "rating": 4.6,
     "heat": 1170,
-    "image": "web/assets/food/summer_palace/chinese-tea.jpg"
+    "image": "web/assets/food/summer_palace/喜茶.png"
   },
   {
     "id": 28,
@@ -267,7 +267,7 @@
     "cuisine": "北京菜",
     "rating": 4.5,
     "heat": 970,
-    "image": "web/assets/food/summer_palace/peking-duck.jpg"
+    "image": "web/assets/food/summer_palace/万柳局气北京菜.png"
   },
   {
     "id": 31,
@@ -303,7 +303,7 @@
     "cuisine": "粤式茶餐厅",
     "rating": 4.4,
     "heat": 910,
-    "image": "web/assets/food/tsinghua_campus/cafeteria-lunch.jpg"
+    "image": "web/assets/food/summer_palace/中关村茶餐厅.png"
   },
   {
     "id": 35,
@@ -312,7 +312,7 @@
     "cuisine": "轻食",
     "rating": 4.5,
     "heat": 830,
-    "image": "web/assets/food/summer_palace/light-salad.jpg"
+    "image": "web/assets/food/summer_palace/海淀公园轻食咖啡.png"
   },
   {
     "id": 36,
@@ -330,7 +330,7 @@
     "cuisine": "糕点",
     "rating": 4.6,
     "heat": 1180,
-    "image": "web/assets/food/summer_palace/chinese-pastry.jpg"
+    "image": "web/assets/food/summer_palace/颐和园路稻香村.png"
   },
   {
     "id": 38,
@@ -393,7 +393,7 @@
     "cuisine": "茶饮",
     "rating": 4.2,
     "heat": 720,
-    "image": "web/assets/food/summer_palace/chinese-tea.jpg"
+    "image": "web/assets/food/summer_palace/昆明湖畔酸梅汤铺.png"
   },
   {
     "id": 45,
@@ -411,7 +411,7 @@
     "cuisine": "甜品",
     "rating": 4.4,
     "heat": 850,
-    "image": "web/assets/food/summer_palace/tanghulu.jpg"
+    "image": "web/assets/food/summer_palace/文昌院文创雪糕.png"
   },
   {
     "id": 47,

@@ -70,13 +70,76 @@ function Assert-DiaryImages {
   }
 }
 
+function Assert-PlanRestaurantImageMap {
+  param(
+    [string]$DataRoot,
+    [string]$Label
+  )
+
+  $PlanDir = Join-Path $RepoRoot "plan"
+  $PlanImages = @(Get-ChildItem -LiteralPath $PlanDir -File -Filter "*.png")
+  if ($PlanImages.Count -ne 22) {
+    throw "$Label expected 22 plan food images, found $($PlanImages.Count)"
+  }
+
+  $Datasets = @(
+    @{
+      Id = "summer_palace"
+      Path = Join-Path $DataRoot "restaurants.json"
+      AssetPrefix = "web/assets/food/summer_palace"
+    },
+    @{
+      Id = "tsinghua_campus"
+      Path = Join-Path $DataRoot "regions\tsinghua_campus\restaurants.json"
+      AssetPrefix = "web/assets/food/tsinghua_campus"
+    }
+  )
+
+  $Restaurants = @()
+  foreach ($Dataset in $Datasets) {
+    foreach ($Restaurant in (Read-JsonArray $Dataset.Path)) {
+      $Restaurants += [pscustomobject]@{
+        Dataset = $Dataset.Id
+        AssetPrefix = $Dataset.AssetPrefix
+        Data = $Restaurant
+        Name = [string]$Restaurant.name
+      }
+    }
+  }
+
+  foreach ($ImageFile in $PlanImages) {
+    $BaseName = [System.IO.Path]::GetFileNameWithoutExtension($ImageFile.Name)
+    $Matches = @($Restaurants | Where-Object { $_.Name -eq $BaseName })
+    if ($Matches.Count -eq 0) {
+      $Matches = @($Restaurants | Where-Object { $_.Name.Contains($BaseName) -or $BaseName.Contains($_.Name) })
+    }
+    if ($Matches.Count -eq 0) {
+      throw "$Label has no restaurant matching plan image: $($ImageFile.Name)"
+    }
+    if ($Matches.Count -gt 1) {
+      $Names = ($Matches | ForEach-Object { $_.Name }) -join ", "
+      throw "$Label plan image $($ImageFile.Name) matches multiple restaurants: $Names"
+    }
+
+    $Match = $Matches[0]
+    $Expected = "$($Match.AssetPrefix)/$($ImageFile.Name)"
+    $Actual = [string]$Match.Data.image
+    if ($Actual -ne $Expected) {
+      throw "$Label restaurant $($Match.Name) must use $Expected, found: $Actual"
+    }
+    Assert-LocalImage -Label "$Label restaurant $($Match.Name)" -Item $Match.Data -ExpectedPrefix "web/assets/food/"
+  }
+}
+
 Assert-RestaurantImages -Path (Join-Path $CppData "restaurants.json") -Label "Summer Palace"
 Assert-RestaurantImages -Path (Join-Path $CppData "regions\tsinghua_campus\restaurants.json") -Label "Tsinghua"
+Assert-PlanRestaurantImageMap -DataRoot $CppData -Label "cpp/data"
 Assert-DiaryImages -Path (Join-Path $CppData "diaries\index.json") -Label "Summer Palace"
 Assert-DiaryImages -Path (Join-Path $CppData "regions\tsinghua_campus\diaries\index.json") -Label "Tsinghua"
 
 Assert-RestaurantImages -Path (Join-Path $WebData "restaurants.json") -Label "web/data Summer Palace"
 Assert-RestaurantImages -Path (Join-Path $WebData "regions\tsinghua_campus\restaurants.json") -Label "web/data Tsinghua"
+Assert-PlanRestaurantImageMap -DataRoot $WebData -Label "web/data"
 Assert-DiaryImages -Path (Join-Path $WebData "diaries\index.json") -Label "web/data Summer Palace"
 Assert-DiaryImages -Path (Join-Path $WebData "regions\tsinghua_campus\diaries\index.json") -Label "web/data Tsinghua"
 

@@ -1213,6 +1213,17 @@ private:
         }
     }
 
+    // JSON parser field coverage:
+    // spots.json: id, name, category, rating, heat, tags.
+    // roads.json: from, to, dist_walk, dist_bike.
+    // osm_nodes.json: id, name, lat, lon, type, spot_id, description, image.
+    // osm_edges.json: from, to, distance, mode, road_name.
+    // restaurants.json: id, name, near_spot_id, cuisine, rating, heat, image.
+    // users.json: id, name, preference_tags, preferred_categories, route_mode,
+    // history_spot_ids.
+    // diaries/*.json: id, title, user_id, rating, heat, created_at, image,
+    // bit_length and codebook entries with ch/code. Keep these comments in sync
+    // with utils.hpp when adding fields parsed by regex helpers.
     void loadSpots() {
         spots.clear();
         for (const auto& obj : jsonObjects(readText(dataDir_ / "spots.json"))) {

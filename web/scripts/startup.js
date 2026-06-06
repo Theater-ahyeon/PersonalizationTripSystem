@@ -45,6 +45,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 function bindStaticControls() {
   document.addEventListener("click", handleGlobalResultAction);
+  setupDiaryComposeToggle();
 
   document.querySelectorAll("[data-view]").forEach((trigger) => {
     trigger.addEventListener("click", (event) => {
@@ -157,6 +158,26 @@ function bindStaticControls() {
   byId("cuisineSelect").addEventListener("change", recommendFood);
   byId("foodSortSelect").addEventListener("change", recommendFood);
   byId("foodKeyword").addEventListener("input", debounce(recommendFood, 180));
+}
+
+function setupDiaryComposeToggle() {
+  const button = byId("diaryComposeToggle");
+  const panel = byId("diaryComposePanel");
+  if (!button || !panel) return;
+  toggleDiaryCompose(false);
+  button.addEventListener("click", () => toggleDiaryCompose());
+}
+
+function toggleDiaryCompose(expanded = null) {
+  const button = byId("diaryComposeToggle");
+  const panel = byId("diaryComposePanel");
+  if (!button || !panel) return;
+  const nextExpanded = expanded === null ? button.getAttribute("aria-expanded") !== "true" : Boolean(expanded);
+  button.setAttribute("aria-expanded", String(nextExpanded));
+  button.textContent = nextExpanded ? "收起表单" : "写日记";
+  panel.classList.toggle("diary-compose-collapsed", !nextExpanded);
+  panel.setAttribute("aria-hidden", String(!nextExpanded));
+  if ("inert" in panel) panel.inert = !nextExpanded;
 }
 
 function handleRecommendClick() {

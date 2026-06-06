@@ -8,6 +8,8 @@ $ScriptsDir = Join-Path $WebRoot "scripts"
 $Styles = Join-Path $WebRoot "styles.css"
 $SetupData = Join-Path $ScriptsDir "setup-data.ps1"
 $WebManifest = Join-Path $WebRoot "data\regions\manifest.json"
+$UtilsHeader = Join-Path $RepoRoot "cpp\include\tripsystem\utils.hpp"
+$DataManagerHeader = Join-Path $RepoRoot "cpp\include\tripsystem\data_manager.hpp"
 
 $IndexText = Get-Content -Raw -Encoding UTF8 -Path $Index
 $AppText = Get-Content -Raw -Encoding UTF8 -Path $App
@@ -17,6 +19,8 @@ $SplitScriptText = (Get-ChildItem -LiteralPath $ScriptsDir -Filter "*.js" | Sort
 $StyleText = Get-Content -Raw -Encoding UTF8 -Path $Styles
 $SetupText = Get-Content -Raw -Encoding UTF8 -Path $SetupData
 $ManifestText = Get-Content -Raw -Encoding UTF8 -Path $WebManifest
+$UtilsText = Get-Content -Raw -Encoding UTF8 -Path $UtilsHeader
+$DataManagerText = Get-Content -Raw -Encoding UTF8 -Path $DataManagerHeader
 
 $ExpectedScripts = @(
   "scripts/core.js",
@@ -50,6 +54,36 @@ if ($AppText -notmatch 'ROUTE_STRATEGIES\s*=\s*\{\s*distance:' -and $SplitScript
 foreach ($Needle in @("indoor-route-meta", "indoor-step-list", "indoor-visualization-note")) {
   if ($StyleText -notlike "*$Needle*" -and $AppText -notlike "*$Needle*" -and $SplitScriptText -notlike "*$Needle*") {
     throw "Indoor visualization hook missing: $Needle"
+  }
+}
+
+foreach ($Needle in @("routeQuickSummary", "route-quick-summary")) {
+  if ($IndexText -notlike "*$Needle*" -and $StyleText -notlike "*$Needle*" -and $SplitScriptText -notlike "*$Needle*") {
+    throw "Route time integration hook missing: $Needle"
+  }
+}
+
+foreach ($Needle in @("diaryComposeToggle", "diaryComposePanel", "toggleDiaryCompose", "diary-compose-collapsed")) {
+  if ($IndexText -notlike "*$Needle*" -and $StyleText -notlike "*$Needle*" -and $SplitScriptText -notlike "*$Needle*") {
+    throw "Diary compose collapse hook missing: $Needle"
+  }
+}
+
+foreach ($Needle in @("hero-carousel", "hero-crossfade")) {
+  if ($IndexText -notlike "*$Needle*" -and $StyleText -notlike "*$Needle*") {
+    throw "Homepage carousel hook missing: $Needle"
+  }
+}
+
+foreach ($Needle in @("indoorPlanViewport", "indoorZoomIn", "indoorZoomOut", "resetIndoorPlanView", "indoor-plan-pannable")) {
+  if ($IndexText -notlike "*$Needle*" -and $StyleText -notlike "*$Needle*" -and $SplitScriptText -notlike "*$Needle*") {
+    throw "Indoor map interaction hook missing: $Needle"
+  }
+}
+
+foreach ($Needle in @("jsonNumber() accepts signed integers and decimals", "JSON parser field coverage")) {
+  if ($UtilsText -notlike "*$Needle*" -and $DataManagerText -notlike "*$Needle*") {
+    throw "C++ JSON parser documentation missing: $Needle"
   }
 }
 

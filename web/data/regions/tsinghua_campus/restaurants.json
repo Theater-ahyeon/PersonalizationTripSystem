@@ -6,7 +6,7 @@
     "cuisine": "校园食堂",
     "rating": 4,
     "heat": 300,
-    "image": "web/assets/food/tsinghua_campus/cafeteria-lunch.jpg"
+    "image": "web/assets/food/tsinghua_campus/清华图书馆老馆周边食堂.png"
   },
   {
     "id": 2,
@@ -24,7 +24,7 @@
     "cuisine": "咖啡",
     "rating": 4.4,
     "heat": 482,
-    "image": "web/assets/food/tsinghua_campus/coffee.jpg"
+    "image": "web/assets/food/tsinghua_campus/荷塘咖啡小站.png"
   },
   {
     "id": 4,
@@ -33,7 +33,7 @@
     "cuisine": "简餐",
     "rating": 4.1,
     "heat": 573,
-    "image": "web/assets/food/tsinghua_campus/simple-meal.jpg"
+    "image": "web/assets/food/tsinghua_campus/近春园简餐点.png"
   },
   {
     "id": 5,
@@ -51,6 +51,6 @@
     "cuisine": "茶饮",
     "rating": 4.5,
     "heat": 755,
-    "image": "web/assets/food/tsinghua_campus/tea-drink.jpg"
+    "image": "web/assets/food/tsinghua_campus/艺术博物馆茶饮吧.png"
   }
 ]

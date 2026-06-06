@@ -98,7 +98,8 @@ function renderIndoorStepList(result, building, className = "indoor-step-list") 
   `;
 }
 
-function renderIndoorPlan(result, building = currentIndoorBuilding()) {
+function renderIndoorPlan(result, building = currentIndoorBuilding(), options = {}) {
+  const expandable = options.expandable !== false;
   const pathSet = new Set(result.path);
   const nodes = building.nodes.map((node) => {
     const left = Number(node.x || 50);
@@ -125,7 +126,7 @@ function renderIndoorPlan(result, building = currentIndoorBuilding()) {
     return `<span class="indoor-floor" style="top:${top}%">${escapeHtml(floor)}</span>`;
   }).join("");
   return `
-    <div class="indoor-plan indoor-plan-preview" aria-label="indoor route plan" data-indoor-expand>
+    <div class="indoor-plan${expandable ? " indoor-plan-preview" : ""}" aria-label="indoor route plan"${expandable ? " data-indoor-expand" : ""}>
       ${floorLabels}
       ${lines}
       ${nodes}
@@ -155,7 +156,18 @@ function openIndoorMapModal() {
     ${renderIndoorSource(building, true)}
     <p class="indoor-visualization-note">Current acceptance choice: indoor navigation is visualized in this panel and modal floor plan, not as a Leaflet map overlay.</p>
     <div class="indoor-modal-layout">
-      ${renderIndoorPlan(result, building)}
+      <div class="indoor-modal-map">
+        <div class="indoor-map-controls" aria-label="室内平面图控制">
+          <button id="indoorZoomOut" class="secondary-button icon-button" type="button" data-indoor-zoom="out" aria-label="缩小平面图">-</button>
+          <button id="indoorZoomIn" class="secondary-button icon-button" type="button" data-indoor-zoom="in" aria-label="放大平面图">+</button>
+          <button id="indoorZoomReset" class="secondary-button" type="button" data-indoor-zoom="reset">重置</button>
+        </div>
+        <div id="indoorPlanViewport" class="indoor-plan-viewport" data-indoor-plan-viewport>
+          <div class="indoor-plan-pannable" data-indoor-plan-pannable>
+            ${renderIndoorPlan(result, building, { expandable: false })}
+          </div>
+        </div>
+      </div>
       <div class="indoor-modal-side">
         <strong>${result.path?.length ? `路径距离 ${result.distance}m` : "可交互室内图"}</strong>
         ${result.path?.length ? renderIndoorRouteMeta(result) : ""}
@@ -164,6 +176,69 @@ function openIndoorMapModal() {
     </div>
   `;
   openModal("indoorMapModal");
+  setupIndoorPlanInteractions();
+  resetIndoorPlanView();
+}
+
+function setupIndoorPlanInteractions() {
+  const viewport = byId("indoorPlanViewport");
+  if (!viewport) return;
+
+  document.querySelectorAll("[data-indoor-zoom]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const action = button.dataset.indoorZoom;
+      if (action === "reset") {
+        resetIndoorPlanView();
+      } else {
+        zoomIndoorPlan(action === "in" ? 0.2 : -0.2);
+      }
+    });
+  });
+
+  viewport.addEventListener("pointerdown", (event) => {
+    if (event.target.closest("button, a")) return;
+    indoorPlanView.dragging = true;
+    indoorPlanView.startX = event.clientX;
+    indoorPlanView.startY = event.clientY;
+    indoorPlanView.originX = indoorPlanView.x;
+    indoorPlanView.originY = indoorPlanView.y;
+    viewport.classList.add("is-dragging");
+    viewport.setPointerCapture?.(event.pointerId);
+  });
+
+  viewport.addEventListener("pointermove", (event) => {
+    if (!indoorPlanView.dragging) return;
+    indoorPlanView.x = indoorPlanView.originX + event.clientX - indoorPlanView.startX;
+    indoorPlanView.y = indoorPlanView.originY + event.clientY - indoorPlanView.startY;
+    applyIndoorPlanView();
+  });
+
+  const endDrag = (event) => {
+    indoorPlanView.dragging = false;
+    viewport.classList.remove("is-dragging");
+    viewport.releasePointerCapture?.(event.pointerId);
+  };
+  viewport.addEventListener("pointerup", endDrag);
+  viewport.addEventListener("pointercancel", endDrag);
+}
+
+function zoomIndoorPlan(delta) {
+  indoorPlanView.scale = clamp(indoorPlanView.scale + delta, 1, 2.4);
+  applyIndoorPlanView();
+}
+
+function resetIndoorPlanView() {
+  indoorPlanView.scale = 1;
+  indoorPlanView.x = 0;
+  indoorPlanView.y = 0;
+  indoorPlanView.dragging = false;
+  applyIndoorPlanView();
+}
+
+function applyIndoorPlanView() {
+  const pannable = document.querySelector("[data-indoor-plan-pannable]");
+  if (!pannable) return;
+  pannable.style.transform = `translate(${indoorPlanView.x}px, ${indoorPlanView.y}px) scale(${indoorPlanView.scale})`;
 }
 
 function pathHasIndoorEdge(path, from, to) {
@@ -222,6 +297,24 @@ function runShortestPath() {
   }
   drawRoute(result.path, routeStrategyInfo().color);
   summarizeRoute(routeStrategyInfo().label, result);
+}
+
+function updateRouteQuickSummary(details = null) {
+  const target = byId("routeQuickSummary");
+  if (!target) return;
+  if (!details) {
+    target.innerHTML = `
+      <span>路线待生成</span>
+      <strong>选择起终点后查看距离和耗时</strong>
+    `;
+    return;
+  }
+  const modeLabel = details.mode || (state.mode === "bike" ? "骑行" : "步行");
+  target.innerHTML = `
+    <span>${escapeHtml(details.title || "路线耗时")}</span>
+    <strong>${escapeHtml(modeLabel)} · ${Number(details.distance || 0).toFixed(1)} 米 · 约 ${Number(details.minutes || 0).toFixed(1)} 分钟</strong>
+    <small>${escapeHtml(details.strategy || routeStrategyInfo().label)}</small>
+  `;
 }
 
 function runMultiStopRoute() {
@@ -495,9 +588,15 @@ function summarizeRoute(title, result) {
   const goal = pathNodes[pathNodes.length - 1];
   const keyPoi = unique(poiNodes.map((node) => node.name));
   const strategy = routeStrategyInfo(result.strategy);
+  updateRouteQuickSummary({
+    title,
+    strategy: strategy.label,
+    distance: result.distance,
+    minutes: result.minutes
+  });
   byId("route-summary").innerHTML = `
     <p class="eyebrow">${escapeHtml(title)}</p>
-    <h3>${state.mode === "bike" ? "骑行" : "步行"} · 总距离 ${result.distance.toFixed(1)} 米 · 约 ${result.minutes.toFixed(1)} 分钟</h3>
+    <h3>${escapeHtml(start?.name || "-")} → ${escapeHtml(goal?.name || "-")}</h3>
     <p>${escapeHtml(strategy.algorithm)}，沿途经过 ${transitionCount} 个连接点。</p>
     <p>起点：${escapeHtml(start?.name || "-")}；终点：${escapeHtml(goal?.name || "-")}。</p>
     <ol>${keyPoi.map((name) => `<li>${escapeHtml(name)}</li>`).join("")}</ol>
@@ -506,9 +605,15 @@ function summarizeRoute(title, result) {
 
 function summarizeMultiRoute(order, tsp) {
   const strategy = routeStrategyInfo(tsp.strategy);
+  updateRouteQuickSummary({
+    title: "多点游览",
+    strategy: strategy.label,
+    distance: tsp.totalDistance,
+    minutes: tsp.totalMinutes
+  });
   byId("route-summary").innerHTML = `
     <p class="eyebrow">多点游览顺序</p>
-    <h3>${state.mode === "bike" ? "骑行" : "步行"} · 总距离 ${tsp.totalDistance.toFixed(1)} 米 · 约 ${tsp.totalMinutes.toFixed(1)} 分钟</h3>
+    <h3>${state.mode === "bike" ? "骑行" : "步行"} · ${order.length} 个目的地</h3>
     <p>${escapeHtml(strategy.algorithm)}，按更顺路的顺序串联多个目的地。</p>
     <ol>${order.map((leg) => {
       const from = findNode(leg.from)?.name || leg.from;
@@ -519,6 +624,7 @@ function summarizeMultiRoute(order, tsp) {
 }
 
 function summarize(message) {
+  updateRouteQuickSummary(null);
   byId("route-summary").innerHTML = `<p class="eyebrow">路线提示</p><h3>${escapeHtml(message)}</h3>`;
 }
 

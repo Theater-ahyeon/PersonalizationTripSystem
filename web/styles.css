@@ -4094,3 +4094,163 @@ textarea {
 .destination-grid .card-actions {
   margin-top: auto;
 }
+
+/* Remaining-task polish: local route timing, diary collapse, hero carousel, and pannable indoor plans. */
+.route-quick-summary {
+  display: grid;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 12px 14px;
+  border: 1px solid rgba(0, 88, 188, 0.14);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.88);
+  color: #414755;
+}
+
+.route-quick-summary span,
+.route-quick-summary small {
+  color: #647085;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.route-quick-summary strong {
+  color: #0f2742;
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+.diary-compose-toggle {
+  width: min(220px, 100%);
+  justify-self: start;
+}
+
+.diary-compose-panel {
+  display: grid;
+  gap: 10px;
+  max-height: 1800px;
+  overflow: hidden;
+  opacity: 1;
+  transform: translateY(0);
+  transition: max-height 0.34s ease, opacity 0.24s ease, transform 0.24s ease, margin-top 0.24s ease;
+}
+
+.diary-compose-panel.diary-compose-collapsed {
+  max-height: 0;
+  margin-top: 0;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-8px);
+}
+
+.hero-carousel {
+  display: block !important;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+}
+
+.hero-carousel img,
+.hero-carousel img:nth-child(1),
+.hero-carousel img:nth-child(2),
+.hero-carousel img:nth-child(3),
+.hero-carousel img:nth-child(4) {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: none;
+  opacity: 0;
+  animation: hero-crossfade 18s ease-in-out infinite;
+}
+
+.hero-carousel img:nth-child(2) { animation-delay: 4.5s; }
+.hero-carousel img:nth-child(3) { animation-delay: 9s; }
+.hero-carousel img:nth-child(4) { animation-delay: 13.5s; }
+
+@keyframes hero-crossfade {
+  0% { opacity: 0; transform: scale(1.03); }
+  8% { opacity: 1; transform: scale(1); }
+  28% { opacity: 1; transform: scale(1.015); }
+  38% { opacity: 0; transform: scale(1.035); }
+  100% { opacity: 0; transform: scale(1.035); }
+}
+
+.indoor-edge.active {
+  background: #b45309;
+  box-shadow: 0 6px 16px rgba(180, 83, 9, 0.24);
+}
+
+.indoor-node.active {
+  border-color: #b45309;
+  background: #b45309;
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(180, 83, 9, 0.26);
+}
+
+.indoor-modal-map {
+  min-width: 0;
+}
+
+.indoor-map-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.indoor-map-controls .icon-button {
+  min-width: 40px;
+  min-height: 40px;
+  padding: 0;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.indoor-plan-viewport {
+  position: relative;
+  min-height: 460px;
+  overflow: hidden;
+  border: 1px solid rgba(193, 198, 215, 0.72);
+  border-radius: 14px;
+  background: #f8fbff;
+  cursor: grab;
+  touch-action: none;
+}
+
+.indoor-plan-viewport.is-dragging {
+  cursor: grabbing;
+}
+
+.indoor-plan-pannable {
+  width: 100%;
+  height: 100%;
+  min-height: 460px;
+  transform-origin: center center;
+  transition: transform 0.12s ease-out;
+}
+
+.indoor-plan-viewport.is-dragging .indoor-plan-pannable {
+  transition: none;
+}
+
+.indoor-plan-pannable .indoor-plan {
+  min-height: 460px;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+@media (max-width: 640px) {
+  .diary-compose-toggle {
+    width: 100%;
+  }
+
+  .indoor-map-controls {
+    justify-content: stretch;
+  }
+
+  .indoor-map-controls button {
+    flex: 1 1 90px;
+  }
+}

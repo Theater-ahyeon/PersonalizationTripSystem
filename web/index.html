@@ -35,8 +35,11 @@
     <main class="main-stage">
       <section id="recommendView" class="view-panel active explore-view" aria-label="探索与推荐">
         <section class="hero-section">
-          <div class="hero-media" aria-hidden="true">
+          <div class="hero-media hero-carousel" aria-hidden="true">
             <img src="./assets/spots/real/summer-long-corridor-commons.jpg" alt="">
+            <img src="./assets/spots/real/tower-buddhist-incense.jpg" alt="">
+            <img src="./assets/spots/real/tsinghua-library.jpg" alt="">
+            <img src="./assets/spots/real/summer-palace/suzhou-street.jpg" alt="">
           </div>
           <div class="hero-content">
             <h1>按你的方式探索下一段旅程</h1>
@@ -126,6 +129,10 @@
                 <option value="recommend">推荐路线</option>
               </select></label>
               <button id="routeButton" type="button" class="primary-button full">生成游览路线</button>
+              <div id="routeQuickSummary" class="route-quick-summary" aria-live="polite">
+                <span>路线待生成</span>
+                <strong>选择起终点后查看距离和耗时</strong>
+              </div>
             </div>
 
             <div class="planner-card glass-panel">
@@ -206,32 +213,35 @@
             <p>上传照片、整理文字，让一次游览变成可浏览、可交流的旅行故事。</p>
           </div>
           <div class="upload-panel glass-panel">
-            <div class="diary-compose">
-              <div class="form-grid">
-                <label>日记标题<input id="diaryTitleInput" type="text" placeholder="例如：长廊和昆明湖半日游"></label>
-                <label>目的地<input id="diaryDestinationInput" type="text" placeholder="例如：颐和园"></label>
+            <button id="diaryComposeToggle" class="secondary-button diary-compose-toggle" type="button" aria-expanded="false" aria-controls="diaryComposePanel">写日记</button>
+            <div id="diaryComposePanel" class="diary-compose-panel diary-compose-collapsed" aria-hidden="true">
+              <div class="diary-compose">
+                <div class="form-grid">
+                  <label>日记标题<input id="diaryTitleInput" type="text" placeholder="例如：长廊和昆明湖半日游"></label>
+                  <label>目的地<input id="diaryDestinationInput" type="text" placeholder="例如：颐和园"></label>
+                </div>
+                <label>正文<textarea id="diaryContentInput" rows="4" placeholder="记录文字、照片说明、视频片段描述等"></textarea></label>
+                <div class="form-grid">
+                  <label>标签<input id="diaryTagsInput" type="text" placeholder="建筑,湖景,摄影"></label>
+                  <label>媒体说明<input id="diaryMediaInput" type="text" placeholder="照片/视频文件名或描述"></label>
+                </div>
+                <label>图片/视频<input id="diaryMediaFileInput" type="file" accept="image/*,video/*" multiple></label>
+                <button id="diaryCreateButton" class="primary-button" type="button">保存日记</button>
+                <button id="diaryExportButton" class="secondary-button" type="button">导出日记 JSON</button>
+                <p class="diary-export-note">导出后可同步到项目数据目录，方便继续维护日记内容。</p>
               </div>
-              <label>正文<textarea id="diaryContentInput" rows="4" placeholder="记录文字、照片说明、视频片段描述等"></textarea></label>
-              <div class="form-grid">
-                <label>标签<input id="diaryTagsInput" type="text" placeholder="建筑,湖景,摄影"></label>
-                <label>媒体说明<input id="diaryMediaInput" type="text" placeholder="照片/视频文件名或描述"></label>
-              </div>
-              <label>图片/视频<input id="diaryMediaFileInput" type="file" accept="image/*,video/*" multiple></label>
-              <button id="diaryCreateButton" class="primary-button" type="button">保存日记</button>
-              <button id="diaryExportButton" class="secondary-button" type="button">导出日记 JSON</button>
-              <p class="diary-export-note">导出后可同步到项目数据目录，方便继续维护日记内容。</p>
-            </div>
-            <button id="aigcDraftButton" class="secondary-button" type="button">填入日记草稿</button>
-            <button id="aigcAnimationButton" class="primary-button" type="button">AI 生成分镜脚本</button>
-            <button id="aigcImagesButton" class="secondary-button" type="button">AI 分镜配图</button>
-            <button id="aigcVideoButton" class="secondary-button" type="button">AI 旅行视频</button>
-            <button id="aigcPipelineButton" class="primary-button" type="button">一键生成（脚本+图+视频）</button>
-            <p id="aigcServiceStatus" class="aigc-service-status">正在检测 AIGC 服务…</p>
-            <div id="aigcStoryboard" class="storyboard-output">
-              <div class="storyboard-placeholder">
-                <div class="storyboard-icon">🎬</div>
-                <p>旅行故事板</p>
-                <p class="storyboard-hint">填写日记后，可调用千问 + 万相生成真实分镜、配图与短视频；默认使用免费额度更高的模型组合，未配置 API 时自动回退本地模拟。</p>
+              <button id="aigcDraftButton" class="secondary-button" type="button">填入日记草稿</button>
+              <button id="aigcAnimationButton" class="primary-button" type="button">AI 生成分镜脚本</button>
+              <button id="aigcImagesButton" class="secondary-button" type="button">AI 分镜配图</button>
+              <button id="aigcVideoButton" class="secondary-button" type="button">AI 旅行视频</button>
+              <button id="aigcPipelineButton" class="primary-button" type="button">一键生成（脚本+图+视频）</button>
+              <p id="aigcServiceStatus" class="aigc-service-status">正在检测 AIGC 服务…</p>
+              <div id="aigcStoryboard" class="storyboard-output">
+                <div class="storyboard-placeholder">
+                  <div class="storyboard-icon">🎬</div>
+                  <p>旅行故事板</p>
+                  <p class="storyboard-hint">填写日记后，可调用千问 + 万相生成真实分镜、配图与短视频；默认使用免费额度更高的模型组合，未配置 API 时自动回退本地模拟。</p>
+                </div>
               </div>
             </div>
           </div>

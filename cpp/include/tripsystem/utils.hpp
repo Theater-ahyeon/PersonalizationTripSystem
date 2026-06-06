@@ -110,6 +110,9 @@ inline std::string jsonString(const std::string& obj, const std::string& key, co
 }
 
 inline double jsonNumber(const std::string& obj, const std::string& key, double def = 0.0) {
+    // jsonNumber() accepts signed integers and decimals such as -1, 0, 12 and
+    // 12.5. Scientific notation and quoted numbers are outside the current
+    // project data shape; add them here before introducing such fields.
     std::regex re("\\\"" + key + "\\\"\\s*:\\s*(-?[0-9]+(?:\\.[0-9]+)?)");
     std::smatch m;
     if (std::regex_search(obj, m, re)) return std::stod(m[1]);
@@ -132,6 +135,9 @@ inline std::vector<std::string> jsonStringArray(const std::string& obj, const st
 }
 
 inline std::vector<int> jsonNumberArray(const std::string& obj, const std::string& key) {
+    // Parses flat arrays of integer IDs only. Decimal arrays, nulls and nested
+    // arrays are intentionally ignored so route/user history fields remain
+    // predictable while this project avoids a third-party JSON dependency.
     std::regex arrayRe("\\\"" + key + "\\\"\\s*:\\s*\\[([^\\]]*)\\]");
     std::smatch m;
     if (!std::regex_search(obj, m, arrayRe)) return {};

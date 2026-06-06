@@ -314,6 +314,16 @@ const state = {
 
 let lastIndoorRoute = null;
 let lastIndoorBuilding = null;
+let indoorPlanView = {
+  scale: 1,
+  x: 0,
+  y: 0,
+  dragging: false,
+  startX: 0,
+  startY: 0,
+  originX: 0,
+  originY: 0
+};
 
 const byId = (id) => document.getElementById(id);
 
