@@ -5,12 +5,13 @@ $RepoRoot = Resolve-Path (Join-Path $WebRoot "..")
 $Index = Join-Path $WebRoot "index.html"
 $Styles = Join-Path $WebRoot "styles.css"
 $App = Join-Path $WebRoot "app.js"
+$ScriptsDir = Join-Path $WebRoot "scripts"
 $Assets = Join-Path $WebRoot "assets\spots"
 $AttributionsPath = Join-Path $WebRoot "assets\ATTRIBUTIONS.md"
 $CppData = Join-Path $RepoRoot "cpp\data"
 $WebData = Join-Path $RepoRoot "web\data"
 
-foreach ($Path in @($Index, $Styles, $App, $Assets, $AttributionsPath, $CppData, $WebData)) {
+foreach ($Path in @($Index, $Styles, $App, $ScriptsDir, $Assets, $AttributionsPath, $CppData, $WebData)) {
   if (-not (Test-Path -LiteralPath $Path)) { throw "Missing required path: $Path" }
 }
 
@@ -225,7 +226,11 @@ foreach ($RequiredType in $RequiredFacilityTypes) {
 
 $IndexText = Get-Content -Raw -Encoding UTF8 -Path $Index
 $StyleText = Get-Content -Raw -Encoding UTF8 -Path $Styles
-$AppText = Get-Content -Raw -Encoding UTF8 -Path $App
+$ScriptTexts = @((Get-Content -Raw -Encoding UTF8 -Path $App))
+Get-ChildItem -LiteralPath $ScriptsDir -Filter "*.js" | Sort-Object Name | ForEach-Object {
+  $ScriptTexts += Get-Content -Raw -Encoding UTF8 -Path $_.FullName
+}
+$AppText = $ScriptTexts -join "`n"
 
 foreach ($Needle in @("mapRegionSelect", "datasetMapButton", "MAP_REGIONS", "全国视野", "上海", "广州", "深圳", "成都", "西安", "杭州", "武汉", "重庆")) {
   if ($IndexText -like "*$Needle*" -or $AppText -like "*$Needle*") {

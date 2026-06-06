@@ -72,7 +72,16 @@ struct PathCmp {
 struct SpotPathResult {
     bool found = false;
     double total = 0;
+    double cost = 0;
+    double minutes = 0;
+    std::string strategy = "distance";
     std::vector<int> nodes;
+};
+
+struct PathSegmentMetric {
+    double cost = 0;
+    double distance = 0;
+    double minutes = 0;
 };
 
 class RecommendService {
@@ -153,8 +162,9 @@ private:
             return;
         }
         bool bike = readBikeMode();
+        std::string strategy = readRouteStrategy();
 
-        SpotPathResult path = shortestSpotPath(data, start, goal, bike);
+        SpotPathResult path = shortestSpotPath(data, start, goal, bike, strategy);
         if (!path.found) {
             std::cout << "未找到路径。\n";
             return;
@@ -190,6 +200,7 @@ private:
             }
         }
         bool bike = readBikeMode();
+        std::string strategy = readRouteStrategy();
 
         std::vector<int> points;
         points.push_back(start);
@@ -204,16 +215,16 @@ private:
             for (size_t j = 0; j < m; ++j) {
                 if (i == j) {
                     dist[i][j] = 0;
-                    paths[i][j] = {true, 0, {points[i]}};
+                    paths[i][j] = {true, 0, 0, 0, strategy, {points[i]}};
                     continue;
                 }
-                paths[i][j] = shortestSpotPath(data, points[i], points[j], bike);
+                paths[i][j] = shortestSpotPath(data, points[i], points[j], bike, strategy);
                 if (!paths[i][j].found) {
                     std::cout << "存在不可达点对: " << spotName(data, points[i])
                               << " -> " << spotName(data, points[j]) << "\n";
                     return;
                 }
-                dist[i][j] = paths[i][j].total;
+                dist[i][j] = paths[i][j].cost;
             }
         }
 
@@ -260,34 +271,45 @@ private:
         }
         std::reverse(order.begin(), order.end());
 
-        std::cout << "TSP multi-stop route (" << modeName(bike) << ")\n";
+        std::cout << "TSP multi-stop route (" << modeName(bike)
+                  << ", strategy=" << strategy << ")\n";
         std::cout << "Visit order: " << spotName(data, start);
         for (int idx : order) std::cout << " -> " << spotName(data, targets[idx]);
         std::cout << "\n";
 
         double total = 0;
+        double totalMinutes = 0;
+        double totalCost = 0;
         int fromIndex = 0;
         int segment = 1;
         for (int targetIndex : order) {
             int toIndex = targetIndex + 1;
             const SpotPathResult& leg = paths[fromIndex][toIndex];
             total += leg.total;
+            totalMinutes += leg.minutes;
+            totalCost += leg.cost;
             std::cout << "Segment " << segment++ << ": "
                       << spotName(data, points[fromIndex]) << " -> "
                       << spotName(data, points[toIndex])
                       << ", distance=" << std::fixed << std::setprecision(1)
-                      << leg.total << " meters, cumulative=" << total << " meters\n";
+                      << leg.total << " meters, minutes=" << leg.minutes
+                      << ", strategy=" << strategy
+                      << ", cumulative=" << total << " meters\n";
             printSpotPath(data, leg, bike, "Spot shortest path segment");
             touchSpotHeat(data, leg.nodes);
             fromIndex = toIndex;
         }
         std::cout << "TSP multi-stop total=" << std::fixed << std::setprecision(1)
-                  << total << " meters\n";
+                  << total << " meters, minutes=" << totalMinutes
+                  << ", cost=" << totalCost
+                  << ", strategy=" << strategy << "\n";
     }
 
-    static SpotPathResult shortestSpotPath(DataManager& data, int start, int goal, bool bike) {
+    static SpotPathResult shortestSpotPath(DataManager& data, int start, int goal, bool bike, const std::string& strategy = "distance") {
+        if (start == goal) return {true, 0, 0, 0, strategy, {start}};
         HashMap<int, double> dist;
         HashMap<int, int> prev;
+        HashMap<int, PathSegmentMetric> prevMetric;
         MinHeap<PathState, PathCmp> heap;
         dist.insert(start, 0);
         heap.push({start, 0, 0});
@@ -299,12 +321,13 @@ private:
             const auto* edges = data.graph.neighbors(cur.node);
             if (!edges) continue;
             for (const auto& e : *edges) {
-                double w = bike ? e.distBike : e.distWalk;
-                double nd = cur.dist + w;
+                PathSegmentMetric metric = roadMetric(e, bike, strategy);
+                double nd = cur.dist + metric.cost;
                 double* old = dist.get(e.to);
                 if (!old || nd < *old) {
                     dist.insert(e.to, nd);
                     prev.insert(e.to, cur.node);
+                    prevMetric.insert(e.to, metric);
                     heap.push({e.to, nd, nd});
                 }
             }
@@ -313,15 +336,25 @@ private:
         double* total = dist.get(goal);
         if (!total) return {};
         std::vector<int> path;
+        std::vector<PathSegmentMetric> metrics;
         for (int x = goal; x != start;) {
             path.push_back(x);
+            PathSegmentMetric* metric = prevMetric.get(x);
+            if (metric) metrics.push_back(*metric);
             int* p = prev.get(x);
             if (!p) return {};
             x = *p;
         }
         path.push_back(start);
         std::reverse(path.begin(), path.end());
-        return {true, *total, path};
+        std::reverse(metrics.begin(), metrics.end());
+        double distance = 0;
+        double minutes = 0;
+        for (const auto& metric : metrics) {
+            distance += metric.distance;
+            minutes += metric.minutes;
+        }
+        return {true, distance, *total, minutes, strategy, path};
     }
 
     void planOsmPath(DataManager& data) {
@@ -347,6 +380,7 @@ private:
         int start = readInt("起点 OSM node id: ");
         int goal = readInt("终点 OSM node id: ");
         bool bike = readBikeMode();
+        std::string strategy = readRouteStrategy();
         std::string mode = modeName(bike);
 
         OsmNode* startNode = data.findOsmNode(start);
@@ -358,9 +392,10 @@ private:
 
         HashMap<int, double> dist;
         HashMap<int, int> prev;
+        HashMap<int, PathSegmentMetric> prevMetric;
         MinHeap<PathState, PathCmp> heap;
         dist.insert(start, 0);
-        heap.push({start, 0, haversine(*startNode, *goalNode)});
+        heap.push({start, 0, heuristicCost(*startNode, *goalNode, mode, strategy)});
 
         while (!heap.empty()) {
             auto cur = heap.pop();
@@ -374,12 +409,14 @@ private:
                 if (!edgeSupportsMode(e, mode)) continue;
                 OsmNode* next = data.findOsmNode(e.to);
                 if (!next) continue;
-                double nd = cur.dist + e.distance;
+                PathSegmentMetric metric = osmEdgeMetric(e, mode, strategy);
+                double nd = cur.dist + metric.cost;
                 double* old = dist.get(e.to);
                 if (!old || nd < *old) {
                     dist.insert(e.to, nd);
                     prev.insert(e.to, cur.node);
-                    heap.push({e.to, nd, nd + haversine(*next, *goalNode)});
+                    prevMetric.insert(e.to, metric);
+                    heap.push({e.to, nd, nd + heuristicCost(*next, *goalNode, mode, strategy)});
                 }
             }
         }
@@ -391,8 +428,11 @@ private:
         }
 
         std::vector<int> path;
+        std::vector<PathSegmentMetric> metrics;
         for (int x = goal; x != start;) {
             path.push_back(x);
+            PathSegmentMetric* metric = prevMetric.get(x);
+            if (metric) metrics.push_back(*metric);
             int* p = prev.get(x);
             if (!p) {
                 std::cout << "OSM 路径回溯失败。\n";
@@ -402,27 +442,42 @@ private:
         }
         path.push_back(start);
         std::reverse(path.begin(), path.end());
-        printOsmPath(data, path, *total, mode);
+        std::reverse(metrics.begin(), metrics.end());
+        double distance = 0;
+        double minutes = 0;
+        for (const auto& metric : metrics) {
+            distance += metric.distance;
+            minutes += metric.minutes;
+        }
+        printOsmPath(data, path, distance, *total, minutes, mode, strategy);
     }
 
     static void printSpotPath(DataManager& data, const SpotPathResult& path, bool bike, const std::string& title) {
-        std::cout << title << " (" << modeName(bike) << "), total="
-                  << std::fixed << std::setprecision(1) << path.total << " meters:\n";
+        std::cout << title << " (" << modeName(bike)
+                  << ", strategy=" << path.strategy
+                  << "), total=" << std::fixed << std::setprecision(1) << path.total
+                  << " meters, minutes=" << path.minutes
+                  << ", cost=" << path.cost << ":\n";
         if (path.nodes.empty()) return;
-        std::cout << "  0. " << spotName(data, path.nodes.front()) << " cumulative=0.0 meters\n";
+        std::cout << "  0. " << spotName(data, path.nodes.front())
+                  << " cumulative=0.0 meters, minutes=0.0\n";
         double cumulative = 0;
+        double cumulativeMinutes = 0;
         for (size_t i = 1; i < path.nodes.size(); ++i) {
             int from = path.nodes[i - 1];
             int to = path.nodes[i];
             const Road* road = data.graph.edgeBetween(from, to);
-            double segment = road ? (bike ? road->distBike : road->distWalk) : 0;
-            cumulative += segment;
+            PathSegmentMetric metric = road ? roadMetric(*road, bike, path.strategy) : PathSegmentMetric{};
+            cumulative += metric.distance;
+            cumulativeMinutes += metric.minutes;
             std::cout << "  " << i << ". " << spotName(data, from)
                       << " -> " << spotName(data, to)
                       << " via road#" << from << "-" << to
                       << " mode=" << modeName(bike)
-                      << " segment=" << segment
-                      << " cumulative=" << cumulative << " meters\n";
+                      << " segment=" << metric.distance
+                      << " minutes=" << metric.minutes
+                      << " cumulative=" << cumulative << " meters"
+                      << " cumulative_minutes=" << cumulativeMinutes << "\n";
         }
     }
 
@@ -454,6 +509,62 @@ private:
         return mode == "bike";
     }
 
+    static std::string readRouteStrategy() {
+        std::cout << "Route strategy distance/time/recommend: ";
+        std::string strategy;
+        std::getline(std::cin, strategy);
+        return normalizeRouteStrategy(strategy);
+    }
+
+    static std::string normalizeRouteStrategy(std::string strategy) {
+        strategy = trim(strategy);
+        if (strategy == "2") return "time";
+        if (strategy == "3") return "recommend";
+        if (strategy == "time" || strategy == "recommend") return strategy;
+        return "distance";
+    }
+
+    static PathSegmentMetric roadMetric(const Road& road, bool bike, const std::string& strategy) {
+        double distance = bike ? road.distBike : road.distWalk;
+        double baseMetersPerMinute = bike ? 180.0 : 75.0;
+        double speedFactor = 0.82 + stableUnit("speed:" + std::to_string(road.from) + ":" + std::to_string(road.to)) * 0.46;
+        double minutes = distance / std::max(1.0, baseMetersPerMinute * speedFactor);
+        double scenicPenalty = 0.72 + stableUnit("recommend:" + std::to_string(road.from) + ":" + std::to_string(road.to)) * 0.72;
+        double cost = distance;
+        if (strategy == "time") cost = minutes;
+        else if (strategy == "recommend") cost = minutes * 0.7 + (distance / 100.0) * scenicPenalty;
+        return {cost, distance, minutes};
+    }
+
+    static PathSegmentMetric osmEdgeMetric(const OsmEdge& edge, const std::string& mode, const std::string& strategy) {
+        double distance = edge.distance;
+        double baseMetersPerMinute = mode == "bike" ? 180.0 : 75.0;
+        double speedFactor = 0.82 + stableUnit("osm-speed:" + std::to_string(edge.from) + ":" + std::to_string(edge.to) + edge.roadName) * 0.46;
+        double minutes = distance / std::max(1.0, baseMetersPerMinute * speedFactor);
+        double scenicPenalty = 0.72 + stableUnit("osm-recommend:" + edge.roadName + ":" + std::to_string(edge.from)) * 0.72;
+        double cost = distance;
+        if (strategy == "time") cost = minutes;
+        else if (strategy == "recommend") cost = minutes * 0.7 + (distance / 100.0) * scenicPenalty;
+        return {cost, distance, minutes};
+    }
+
+    static double heuristicCost(const OsmNode& a, const OsmNode& b, const std::string& mode, const std::string& strategy) {
+        double straight = haversine(a, b);
+        if (strategy == "distance") return straight;
+        double baseMetersPerMinute = mode == "bike" ? 180.0 : 75.0;
+        if (strategy == "time") return straight / (baseMetersPerMinute * 1.28);
+        return straight / 120.0;
+    }
+
+    static double stableUnit(const std::string& key) {
+        unsigned int hash = 2166136261u;
+        for (unsigned char c : key) {
+            hash ^= c;
+            hash *= 16777619u;
+        }
+        return static_cast<double>(hash % 10000u) / 10000.0;
+    }
+
     static std::string modeName(bool bike) {
         return bike ? "bike" : "walk";
     }
@@ -472,29 +583,36 @@ private:
         return nullptr;
     }
 
-    static void printOsmPath(DataManager& data, const std::vector<int>& path, double total, const std::string& mode) {
-        std::cout << "OSM A* path (" << mode << "), total="
-                  << std::fixed << std::setprecision(1) << total << " meters:\n";
+    static void printOsmPath(DataManager& data, const std::vector<int>& path, double total, double cost, double minutes, const std::string& mode, const std::string& strategy) {
+        std::cout << "OSM A* path (" << mode
+                  << ", strategy=" << strategy
+                  << "), total=" << std::fixed << std::setprecision(1) << total
+                  << " meters, minutes=" << minutes
+                  << ", cost=" << cost << ":\n";
         double cumulative = 0;
+        double cumulativeMinutes = 0;
         for (size_t i = 0; i < path.size(); ++i) {
             OsmNode* n = data.findOsmNode(path[i]);
             std::cout << "  " << i << ". ";
             if (i == 0) {
                 if (n) std::cout << n->id << " " << n->name;
                 else std::cout << path[i];
-                std::cout << " cumulative=0.0 meters\n";
+                std::cout << " cumulative=0.0 meters, minutes=0.0\n";
                 continue;
             }
             const OsmEdge* edge = findOsmEdge(data, path[i - 1], path[i], mode);
-            double segment = edge ? edge->distance : 0;
-            cumulative += segment;
+            PathSegmentMetric metric = edge ? osmEdgeMetric(*edge, mode, strategy) : PathSegmentMetric{};
+            cumulative += metric.distance;
+            cumulativeMinutes += metric.minutes;
             OsmNode* prevNode = data.findOsmNode(path[i - 1]);
             std::cout << (prevNode ? prevNode->name : std::to_string(path[i - 1]))
                       << " -> " << (n ? n->name : std::to_string(path[i]))
                       << " via " << (edge ? edge->roadName : "unknown road")
                       << " mode=" << mode
-                      << " segment=" << segment
-                      << " cumulative=" << cumulative << " meters\n";
+                      << " segment=" << metric.distance
+                      << " minutes=" << metric.minutes
+                      << " cumulative=" << cumulative << " meters"
+                      << " cumulative_minutes=" << cumulativeMinutes << "\n";
         }
     }
 

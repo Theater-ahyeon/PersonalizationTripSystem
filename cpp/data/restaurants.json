@@ -5,7 +5,8 @@
     "near_spot_id": 5,
     "cuisine": "宫廷菜",
     "rating": 4.8,
-    "heat": 1260
+    "heat": 1260,
+    "image": "web/assets/food/summer_palace/peking-duck.jpg"
   },
   {
     "id": 2,
@@ -13,7 +14,8 @@
     "near_spot_id": 3,
     "cuisine": "咖啡",
     "rating": 4.6,
-    "heat": 1035
+    "heat": 1035,
+    "image": "web/assets/food/summer_palace/latte.jpg"
   },
   {
     "id": 3,
@@ -21,7 +23,8 @@
     "near_spot_id": 8,
     "cuisine": "小吃",
     "rating": 4.5,
-    "heat": 990
+    "heat": 990,
+    "image": "web/assets/food/summer_palace/baozi.jpg"
   },
   {
     "id": 4,
@@ -29,7 +32,8 @@
     "near_spot_id": 4,
     "cuisine": "茶点",
     "rating": 4.3,
-    "heat": 812
+    "heat": 812,
+    "image": "web/assets/food/summer_palace/chinese-tea.jpg"
   },
   {
     "id": 5,
@@ -37,7 +41,8 @@
     "near_spot_id": 5,
     "cuisine": "简餐",
     "rating": 4.2,
-    "heat": 775
+    "heat": 775,
+    "image": "web/assets/food/summer_palace/light-salad.jpg"
   },
   {
     "id": 6,
@@ -45,7 +50,8 @@
     "near_spot_id": 6,
     "cuisine": "茶饮",
     "rating": 4.1,
-    "heat": 690
+    "heat": 690,
+    "image": "web/assets/food/summer_palace/chinese-tea.jpg"
   },
   {
     "id": 7,
@@ -53,7 +59,8 @@
     "near_spot_id": 7,
     "cuisine": "甜品",
     "rating": 4.4,
-    "heat": 735
+    "heat": 735,
+    "image": "web/assets/food/summer_palace/tanghulu.jpg"
   },
   {
     "id": 8,
@@ -61,7 +68,8 @@
     "near_spot_id": 10,
     "cuisine": "茶饮",
     "rating": 4.5,
-    "heat": 860
+    "heat": 860,
+    "image": "web/assets/food/summer_palace/chinese-tea.jpg"
   },
   {
     "id": 9,
@@ -69,15 +77,17 @@
     "near_spot_id": 12,
     "cuisine": "茶点",
     "rating": 4.4,
-    "heat": 704
+    "heat": 704,
+    "image": "web/assets/food/summer_palace/chinese-tea.jpg"
   },
   {
     "id": 10,
     "name": "昆明湖东堤补给站",
     "near_spot_id": 11,
     "cuisine": "简餐",
-    "rating": 4.0,
-    "heat": 650
+    "rating": 4,
+    "heat": 650,
+    "image": "web/assets/food/summer_palace/light-salad.jpg"
   },
   {
     "id": 11,
@@ -85,7 +95,8 @@
     "near_spot_id": 13,
     "cuisine": "甜品",
     "rating": 4.2,
-    "heat": 780
+    "heat": 780,
+    "image": "web/assets/food/summer_palace/tanghulu.jpg"
   },
   {
     "id": 12,
@@ -93,7 +104,8 @@
     "near_spot_id": 14,
     "cuisine": "轻食",
     "rating": 4.1,
-    "heat": 620
+    "heat": 620,
+    "image": "web/assets/food/summer_palace/light-salad.jpg"
   },
   {
     "id": 13,
@@ -101,7 +113,8 @@
     "near_spot_id": 15,
     "cuisine": "咖啡",
     "rating": 4.3,
-    "heat": 702
+    "heat": 702,
+    "image": "web/assets/food/summer_palace/latte.jpg"
   },
   {
     "id": 14,
@@ -109,7 +122,8 @@
     "near_spot_id": 16,
     "cuisine": "茶饮",
     "rating": 4.6,
-    "heat": 930
+    "heat": 930,
+    "image": "web/assets/food/summer_palace/chinese-tea.jpg"
   },
   {
     "id": 15,
@@ -117,7 +131,8 @@
     "near_spot_id": 17,
     "cuisine": "咖啡",
     "rating": 4.4,
-    "heat": 845
+    "heat": 845,
+    "image": "web/assets/food/summer_palace/latte.jpg"
   },
   {
     "id": 16,
@@ -125,7 +140,8 @@
     "near_spot_id": 18,
     "cuisine": "简餐",
     "rating": 4.2,
-    "heat": 668
+    "heat": 668,
+    "image": "web/assets/food/summer_palace/light-salad.jpg"
   },
   {
     "id": 17,
@@ -133,15 +149,17 @@
     "near_spot_id": 19,
     "cuisine": "小吃",
     "rating": 4.1,
-    "heat": 588
+    "heat": 588,
+    "image": "web/assets/food/summer_palace/baozi.jpg"
   },
   {
     "id": 18,
     "name": "新建宫门游客餐吧",
     "near_spot_id": 20,
     "cuisine": "简餐",
-    "rating": 4.0,
-    "heat": 612
+    "rating": 4,
+    "heat": 612,
+    "image": "web/assets/food/summer_palace/light-salad.jpg"
   },
   {
     "id": 19,
@@ -149,15 +167,17 @@
     "near_spot_id": 1,
     "cuisine": "茶饮",
     "rating": 4.1,
-    "heat": 710
+    "heat": 710,
+    "image": "web/assets/food/summer_palace/chinese-tea.jpg"
   },
   {
     "id": 20,
     "name": "仁寿殿东侧小食亭",
     "near_spot_id": 2,
     "cuisine": "小吃",
-    "rating": 4.0,
-    "heat": 640
+    "rating": 4,
+    "heat": 640,
+    "image": "web/assets/food/summer_palace/baozi.jpg"
   },
   {
     "id": 21,
@@ -165,7 +185,8 @@
     "near_spot_id": 9,
     "cuisine": "北京小吃",
     "rating": 4.3,
-    "heat": 1090
+    "heat": 1090,
+    "image": "web/assets/food/summer_palace/baozi.jpg"
   },
   {
     "id": 22,
@@ -173,7 +194,8 @@
     "near_spot_id": 9,
     "cuisine": "快餐",
     "rating": 4.2,
-    "heat": 1148
+    "heat": 1148,
+    "image": "web/assets/food/summer_palace/mcdonalds-beigongmen.png"
   },
   {
     "id": 23,
@@ -181,7 +203,8 @@
     "near_spot_id": 9,
     "cuisine": "快餐",
     "rating": 4.1,
-    "heat": 1008
+    "heat": 1008,
+    "image": "web/assets/food/summer_palace/light-salad.jpg"
   },
   {
     "id": 24,
@@ -189,7 +212,8 @@
     "near_spot_id": 1,
     "cuisine": "北京小吃",
     "rating": 4.4,
-    "heat": 1215
+    "heat": 1215,
+    "image": "web/assets/food/summer_palace/baozi.jpg"
   },
   {
     "id": 25,
@@ -197,7 +221,8 @@
     "near_spot_id": 9,
     "cuisine": "面食",
     "rating": 4.2,
-    "heat": 840
+    "heat": 840,
+    "image": "web/assets/food/summer_palace/zhajiangmian.jpg"
   },
   {
     "id": 26,
@@ -205,7 +230,8 @@
     "near_spot_id": 9,
     "cuisine": "咖啡",
     "rating": 4.5,
-    "heat": 1105
+    "heat": 1105,
+    "image": "web/assets/food/summer_palace/latte.jpg"
   },
   {
     "id": 27,
@@ -213,7 +239,8 @@
     "near_spot_id": 9,
     "cuisine": "茶饮",
     "rating": 4.6,
-    "heat": 1170
+    "heat": 1170,
+    "image": "web/assets/food/summer_palace/chinese-tea.jpg"
   },
   {
     "id": 28,
@@ -221,7 +248,8 @@
     "near_spot_id": 1,
     "cuisine": "川菜",
     "rating": 4.6,
-    "heat": 980
+    "heat": 980,
+    "image": "web/assets/food/tsinghua_campus/cafeteria-lunch.jpg"
   },
   {
     "id": 29,
@@ -229,7 +257,8 @@
     "near_spot_id": 1,
     "cuisine": "火锅",
     "rating": 4.7,
-    "heat": 1320
+    "heat": 1320,
+    "image": "web/assets/food/summer_palace/hot-pot.jpg"
   },
   {
     "id": 30,
@@ -237,7 +266,8 @@
     "near_spot_id": 1,
     "cuisine": "北京菜",
     "rating": 4.5,
-    "heat": 970
+    "heat": 970,
+    "image": "web/assets/food/summer_palace/peking-duck.jpg"
   },
   {
     "id": 31,
@@ -245,7 +275,8 @@
     "near_spot_id": 9,
     "cuisine": "烤鸭",
     "rating": 4.5,
-    "heat": 1110
+    "heat": 1110,
+    "image": "web/assets/food/summer_palace/peking-duck.jpg"
   },
   {
     "id": 32,
@@ -253,7 +284,8 @@
     "near_spot_id": 9,
     "cuisine": "火锅",
     "rating": 4.2,
-    "heat": 760
+    "heat": 760,
+    "image": "web/assets/food/summer_palace/hot-pot.jpg"
   },
   {
     "id": 33,
@@ -261,7 +293,8 @@
     "near_spot_id": 9,
     "cuisine": "家常菜",
     "rating": 4.3,
-    "heat": 720
+    "heat": 720,
+    "image": "web/assets/food/tsinghua_campus/cafeteria-lunch.jpg"
   },
   {
     "id": 34,
@@ -269,7 +302,8 @@
     "near_spot_id": 1,
     "cuisine": "粤式茶餐厅",
     "rating": 4.4,
-    "heat": 910
+    "heat": 910,
+    "image": "web/assets/food/tsinghua_campus/cafeteria-lunch.jpg"
   },
   {
     "id": 35,
@@ -277,7 +311,8 @@
     "near_spot_id": 20,
     "cuisine": "轻食",
     "rating": 4.5,
-    "heat": 830
+    "heat": 830,
+    "image": "web/assets/food/summer_palace/light-salad.jpg"
   },
   {
     "id": 36,
@@ -285,7 +320,8 @@
     "near_spot_id": 9,
     "cuisine": "新疆菜",
     "rating": 4.3,
-    "heat": 765
+    "heat": 765,
+    "image": "web/assets/food/summer_palace/zhajiangmian.jpg"
   },
   {
     "id": 37,
@@ -293,15 +329,17 @@
     "near_spot_id": 1,
     "cuisine": "糕点",
     "rating": 4.6,
-    "heat": 1180
+    "heat": 1180,
+    "image": "web/assets/food/summer_palace/chinese-pastry.jpg"
   },
   {
     "id": 38,
     "name": "西苑地铁站便利轻食",
     "near_spot_id": 9,
     "cuisine": "轻食",
-    "rating": 4.0,
-    "heat": 620
+    "rating": 4,
+    "heat": 620,
+    "image": "web/assets/food/summer_palace/light-salad.jpg"
   },
   {
     "id": 39,
@@ -309,7 +347,8 @@
     "near_spot_id": 15,
     "cuisine": "家常菜",
     "rating": 4.2,
-    "heat": 705
+    "heat": 705,
+    "image": "web/assets/food/tsinghua_campus/cafeteria-lunch.jpg"
   },
   {
     "id": 40,
@@ -317,7 +356,8 @@
     "near_spot_id": 15,
     "cuisine": "面食",
     "rating": 4.3,
-    "heat": 795
+    "heat": 795,
+    "image": "web/assets/food/summer_palace/zhajiangmian.jpg"
   },
   {
     "id": 41,
@@ -325,7 +365,8 @@
     "near_spot_id": 10,
     "cuisine": "茶点",
     "rating": 4.1,
-    "heat": 660
+    "heat": 660,
+    "image": "web/assets/food/summer_palace/chinese-tea.jpg"
   },
   {
     "id": 42,
@@ -333,15 +374,17 @@
     "near_spot_id": 8,
     "cuisine": "北京小吃",
     "rating": 4.3,
-    "heat": 735
+    "heat": 735,
+    "image": "web/assets/food/summer_palace/chinese-pastry.jpg"
   },
   {
     "id": 43,
     "name": "长廊冰糖葫芦摊",
     "near_spot_id": 4,
     "cuisine": "甜品",
-    "rating": 4.0,
-    "heat": 590
+    "rating": 4,
+    "heat": 590,
+    "image": "web/assets/food/summer_palace/tanghulu.jpg"
   },
   {
     "id": 44,
@@ -349,15 +392,17 @@
     "near_spot_id": 11,
     "cuisine": "茶饮",
     "rating": 4.2,
-    "heat": 720
+    "heat": 720,
+    "image": "web/assets/food/summer_palace/chinese-tea.jpg"
   },
   {
     "id": 45,
     "name": "南湖岛烤肠补给点",
     "near_spot_id": 14,
     "cuisine": "小吃",
-    "rating": 4.0,
-    "heat": 610
+    "rating": 4,
+    "heat": 610,
+    "image": "web/assets/food/summer_palace/baozi.jpg"
   },
   {
     "id": 46,
@@ -365,7 +410,8 @@
     "near_spot_id": 18,
     "cuisine": "甜品",
     "rating": 4.4,
-    "heat": 850
+    "heat": 850,
+    "image": "web/assets/food/summer_palace/tanghulu.jpg"
   },
   {
     "id": 47,
@@ -373,7 +419,8 @@
     "near_spot_id": 17,
     "cuisine": "糕点",
     "rating": 4.3,
-    "heat": 780
+    "heat": 780,
+    "image": "web/assets/food/summer_palace/chinese-pastry.jpg"
   },
   {
     "id": 48,
@@ -381,7 +428,8 @@
     "near_spot_id": 16,
     "cuisine": "素食",
     "rating": 4.2,
-    "heat": 690
+    "heat": 690,
+    "image": "web/assets/food/summer_palace/light-salad.jpg"
   },
   {
     "id": 49,
@@ -389,7 +437,8 @@
     "near_spot_id": 19,
     "cuisine": "咖啡",
     "rating": 4.1,
-    "heat": 640
+    "heat": 640,
+    "image": "web/assets/food/summer_palace/latte.jpg"
   },
   {
     "id": 50,
@@ -397,6 +446,7 @@
     "near_spot_id": 20,
     "cuisine": "烤鸭",
     "rating": 4.4,
-    "heat": 880
+    "heat": 880,
+    "image": "web/assets/food/summer_palace/peking-duck.jpg"
   }
 ]

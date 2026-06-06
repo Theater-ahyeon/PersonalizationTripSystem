@@ -47,6 +47,11 @@ struct Restaurant {
     std::string cuisine;
     double rating = 0;
     int heat = 0;
+    std::string image;
+
+    Restaurant() = default;
+    Restaurant(int id_, const std::string& name_, int nearSpotId_, const std::string& cuisine_, double rating_, int heat_, const std::string& image_ = "")
+        : id(id_), name(name_), nearSpotId(nearSpotId_), cuisine(cuisine_), rating(rating_), heat(heat_), image(image_) {}
 };
 
 struct User {
@@ -68,6 +73,11 @@ struct Diary {
     std::string content;
     bool decodeOk = true;
     std::string loadMessage;
+    std::string image;
+
+    Diary() = default;
+    Diary(int id_, const std::string& title_, int userId_, double rating_, int heat_, const std::string& createdAt_, const std::string& content_, bool decodeOk_ = true, const std::string& loadMessage_ = "", const std::string& image_ = "")
+        : id(id_), title(title_), userId(userId_), rating(rating_), heat(heat_), createdAt(createdAt_), content(content_), decodeOk(decodeOk_), loadMessage(loadMessage_), image(image_) {}
 };
 
 } // namespace tripsystem

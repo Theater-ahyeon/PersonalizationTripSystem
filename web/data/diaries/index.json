@@ -6,6 +6,7 @@
     "destination": "颐和园东宫门",
     "rating": 4.1,
     "heat": 360,
+    "image": "web/assets/diaries/summer_palace/east-palace-gate.jpg",
     "created_at": "2026-05-10 09:00:00",
     "tags": [
       "入口",
@@ -32,6 +33,7 @@
     "destination": "仁寿殿",
     "rating": 4.4,
     "heat": 457,
+    "image": "web/assets/diaries/summer_palace/renshou-hall.jpg",
     "created_at": "2026-05-11 09:07:00",
     "tags": [
       "建筑",
@@ -58,6 +60,7 @@
     "destination": "德和园",
     "rating": 4.7,
     "heat": 554,
+    "image": "web/assets/diaries/summer_palace/seventeen-arch-bridge.jpg",
     "created_at": "2026-05-12 09:14:00",
     "tags": [
       "建筑",
@@ -84,6 +87,7 @@
     "destination": "长廊东口",
     "rating": 4.1,
     "heat": 651,
+    "image": "web/assets/diaries/summer_palace/suzhou-street.jpg",
     "created_at": "2026-05-13 09:21:00",
     "tags": [
       "步行",
@@ -110,6 +114,7 @@
     "destination": "排云门",
     "rating": 4.4,
     "heat": 748,
+    "image": "web/assets/diaries/summer_palace/deheyuan.jpg",
     "created_at": "2026-05-14 09:28:00",
     "tags": [
       "路线",
@@ -136,6 +141,7 @@
     "destination": "佛香阁",
     "rating": 4.7,
     "heat": 845,
+    "image": "web/assets/diaries/summer_palace/kunming-lake.jpg",
     "created_at": "2026-05-15 09:35:00",
     "tags": [
       "地标",
@@ -162,6 +168,7 @@
     "destination": "石舫",
     "rating": 4.1,
     "heat": 942,
+    "image": "web/assets/diaries/summer_palace/marble-boat.jpg",
     "created_at": "2026-05-16 09:42:00",
     "tags": [
       "地标",
@@ -188,6 +195,7 @@
     "destination": "苏州街入口",
     "rating": 4.4,
     "heat": 1039,
+    "image": "web/assets/diaries/summer_palace/suzhou-street.jpg",
     "created_at": "2026-05-17 09:49:00",
     "tags": [
       "文化",
@@ -214,6 +222,7 @@
     "destination": "北宫门",
     "rating": 4.7,
     "heat": 1136,
+    "image": "web/assets/diaries/summer_palace/deheyuan.jpg",
     "created_at": "2026-05-18 09:56:00",
     "tags": [
       "入口",
@@ -240,6 +249,7 @@
     "destination": "万寿山后湖",
     "rating": 4.1,
     "heat": 453,
+    "image": "web/assets/diaries/summer_palace/kunming-lake.jpg",
     "created_at": "2026-05-19 09:03:00",
     "tags": [
       "湖景",
@@ -266,6 +276,7 @@
     "destination": "昆明湖东堤",
     "rating": 4.4,
     "heat": 550,
+    "image": "web/assets/diaries/summer_palace/long-corridor.jpg",
     "created_at": "2026-05-20 09:10:00",
     "tags": [
       "步行",
@@ -292,6 +303,7 @@
     "destination": "知春亭",
     "rating": 4.7,
     "heat": 647,
+    "image": "web/assets/diaries/summer_palace/east-palace-gate.jpg",
     "created_at": "2026-05-21 09:17:00",
     "tags": [
       "地标",

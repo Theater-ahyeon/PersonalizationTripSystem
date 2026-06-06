@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
@@ -123,8 +123,7 @@
               <label class="strategy-select">路线策略<select id="routeStrategySelect">
                 <option value="distance">最短距离</option>
                 <option value="time">最短时间</option>
-                <option value="congestion">避开拥挤</option>
-                <option value="transport">混合交通</option>
+                <option value="recommend">推荐路线</option>
               </select></label>
               <button id="routeButton" type="button" class="primary-button full">生成游览路线</button>
             </div>
@@ -562,6 +561,13 @@
   </div>
 
   <script src="./vendor/leaflet.js"></script>
-  <script src="./app.js?v=20260606-indoor-navigation"></script>
+  <script src="./scripts/core.js?v=20260606-remaining"></script>
+  <script src="./scripts/data.js?v=20260606-remaining"></script>
+  <script src="./scripts/map-controller.js?v=20260606-remaining"></script>
+  <script src="./scripts/route-indoor.js?v=20260606-remaining"></script>
+  <script src="./scripts/recommend-search.js?v=20260606-remaining"></script>
+  <script src="./scripts/diary-aigc.js?v=20260606-remaining"></script>
+  <script src="./scripts/food.js?v=20260606-remaining"></script>
+  <script src="./scripts/startup.js?v=20260606-remaining"></script>
 </body>
 </html>

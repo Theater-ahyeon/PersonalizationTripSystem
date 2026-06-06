@@ -6,6 +6,7 @@
     "destination": "清华大学二校门",
     "rating": 4.1,
     "heat": 320,
+    "image": "web/assets/diaries/tsinghua_campus/former-gate.jpg",
     "created_at": "2026-05-12 10:00:00",
     "tags": [
       "校园",
@@ -32,6 +33,7 @@
     "destination": "清华大学大礼堂",
     "rating": 4.6,
     "heat": 403,
+    "image": "web/assets/diaries/tsinghua_campus/auditorium.jpg",
     "created_at": "2026-05-13 10:09:00",
     "tags": [
       "校园",
@@ -58,6 +60,7 @@
     "destination": "清华大学图书馆老馆",
     "rating": 4.3,
     "heat": 486,
+    "image": "web/assets/diaries/tsinghua_campus/old-library.jpg",
     "created_at": "2026-05-14 10:18:00",
     "tags": [
       "校园",
@@ -84,6 +87,7 @@
     "destination": "清华大学主楼",
     "rating": 4.8,
     "heat": 569,
+    "image": "web/assets/diaries/tsinghua_campus/art-museum.jpg",
     "created_at": "2026-05-15 10:27:00",
     "tags": [
       "校园",
@@ -110,6 +114,7 @@
     "destination": "清华荷塘",
     "rating": 4.5,
     "heat": 652,
+    "image": "web/assets/diaries/tsinghua_campus/lotus-pond.jpg",
     "created_at": "2026-05-16 10:36:00",
     "tags": [
       "校园",
@@ -136,6 +141,7 @@
     "destination": "近春园",
     "rating": 4.2,
     "heat": 735,
+    "image": "web/assets/diaries/tsinghua_campus/lotus-pond.jpg",
     "created_at": "2026-05-17 10:45:00",
     "tags": [
       "校园",
@@ -162,6 +168,7 @@
     "destination": "水木清华",
     "rating": 4.7,
     "heat": 818,
+    "image": "web/assets/diaries/tsinghua_campus/main-building.jpg",
     "created_at": "2026-05-18 10:54:00",
     "tags": [
       "校园",
@@ -188,6 +195,7 @@
     "destination": "清华大学艺术博物馆",
     "rating": 4.4,
     "heat": 901,
+    "image": "web/assets/diaries/tsinghua_campus/art-museum.jpg",
     "created_at": "2026-05-19 10:03:00",
     "tags": [
       "校园",
@@ -214,6 +222,7 @@
     "destination": "学生服务中心",
     "rating": 4.1,
     "heat": 344,
+    "image": "web/assets/diaries/tsinghua_campus/main-building.jpg",
     "created_at": "2026-05-20 10:12:00",
     "tags": [
       "校园",
@@ -240,6 +249,7 @@
     "destination": "紫荆公寓区",
     "rating": 4.6,
     "heat": 427,
+    "image": "web/assets/diaries/tsinghua_campus/former-gate.jpg",
     "created_at": "2026-05-21 10:21:00",
     "tags": [
       "校园",

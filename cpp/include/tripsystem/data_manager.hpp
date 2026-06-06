@@ -1250,7 +1250,15 @@ private:
     void loadRestaurants() {
         restaurants.clear();
         for (const auto& obj : jsonObjects(readText(dataDir_ / "restaurants.json"))) {
-            restaurants.push_back({static_cast<int>(jsonNumber(obj, "id")), jsonString(obj, "name"), static_cast<int>(jsonNumber(obj, "near_spot_id")), jsonString(obj, "cuisine"), jsonNumber(obj, "rating"), static_cast<int>(jsonNumber(obj, "heat"))});
+            restaurants.push_back({
+                static_cast<int>(jsonNumber(obj, "id")),
+                jsonString(obj, "name"),
+                static_cast<int>(jsonNumber(obj, "near_spot_id")),
+                jsonString(obj, "cuisine"),
+                jsonNumber(obj, "rating"),
+                static_cast<int>(jsonNumber(obj, "heat")),
+                jsonString(obj, "image")
+            });
         }
     }
 
@@ -1283,6 +1291,7 @@ private:
             d.rating = jsonNumber(obj, "rating");
             d.heat = static_cast<int>(jsonNumber(obj, "heat"));
             d.createdAt = jsonString(obj, "created_at");
+            d.image = jsonString(obj, "image");
             int bitLength = static_cast<int>(jsonNumber(obj, "bit_length"));
             std::vector<std::pair<int, std::string>> codes;
             size_t codebookPos = obj.find("\"codebook\"");
@@ -1386,7 +1395,8 @@ private:
             out << "  {\"id\": " << r.id << ", \"name\": \"" << escapeJson(r.name)
                 << "\", \"near_spot_id\": " << r.nearSpotId
                 << ", \"cuisine\": \"" << escapeJson(r.cuisine)
-                << "\", \"rating\": " << r.rating << ", \"heat\": " << r.heat << "}";
+                << "\", \"rating\": " << r.rating << ", \"heat\": " << r.heat
+                << ", \"image\": \"" << escapeJson(r.image) << "\"}";
             out << (i + 1 == restaurants.size() ? "\n" : ",\n");
         }
         out << "]\n";

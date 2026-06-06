@@ -3683,6 +3683,18 @@ textarea {
   object-position: center;
 }
 
+.card-list .card-image-wrap,
+.diary-masonry .card-image-wrap {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+}
+
+.card-list .card-thumb,
+.diary-masonry .diary-card-media {
+  height: 100%;
+  aspect-ratio: auto;
+}
+
 .aigc-motion-stage {
   display: grid;
   grid-template-columns: minmax(220px, 1.1fr) minmax(180px, 0.9fr);
@@ -3821,6 +3833,75 @@ textarea {
   text-decoration: none;
 }
 
+.indoor-route-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.indoor-route-meta span {
+  display: grid;
+  place-items: center;
+  min-height: 38px;
+  border: 1px solid rgba(0, 88, 188, 0.14);
+  border-radius: 10px;
+  background: rgba(230, 240, 255, 0.72);
+  color: #0058bc;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.indoor-visualization-note {
+  margin: 8px 0 0;
+  color: #647085;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.indoor-step-list {
+  display: grid;
+  gap: 8px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.indoor-step-list li {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  border: 1px solid rgba(193, 198, 215, 0.7);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.78);
+  padding: 8px 10px;
+}
+
+.indoor-step-list span {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: #0058bc;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.indoor-step-list strong {
+  min-width: 0;
+  color: #0c1f38;
+  font-size: 13px;
+}
+
+.indoor-step-list small {
+  color: #647085;
+  font-size: 12px;
+  font-weight: 800;
+}
+
 .indoor-expand-button {
   width: 100%;
   justify-content: center;
@@ -3922,8 +4003,6 @@ textarea {
 }
 
 .indoor-modal-steps {
-  margin: 0;
-  padding-left: 18px;
   color: #414755;
   font-size: 13px;
   line-height: 1.7;
