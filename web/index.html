@@ -6,7 +6,7 @@
   <title>岚迹 LumaTrail</title>
   <link rel="icon" href="./assets/brand/lumatrail-logo.svg">
   <link rel="stylesheet" href="./vendor/leaflet.css">
-  <link rel="stylesheet" href="./styles.css?v=20260606-brand-lumatrail">
+  <link rel="stylesheet" href="./styles.css?v=20260607-palace-network">
 </head>
 <body>
   <div class="app-shell">
@@ -122,10 +122,12 @@
               <div class="mode-toggle" role="group" aria-label="交通方式">
                 <button type="button" class="mode-button active" data-mode="walk">步行</button>
                 <button type="button" class="mode-button" data-mode="bike">骑行</button>
+                <button type="button" class="mode-button" data-mode="mixed">混合</button>
               </div>
               <label class="strategy-select">路线策略<select id="routeStrategySelect">
                 <option value="distance">最短距离</option>
                 <option value="time">最短时间</option>
+                <option value="transport">交通工具最短时间</option>
                 <option value="recommend">推荐路线</option>
               </select></label>
               <button id="routeButton" type="button" class="primary-button full">生成游览路线</button>
@@ -143,7 +145,7 @@
                 <label>室内终点<select id="indoorGoalSelect"></select></label>
               </div>
               <button id="indoorRouteButton" class="secondary-button full" type="button">生成室内路径</button>
-              <div id="indoorRouteResult" class="indoor-result">模拟文昌院：大门、电梯、楼层和展厅节点图。</div>
+              <div id="indoorRouteResult" class="indoor-result">支持大门到电梯、楼层间电梯导航、目标楼层到房间的三段式室内路径。</div>
             </div>
 
             <div class="quick-filters" aria-label="设施快捷筛选">
@@ -155,7 +157,7 @@
 
             <div class="section-row">
               <h2>多点游览</h2>
-              <button id="runMultiButton" type="button" class="small-button">生成环游路线</button>
+              <button id="runMultiButton" type="button" class="small-button">生成往返环游路线</button>
             </div>
             <div id="multiStopList" class="multi-stop-list"></div>
 
@@ -571,10 +573,10 @@
   </div>
 
   <script src="./vendor/leaflet.js"></script>
-  <script src="./scripts/core.js?v=20260606-remaining"></script>
+  <script src="./scripts/core.js?v=20260607-palace-network"></script>
   <script src="./scripts/data.js?v=20260606-remaining"></script>
   <script src="./scripts/map-controller.js?v=20260606-remaining"></script>
-  <script src="./scripts/route-indoor.js?v=20260606-remaining"></script>
+  <script src="./scripts/route-indoor.js?v=20260607-palace-network"></script>
   <script src="./scripts/recommend-search.js?v=20260606-remaining"></script>
   <script src="./scripts/diary-aigc.js?v=20260606-remaining"></script>
   <script src="./scripts/food.js?v=20260606-remaining"></script>

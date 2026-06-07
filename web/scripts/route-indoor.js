@@ -41,14 +41,15 @@ function runIndoorRoute() {
   lastIndoorBuilding = building;
   const minutes = indoorEstimatedMinutes(result.distance);
   container.innerHTML = `
-    <strong>Indoor shortest path ${result.distance}m</strong>
+    <strong>室内最短路径 ${result.distance}m</strong>
     ${renderIndoorRouteMeta(result, minutes)}
     ${renderIndoorSource(building, true)}
-    <p class="indoor-visualization-note">Current acceptance choice: indoor navigation is visualized in this panel and modal floor plan, not as a Leaflet map overlay.</p>
+    ${renderIndoorRouteBreakdown(result, building)}
     ${renderIndoorPlan(result, building)}
     <button class="link-button indoor-expand-button" type="button" data-indoor-expand>展开平面图</button>
     ${renderIndoorStepList(result, building, "indoor-step-list")}
   `;
+  requestAnimationFrame(syncIndoorPlanOverlays);
 }
 
 function currentIndoorBuilding() {
@@ -65,10 +66,10 @@ function renderIndoorBuildingIntro() {
   container.innerHTML = `
     <strong>${escapeHtml(building.name)}</strong>
     ${renderIndoorSource(building, false)}
-    <p class="indoor-visualization-note">Current acceptance choice: indoor navigation is visualized in this panel and modal floor plan, not as a Leaflet map overlay.</p>
     ${renderIndoorPlan({ path: [], distance: 0 }, building)}
     <button class="link-button indoor-expand-button" type="button" data-indoor-expand>展开平面图</button>
   `;
+  requestAnimationFrame(syncIndoorPlanOverlays);
 }
 
 function indoorEstimatedMinutes(distance) {
@@ -80,8 +81,8 @@ function renderIndoorRouteMeta(result, minutes = indoorEstimatedMinutes(result.d
   return `
     <div class="indoor-route-meta">
       <span>${Number(result.distance || 0).toFixed(0)}m</span>
-      <span>${minutes} min</span>
-      <span>${stops} nodes</span>
+      <span>${minutes} 分钟</span>
+      <span>${stops} 个节点</span>
     </div>
   `;
 }
@@ -92,20 +93,89 @@ function renderIndoorStepList(result, building, className = "indoor-step-list") 
     <ol class="${className}">
       ${result.path.map((id, index) => {
         const node = building.nodes.find((item) => item.id === id);
-        return node ? `<li><span>${index + 1}</span><strong>${escapeHtml(node.name)}</strong><small>${escapeHtml(node.floor)}</small></li>` : "";
+        return node ? `<li><span>${index + 1}</span><strong>${escapeHtml(node.name)}</strong><small>${escapeHtml(node.floor)} · ${escapeHtml(indoorNodeTypeLabel(node))}</small></li>` : "";
       }).join("")}
     </ol>
   `;
 }
 
+function renderIndoorRouteBreakdown(result, building) {
+  if (!result.path?.length) return "";
+  const nodeMap = new Map(building.nodes.map((node) => [node.id, node]));
+  const pathNodes = result.path.map((id) => nodeMap.get(id)).filter(Boolean);
+  if (pathNodes.length < 2) return "";
+  const firstVerticalIndex = pathNodes.findIndex((node, index) => index > 0 && node.floor !== pathNodes[index - 1].floor);
+  const lastVerticalIndex = pathNodes.reduce((last, node, index) => {
+    if (index > 0 && node.floor !== pathNodes[index - 1].floor) return index;
+    return last;
+  }, -1);
+  const elevatorIndex = pathNodes.findIndex((node) => indoorNodeType(node) === "elevator");
+  const entranceEnd = firstVerticalIndex > -1
+    ? Math.max(0, firstVerticalIndex - 1)
+    : elevatorIndex > -1 ? elevatorIndex : Math.max(0, Math.floor((pathNodes.length - 1) / 2));
+  const roomStart = lastVerticalIndex > -1 ? lastVerticalIndex : Math.min(entranceEnd + 1, pathNodes.length - 1);
+  const entranceNodes = pathNodes.slice(0, entranceEnd + 1);
+  const transferNodes = firstVerticalIndex > -1
+    ? pathNodes.slice(Math.max(0, firstVerticalIndex - 1), lastVerticalIndex + 1)
+    : [];
+  const roomNodes = pathNodes.slice(roomStart);
+  const cards = [
+    indoorBreakdownCard("大门到电梯", entranceNodes, "从入口、门厅或服务台进入建筑，前往最近的楼梯/电梯核心。"),
+    indoorBreakdownCard("楼层间电梯导航", transferNodes, "通过电梯/楼梯完成楼层切换，系统只连接同一竖向交通核心。"),
+    indoorBreakdownCard("楼层内到房间", roomNodes, "到达目标楼层后，沿走廊前往教室、展厅、阅览室或办公室。")
+  ];
+  return `<div class="indoor-breakdown" aria-label="室内导航三段路径">${cards.join("")}</div>`;
+}
+
+function indoorBreakdownCard(title, nodes, fallback) {
+  const names = nodes.map((node) => node.name).filter(Boolean);
+  const floors = unique(nodes.map((node) => node.floor)).join(" → ");
+  const body = names.length ? names.join(" → ") : fallback;
+  return `
+    <section>
+      <span>${escapeHtml(title)}</span>
+      <strong>${escapeHtml(floors || "同层")}</strong>
+      <p>${escapeHtml(body)}</p>
+    </section>
+  `;
+}
+
+function indoorNodeType(node) {
+  if (!node) return "normal";
+  if (node.role) return node.role;
+  const name = `${node.name || ""}`;
+  if (/入口|大门|东门|西门|南门|北门|午门|神武门/.test(name)) return "entrance";
+  if (/电梯|楼梯|交通核/.test(name)) return "elevator";
+  if (/教室|实验室|报告厅|办公室|房间|阅览|展厅|门诊|手术室|研修室|资料区|文献区|书库/.test(name)) return "room";
+  if (/走廊|连廊|通道/.test(name)) return "corridor";
+  if (/服务|咨询|值班|导览|挂号|收费|药房|证卡/.test(name)) return "service";
+  return "normal";
+}
+
+function indoorNodeTypeLabel(node) {
+  const type = indoorNodeType(node);
+  if (type === "entrance") return "入口";
+  if (type === "elevator") return "电梯/楼梯";
+  if (type === "room") return "房间/功能区";
+  if (type === "corridor") return "走廊";
+  if (type === "service") return "服务点";
+  if (type === "hall") return "大厅";
+  return "节点";
+}
+
 function renderIndoorPlan(result, building = currentIndoorBuilding(), options = {}) {
+  if (building.floorPlans && Object.keys(building.floorPlans).length) {
+    return renderIndoorFloorStack(result, building, options);
+  }
+
   const expandable = options.expandable !== false;
   const pathSet = new Set(result.path);
   const nodes = building.nodes.map((node) => {
     const left = Number(node.x || 50);
     const top = Number(node.y || 50);
     const active = pathSet.has(node.id) ? " active" : "";
-    return `<span class="indoor-node${active}" style="left:${left}%;top:${top}%">${escapeHtml(node.name)}</span>`;
+    const minor = node.minor && !active ? " minor" : "";
+    return `<span class="indoor-node${active}${minor}" title="${escapeHtml(node.name)}" style="left:${left}%;top:${top}%">${escapeHtml(node.name)}</span>`;
   }).join("");
   const lines = building.edges.map(([from, to]) => {
     const a = building.nodes.find((node) => node.id === from);
@@ -125,13 +195,166 @@ function renderIndoorPlan(result, building = currentIndoorBuilding(), options = 
     const top = floors.length === 1 ? 50 : 10 + (index * (80 / (floors.length - 1)));
     return `<span class="indoor-floor" style="top:${top}%">${escapeHtml(floor)}</span>`;
   }).join("");
+  const planImage = building.floorPlanImage
+    ? `<img class="indoor-plan-image" src="${escapeHtml(building.floorPlanImage)}" alt="${escapeHtml(building.name)}平面图" loading="lazy">`
+    : "";
+  const planClass = building.floorPlanImage ? " has-floor-plan" : "";
+  const fitStyle = building.floorPlanFit ? ` style="--indoor-plan-fit:${escapeHtml(building.floorPlanFit)}"` : "";
+  const credit = building.floorPlanCredit
+    ? `<span class="indoor-plan-credit">${escapeHtml(building.floorPlanCredit)}</span>`
+    : "";
   return `
-    <div class="indoor-plan${expandable ? " indoor-plan-preview" : ""}" aria-label="indoor route plan"${expandable ? " data-indoor-expand" : ""}>
-      ${floorLabels}
-      ${lines}
-      ${nodes}
+    <div class="indoor-plan${planClass}${expandable ? " indoor-plan-preview" : ""}" aria-label="indoor route plan"${expandable ? " data-indoor-expand" : ""}${fitStyle}>
+      ${planImage}
+      <div class="indoor-plan-overlay" data-indoor-plan-overlay>
+        ${floorLabels}
+        ${lines}
+        ${nodes}
+      </div>
+      ${credit}
     </div>
   `;
+}
+
+function renderIndoorFloorStack(result, building = currentIndoorBuilding(), options = {}) {
+  const expandable = options.expandable !== false;
+  const floors = floorsForIndoorResult(result, building, options);
+  const sections = floors.map((floor) => renderIndoorFloorSection(result, building, floor, options)).join("");
+  const transfers = renderIndoorTransferList(result, building);
+  return `
+    <div class="indoor-floor-stack${expandable ? " indoor-plan-preview" : ""}" aria-label="multi-floor indoor route plan"${expandable ? " data-indoor-expand" : ""}>
+      ${sections}
+      ${transfers}
+    </div>
+  `;
+}
+
+function renderIndoorFloorSection(result, building, floor, options = {}) {
+  const pathSet = new Set(result.path);
+  const floorNodes = building.nodes.filter((node) => node.floor === floor);
+  const nodeMap = new Map(building.nodes.map((node) => [node.id, node]));
+  const nodes = floorNodes.map((node) => {
+    const left = Number(node.x || 50);
+    const top = Number(node.y || 50);
+    const active = pathSet.has(node.id) ? " active" : "";
+    const minor = node.minor && !active ? " minor" : "";
+    return `<span class="indoor-node${active}${minor}" title="${escapeHtml(node.name)}" style="left:${left}%;top:${top}%">${escapeHtml(node.name)}</span>`;
+  }).join("");
+  const lines = building.edges.map(([from, to]) => {
+    const a = nodeMap.get(from);
+    const b = nodeMap.get(to);
+    if (!a || !b || a.floor !== floor || b.floor !== floor) return "";
+    const active = pathHasIndoorEdge(result.path, from, to) ? " active" : "";
+    const x1 = Number(a.x || 0);
+    const y1 = Number(a.y || 0);
+    const x2 = Number(b.x || 0);
+    const y2 = Number(b.y || 0);
+    const length = Math.hypot(x2 - x1, y2 - y1);
+    const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+    return `<span class="indoor-edge${active}" style="left:${x1}%;top:${y1}%;width:${length}%;transform:rotate(${angle}deg)"></span>`;
+  }).join("");
+  const floorPlan = floorPlanFor(building, floor);
+  const planImage = floorPlan.image
+    ? `<img class="indoor-plan-image" src="${escapeHtml(floorPlan.image)}" alt="${escapeHtml(building.name)} ${escapeHtml(floor)} 平面图" loading="lazy">`
+    : "";
+  const planClass = floorPlan.image ? " has-floor-plan" : "";
+  const fitStyle = floorPlan.fit || building.floorPlanFit ? ` style="--indoor-plan-fit:${escapeHtml(floorPlan.fit || building.floorPlanFit)}"` : "";
+  const credit = floorPlan.credit
+    ? `<span class="indoor-plan-credit">${escapeHtml(floorPlan.credit)}</span>`
+    : "";
+  const sourceLink = floorPlan.sourceUrl
+    ? `<a href="${escapeHtml(floorPlan.sourceUrl)}" target="_blank" rel="noreferrer">官方楼层图</a>`
+    : "";
+  const activeCount = floorNodes.filter((node) => pathSet.has(node.id)).length;
+  return `
+    <section class="indoor-floor-section">
+      <header class="indoor-floor-heading">
+        <strong>${escapeHtml(floor)}</strong>
+        <span>${activeCount ? `本层路径节点 ${activeCount} 个` : `本层可导航节点 ${floorNodes.length} 个`}</span>
+        ${sourceLink}
+      </header>
+      <div class="indoor-plan${planClass}" aria-label="${escapeHtml(building.name)} ${escapeHtml(floor)} indoor route plan"${fitStyle}>
+        ${planImage}
+        <div class="indoor-plan-overlay" data-indoor-plan-overlay>
+          <span class="indoor-floor" style="top:12%">${escapeHtml(floor)}</span>
+          ${lines}
+          ${nodes}
+        </div>
+        ${credit}
+      </div>
+    </section>
+  `;
+}
+
+function floorsForIndoorResult(result, building, options = {}) {
+  const allFloors = (building.floors && building.floors.length ? building.floors : unique(building.nodes.map((node) => node.floor))).filter(Boolean);
+  if (options.showAllFloors || !result.path?.length) return allFloors;
+  const nodeMap = new Map(building.nodes.map((node) => [node.id, node]));
+  const pathFloors = unique(result.path.map((id) => nodeMap.get(id)?.floor));
+  return allFloors.filter((floor) => pathFloors.includes(floor));
+}
+
+function floorPlanFor(building, floor) {
+  const plan = building.floorPlans?.[floor] || {};
+  return {
+    image: plan.image || building.floorPlanImage || "",
+    sourceUrl: plan.sourceUrl || building.sourceUrl || "",
+    credit: plan.credit || building.floorPlanCredit || "",
+    fit: plan.fit || building.floorPlanFit || "contain"
+  };
+}
+
+function renderIndoorTransferList(result, building) {
+  if (!result.path?.length) return "";
+  const nodeMap = new Map(building.nodes.map((node) => [node.id, node]));
+  const transfers = [];
+  for (let index = 1; index < result.path.length; index += 1) {
+    const from = nodeMap.get(result.path[index - 1]);
+    const to = nodeMap.get(result.path[index]);
+    if (from && to && from.floor !== to.floor) {
+      transfers.push(`<li><strong>${escapeHtml(from.name)} → ${escapeHtml(to.name)}</strong><span>${escapeHtml(from.floor)} 到 ${escapeHtml(to.floor)}</span></li>`);
+    }
+  }
+  if (!transfers.length) return "";
+  return `
+    <div class="indoor-transfer-list" aria-label="跨层换乘">
+      <span>跨层换乘</span>
+      <ol>${transfers.join("")}</ol>
+    </div>
+  `;
+}
+
+function syncIndoorPlanOverlays() {
+  document.querySelectorAll(".indoor-plan.has-floor-plan").forEach((plan) => {
+    const image = plan.querySelector(".indoor-plan-image");
+    const overlay = plan.querySelector("[data-indoor-plan-overlay]");
+    if (!image || !overlay) return;
+    if (!image.complete || !image.naturalWidth || !image.naturalHeight) {
+      image.addEventListener("load", syncIndoorPlanOverlays, { once: true });
+      return;
+    }
+    const planWidth = plan.clientWidth;
+    const planHeight = plan.clientHeight;
+    const imageRatio = image.naturalWidth / image.naturalHeight;
+    const planRatio = planWidth / planHeight;
+    let width = planWidth;
+    let height = planHeight;
+    let left = 0;
+    let top = 0;
+    if (planRatio > imageRatio) {
+      height = planHeight;
+      width = height * imageRatio;
+      left = (planWidth - width) / 2;
+    } else {
+      width = planWidth;
+      height = width / imageRatio;
+      top = (planHeight - height) / 2;
+    }
+    overlay.style.left = `${left}px`;
+    overlay.style.top = `${top}px`;
+    overlay.style.width = `${width}px`;
+    overlay.style.height = `${height}px`;
+  });
 }
 
 function renderIndoorSource(building, includeBuildingName = false) {
@@ -154,7 +377,6 @@ function openIndoorMapModal() {
     : `<p class="indoor-modal-empty">请选择起点和终点生成路径，或先查看该建筑的室内节点分布。</p>`;
   modalBody.innerHTML = `
     ${renderIndoorSource(building, true)}
-    <p class="indoor-visualization-note">Current acceptance choice: indoor navigation is visualized in this panel and modal floor plan, not as a Leaflet map overlay.</p>
     <div class="indoor-modal-layout">
       <div class="indoor-modal-map">
         <div class="indoor-map-controls" aria-label="室内平面图控制">
@@ -171,6 +393,7 @@ function openIndoorMapModal() {
       <div class="indoor-modal-side">
         <strong>${result.path?.length ? `路径距离 ${result.distance}m` : "可交互室内图"}</strong>
         ${result.path?.length ? renderIndoorRouteMeta(result) : ""}
+        ${result.path?.length ? renderIndoorRouteBreakdown(result, building) : ""}
         ${pathList}
       </div>
     </div>
@@ -178,6 +401,7 @@ function openIndoorMapModal() {
   openModal("indoorMapModal");
   setupIndoorPlanInteractions();
   resetIndoorPlanView();
+  requestAnimationFrame(syncIndoorPlanOverlays);
 }
 
 function setupIndoorPlanInteractions() {
@@ -239,6 +463,7 @@ function applyIndoorPlanView() {
   const pannable = document.querySelector("[data-indoor-plan-pannable]");
   if (!pannable) return;
   pannable.style.transform = `translate(${indoorPlanView.x}px, ${indoorPlanView.y}px) scale(${indoorPlanView.scale})`;
+  requestAnimationFrame(syncIndoorPlanOverlays);
 }
 
 function pathHasIndoorEdge(path, from, to) {
@@ -281,22 +506,32 @@ function shortestIndoorPath(start, goal, building = currentIndoorBuilding()) {
 function indoorNeighbors(id, building = currentIndoorBuilding()) {
   const neighbors = [];
   building.edges.forEach(([from, to, weight]) => {
-    if (from === id) neighbors.push([to, weight]);
-    if (to === id) neighbors.push([from, weight]);
+    const distance = Number(weight) || indoorEdgeDistance(from, to, building);
+    if (from === id) neighbors.push([to, distance]);
+    if (to === id) neighbors.push([from, distance]);
   });
   return neighbors;
+}
+
+function indoorEdgeDistance(from, to, building = currentIndoorBuilding()) {
+  const a = building.nodes.find((node) => node.id === from);
+  const b = building.nodes.find((node) => node.id === to);
+  if (!a || !b) return 20;
+  return Math.max(8, Math.round(Math.hypot(Number(a.x || 0) - Number(b.x || 0), Number(a.y || 0) - Number(b.y || 0)) * 2.4));
 }
 
 function runShortestPath() {
   const start = Number(byId("startSelect").value);
   const goal = Number(byId("goalSelect").value);
-  const result = shortestPath(start, goal, state.mode, state.routeStrategy);
+  const strategy = state.routeStrategy === "transport" ? "transport" : state.routeStrategy;
+  const mode = strategy === "transport" ? "mixed" : state.mode;
+  const result = shortestPath(start, goal, mode, strategy);
   if (!result) {
     summarize("当前交通方式下未找到可达路径。");
     return;
   }
-  drawRoute(result.path, routeStrategyInfo().color);
-  summarizeRoute(routeStrategyInfo().label, result);
+  drawRoute(result.path, routeStrategyInfo(strategy).color);
+  summarizeRoute(routeStrategyInfo(strategy).label, result);
 }
 
 function updateRouteQuickSummary(details = null) {
@@ -309,7 +544,7 @@ function updateRouteQuickSummary(details = null) {
     `;
     return;
   }
-  const modeLabel = details.mode || (state.mode === "bike" ? "骑行" : "步行");
+  const modeLabel = details.mode || routeModeLabel(state.mode, state.routeStrategy);
   target.innerHTML = `
     <span>${escapeHtml(details.title || "路线耗时")}</span>
     <strong>${escapeHtml(modeLabel)} · ${Number(details.distance || 0).toFixed(1)} 米 · 约 ${Number(details.minutes || 0).toFixed(1)} 分钟</strong>
@@ -329,7 +564,9 @@ function runMultiStopRoute() {
     return;
   }
 
-  const tsp = solveTspDp(start, targets, state.mode, state.routeStrategy);
+  const strategy = state.routeStrategy === "transport" ? "transport" : state.routeStrategy;
+  const mode = strategy === "transport" ? "mixed" : state.mode;
+  const tsp = solveTspDp(start, targets, mode, strategy);
   if (!tsp) {
     summarize("多点游览中存在不可达节点。");
     return;
@@ -346,7 +583,7 @@ function solveTspDp(start, targets, mode, strategy = state.routeStrategy) {
   for (let i = 0; i < points.length; i += 1) {
     for (let j = 0; j < points.length; j += 1) {
       if (i === j) {
-        pairRoutes[i][j] = { path: [points[i]], distance: 0 };
+        pairRoutes[i][j] = { path: [points[i]], distance: 0, cost: 0, minutes: 0, averageCongestion: 1, segments: [] };
       } else {
         const route = shortestPath(points[i], points[j], mode, strategy);
         if (!route) return null;
@@ -382,8 +619,10 @@ function solveTspDp(start, targets, mode, strategy = state.routeStrategy) {
   let bestEnd = -1;
   let best = inf;
   for (let i = 0; i < n; i += 1) {
-    if (dp[fullMask][i] < best) {
-      best = dp[fullMask][i];
+    const returnCost = pairRoutes[i + 1][0]?.cost ?? inf;
+    const cycleCost = dp[fullMask][i] + returnCost;
+    if (cycleCost < best) {
+      best = cycleCost;
       bestEnd = i;
     }
   }
@@ -414,6 +653,14 @@ function solveTspDp(start, targets, mode, strategy = state.routeStrategy) {
     congestionTotal += route.averageCongestion;
     fromIndex = toIndex;
   });
+  const returnRoute = pairRoutes[fromIndex][0];
+  if (returnRoute && returnRoute.path.length > 1) {
+    order.push({ from: points[fromIndex], to: start, result: returnRoute, returnToStart: true });
+    fullPath.push(...returnRoute.path.slice(1));
+    totalDistance += returnRoute.distance;
+    totalMinutes += returnRoute.minutes;
+    congestionTotal += returnRoute.averageCongestion;
+  }
   return {
     order,
     total: totalDistance,
@@ -422,7 +669,8 @@ function solveTspDp(start, targets, mode, strategy = state.routeStrategy) {
     totalMinutes,
     averageCongestion: order.length ? congestionTotal / order.length : 1,
     fullPath,
-    strategy
+    strategy,
+    mode
   };
 }
 
@@ -478,6 +726,7 @@ function shortestPath(start, goal, mode, strategy = state.routeStrategy) {
     minutes,
     averageCongestion,
     strategy,
+    mode,
     segments
   };
 }
@@ -505,28 +754,78 @@ function neighborsOf(id, mode, strategy = state.routeStrategy) {
 }
 
 function edgeSupportsMode(edge, mode, strategy = state.routeStrategy) {
+  if (strategy === "transport" || mode === "mixed") return availableTravelModes(edge).length > 0;
   return edge.mode === "both" || edge.mode === mode;
 }
 
 function edgeWeight(edge, mode, strategy = state.routeStrategy) {
   const distance = Number(edge.distance) || 0;
-  const travelMode = mode;
-  const speedFactor = 0.55 + stableFraction(`${edge.road_name || ""}:${edge.from}:${edge.to}:speed`) * 1.1;
-  const idealSpeed = (travelMode === "bike" ? 12 : 4.5) * speedFactor;
-  const congestion = edgeCongestion(edge);
-  const realSpeed = Math.max(1, idealSpeed * congestion);
-  const minutes = distance / (realSpeed * 1000 / 60);
+  const candidates = (strategy === "transport" || mode === "mixed") ? availableTravelModes(edge) : [mode];
+  const weights = candidates.map((travelMode) => travelModeWeight(edge, travelMode, distance));
+  const selected = weights.sort((a, b) => a.minutes - b.minutes)[0] || travelModeWeight(edge, "walk", distance);
+  const { travelMode, idealSpeed, congestion, realSpeed, minutes } = selected;
   const scenicPenalty = 0.72 + stableFraction(`${edge.road_name || ""}:${edge.from}:${edge.to}:recommend`) * 0.72;
   let cost = distance;
-  if (strategy === "time") cost = minutes;
+  if (strategy === "time" || strategy === "transport") cost = minutes;
   if (strategy === "recommend") cost = minutes * 0.7 + (distance / 100) * scenicPenalty;
-  return { cost, distance, minutes, congestion, travelMode };
+  return { cost, distance, minutes, congestion, travelMode, idealSpeed, realSpeed };
 }
 
-function edgeCongestion(edge) {
-  const name = `${edge.road_name || ""}${edge.from}-${edge.to}`;
+function availableTravelModes(edge) {
+  const modes = [];
+  const edgeMode = edge.mode || "both";
+  if (edgeMode === "walk" || edgeMode === "both") modes.push("walk");
+  if (edgeMode === "bike" || edgeMode === "both") modes.push("bike");
+  if (electricCartEligible(edge)) modes.push("cart");
+  return modes;
+}
+
+function electricCartEligible(edge) {
+  const name = `${edge.road_name || ""}`;
+  const from = findNode(edge.from);
+  const to = findNode(edge.to);
+  const text = `${name} ${from?.name || ""} ${to?.name || ""}`;
+  return /东宫门|仁寿殿|排云门|长廊|苏州街|北宫门|昆明湖|广场|主路|宫门|清华路|校河|主楼/.test(text)
+    || stableFraction(`${edge.from}:${edge.to}:cart`) > 0.82;
+}
+
+function travelModeWeight(edge, travelMode, distance = Number(edge.distance) || 0) {
+  const speedFactor = 0.55 + stableFraction(`${edge.road_name || ""}:${edge.from}:${edge.to}:${travelMode}:speed`) * 1.1;
+  const baseSpeed = travelMode === "bike" ? 12 : travelMode === "cart" ? 18 : 4.5;
+  const idealSpeed = baseSpeed * speedFactor;
+  const congestion = edgeCongestion(edge, travelMode);
+  const realSpeed = Math.max(1, idealSpeed * congestion);
+  const boardingDelay = travelMode === "cart" ? 1.2 : 0;
+  const minutes = distance / (realSpeed * 1000 / 60) + boardingDelay;
+  return { travelMode, idealSpeed, congestion, realSpeed, minutes };
+}
+
+function routeModeLabel(mode = state.mode, strategy = state.routeStrategy) {
+  if (strategy === "transport" || mode === "mixed") return "混合交通";
+  if (mode === "bike") return "骑行";
+  if (mode === "cart") return "电瓶车";
+  return "步行";
+}
+
+function travelModeLabel(mode) {
+  if (mode === "bike") return "骑行";
+  if (mode === "cart") return "电瓶车";
+  return "步行";
+}
+
+function segmentModeSummary(result) {
+  const segments = result?.segments || [];
+  if (!segments.length) return routeModeLabel(result?.mode || state.mode, result?.strategy || state.routeStrategy);
+  const labels = unique(segments.map((segment) => travelModeLabel(segment.travelMode)));
+  const congestion = Number(result.averageCongestion || 1).toFixed(2);
+  return `${labels.join("+")} · 拥挤度${congestion}`;
+}
+
+function edgeCongestion(edge, travelMode = "walk") {
+  const name = `${edge.road_name || ""}${edge.from}-${edge.to}:${travelMode}`;
   const hash = stableFraction(name);
-  return clamp(0.62 + hash * 0.36, 0.62, 0.98);
+  const base = travelMode === "cart" ? 0.7 : travelMode === "bike" ? 0.66 : 0.62;
+  return clamp(base + hash * (0.98 - base), 0.55, 0.98);
 }
 
 function drawRoute(path, color) {
@@ -592,12 +891,14 @@ function summarizeRoute(title, result) {
     title,
     strategy: strategy.label,
     distance: result.distance,
-    minutes: result.minutes
+    minutes: result.minutes,
+    mode: routeModeLabel(result.mode || state.mode, result.strategy)
   });
   byId("route-summary").innerHTML = `
     <p class="eyebrow">${escapeHtml(title)}</p>
     <h3>${escapeHtml(start?.name || "-")} → ${escapeHtml(goal?.name || "-")}</h3>
     <p>${escapeHtml(strategy.algorithm)}，沿途经过 ${transitionCount} 个连接点。</p>
+    <p>交通方式：${escapeHtml(segmentModeSummary(result))}；预计拥挤度 ${Number(result.averageCongestion || 1).toFixed(2)}。</p>
     <p>起点：${escapeHtml(start?.name || "-")}；终点：${escapeHtml(goal?.name || "-")}。</p>
     <ol>${keyPoi.map((name) => `<li>${escapeHtml(name)}</li>`).join("")}</ol>
   `;
@@ -606,19 +907,21 @@ function summarizeRoute(title, result) {
 function summarizeMultiRoute(order, tsp) {
   const strategy = routeStrategyInfo(tsp.strategy);
   updateRouteQuickSummary({
-    title: "多点游览",
+    title: "往返多点游览",
     strategy: strategy.label,
     distance: tsp.totalDistance,
-    minutes: tsp.totalMinutes
+    minutes: tsp.totalMinutes,
+    mode: routeModeLabel(tsp.mode || state.mode, tsp.strategy)
   });
   byId("route-summary").innerHTML = `
-    <p class="eyebrow">多点游览顺序</p>
-    <h3>${state.mode === "bike" ? "骑行" : "步行"} · ${order.length} 个目的地</h3>
-    <p>${escapeHtml(strategy.algorithm)}，按更顺路的顺序串联多个目的地。</p>
+    <p class="eyebrow">往返多点游览顺序</p>
+    <h3>${escapeHtml(routeModeLabel(tsp.mode || state.mode, tsp.strategy))} · ${Math.max(0, order.length - 1)} 个目的地 · 返回起点</h3>
+    <p>${escapeHtml(strategy.algorithm)}，从当前位置出发，参观全部目标后回到起点。</p>
     <ol>${order.map((leg) => {
       const from = findNode(leg.from)?.name || leg.from;
       const to = findNode(leg.to)?.name || leg.to;
-      return `<li>${escapeHtml(from)} → ${escapeHtml(to)} · ${leg.result.distance.toFixed(1)} 米 · ${leg.result.minutes.toFixed(1)} 分钟</li>`;
+      const prefix = leg.returnToStart ? "返回" : "前往";
+      return `<li>${prefix}：${escapeHtml(from)} → ${escapeHtml(to)} · ${leg.result.distance.toFixed(1)} 米 · ${leg.result.minutes.toFixed(1)} 分钟 · ${escapeHtml(segmentModeSummary(leg.result))}</li>`;
     }).join("")}</ol>
   `;
 }
@@ -658,3 +961,5 @@ function bindResultButtons(container) {
     button.dataset.actionReady = "true";
   });
 }
+
+window.addEventListener("resize", debounce(syncIndoorPlanOverlays, 120));
