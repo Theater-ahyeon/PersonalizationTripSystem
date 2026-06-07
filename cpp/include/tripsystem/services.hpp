@@ -82,6 +82,14 @@ struct PathSegmentMetric {
     double cost = 0;
     double distance = 0;
     double minutes = 0;
+    std::string mode = "walk";
+    double congestion = 1.0;
+};
+
+struct IndoorPathResult {
+    bool found = false;
+    double distance = 0;
+    std::vector<std::string> nodes;
 };
 
 class RecommendService {
@@ -143,12 +151,14 @@ public:
     void run(DataManager& data) {
         std::cout << "1 景点最短路径 / Spot shortest path\n"
                   << "2 OSM 路径规划 / OSM route\n"
-                  << "3 多点游览 / TSP multi-stop\n请选择: ";
+                  << "3 多点游览 / TSP multi-stop\n"
+                  << "4 室内导航 / Indoor route\n请选择: ";
         std::string c;
         std::getline(std::cin, c);
         if (c == "1") planSpotPath(data);
         else if (c == "2") planOsmPath(data);
         else if (c == "3") planMultiStopPath(data);
+        else if (c == "4") planIndoorPath(data);
         else std::cout << "无效路径规划选项。\n";
     }
 
@@ -161,15 +171,15 @@ private:
             std::cout << "起点或终点不存在。\n";
             return;
         }
-        bool bike = readBikeMode();
+        std::string mode = readTravelMode();
         std::string strategy = readRouteStrategy();
 
-        SpotPathResult path = shortestSpotPath(data, start, goal, bike, strategy);
+        SpotPathResult path = shortestSpotPath(data, start, goal, mode, strategy);
         if (!path.found) {
             std::cout << "未找到路径。\n";
             return;
         }
-        printSpotPath(data, path, bike, "Spot shortest path");
+        printSpotPath(data, path, mode, "Spot shortest path");
         touchSpotHeat(data, path.nodes);
     }
 
@@ -199,7 +209,7 @@ private:
                 return;
             }
         }
-        bool bike = readBikeMode();
+        std::string mode = readTravelMode();
         std::string strategy = readRouteStrategy();
 
         std::vector<int> points;
@@ -218,7 +228,7 @@ private:
                     paths[i][j] = {true, 0, 0, 0, strategy, {points[i]}};
                     continue;
                 }
-                paths[i][j] = shortestSpotPath(data, points[i], points[j], bike, strategy);
+                paths[i][j] = shortestSpotPath(data, points[i], points[j], mode, strategy);
                 if (!paths[i][j].found) {
                     std::cout << "存在不可达点对: " << spotName(data, points[i])
                               << " -> " << spotName(data, points[j]) << "\n";
@@ -252,8 +262,9 @@ private:
         int bestEnd = -1;
         double best = inf;
         for (int i = 0; i < n; ++i) {
-            if (dp[fullMask][i] < best) {
-                best = dp[fullMask][i];
+            double cycleCost = dp[fullMask][i] + dist[i + 1][0];
+            if (cycleCost < best) {
+                best = cycleCost;
                 bestEnd = i;
             }
         }
@@ -271,10 +282,11 @@ private:
         }
         std::reverse(order.begin(), order.end());
 
-        std::cout << "TSP multi-stop route (" << modeName(bike)
+        std::cout << "TSP multi-stop route (" << mode
                   << ", strategy=" << strategy << ")\n";
         std::cout << "Visit order: " << spotName(data, start);
         for (int idx : order) std::cout << " -> " << spotName(data, targets[idx]);
+        std::cout << " -> " << spotName(data, start);
         std::cout << "\n";
 
         double total = 0;
@@ -295,17 +307,167 @@ private:
                       << leg.total << " meters, minutes=" << leg.minutes
                       << ", strategy=" << strategy
                       << ", cumulative=" << total << " meters\n";
-            printSpotPath(data, leg, bike, "Spot shortest path segment");
+            printSpotPath(data, leg, mode, "Spot shortest path segment");
             touchSpotHeat(data, leg.nodes);
             fromIndex = toIndex;
         }
+        const SpotPathResult& returnLeg = paths[fromIndex][0];
+        total += returnLeg.total;
+        totalMinutes += returnLeg.minutes;
+        totalCost += returnLeg.cost;
+        std::cout << "Segment " << segment++ << " return-to-start: "
+                  << spotName(data, points[fromIndex]) << " -> "
+                  << spotName(data, start)
+                  << ", distance=" << std::fixed << std::setprecision(1)
+                  << returnLeg.total << " meters, minutes=" << returnLeg.minutes
+                  << ", strategy=" << strategy
+                  << ", cumulative=" << total << " meters\n";
+        printSpotPath(data, returnLeg, mode, "Spot shortest path return-to-start");
+        touchSpotHeat(data, returnLeg.nodes);
         std::cout << "TSP multi-stop total=" << std::fixed << std::setprecision(1)
                   << total << " meters, minutes=" << totalMinutes
                   << ", cost=" << totalCost
                   << ", strategy=" << strategy << "\n";
     }
 
-    static SpotPathResult shortestSpotPath(DataManager& data, int start, int goal, bool bike, const std::string& strategy = "distance") {
+    void planIndoorPath(DataManager& data) {
+        if (data.indoorBuildings.empty()) {
+            std::cout << "No indoor building data loaded.\n";
+            return;
+        }
+        std::cout << "Indoor buildings:\n";
+        for (const auto& building : data.indoorBuildings) {
+            std::cout << "  " << building.id << " - " << building.name
+                      << " floors=" << building.floorCount
+                      << " nodes=" << building.nodes.size() << "\n";
+        }
+        std::cout << "Building id: ";
+        std::string buildingId;
+        std::getline(std::cin, buildingId);
+        buildingId = trim(buildingId);
+        IndoorBuilding* building = data.findIndoorBuilding(buildingId);
+        if (!building) {
+            std::cout << "Indoor building not found: " << buildingId << "\n";
+            return;
+        }
+        std::cout << "Indoor nodes:\n";
+        for (const auto& node : building->nodes) {
+            std::cout << "  " << node.id << " - " << node.name
+                      << " [" << node.floor << ", " << node.role << "]\n";
+        }
+        std::cout << "Start node id: ";
+        std::string start;
+        std::getline(std::cin, start);
+        start = trim(start);
+        std::cout << "Goal node id: ";
+        std::string goal;
+        std::getline(std::cin, goal);
+        goal = trim(goal);
+        IndoorPathResult path = shortestIndoorPath(*building, start, goal);
+        if (!path.found) {
+            std::cout << "Indoor route not found in " << building->id << ".\n";
+            return;
+        }
+        printIndoorPath(*building, path);
+    }
+
+    static IndoorPathResult shortestIndoorPath(const IndoorBuilding& building, const std::string& start, const std::string& goal) {
+        if (!findIndoorNode(building, start) || !findIndoorNode(building, goal)) return {};
+        if (start == goal) return {true, 0, {start}};
+        HashMap<std::string, double> dist;
+        HashMap<std::string, std::string> prev;
+        std::vector<std::pair<std::string, double>> queue;
+        dist.insert(start, 0);
+        queue.push_back({start, 0});
+        while (!queue.empty()) {
+            std::sort(queue.begin(), queue.end(), [](const auto& a, const auto& b) { return a.second < b.second; });
+            auto cur = queue.front();
+            queue.erase(queue.begin());
+            double* best = dist.get(cur.first);
+            if (!best || std::abs(*best - cur.second) > 1e-9) continue;
+            if (cur.first == goal) break;
+            for (const auto& edge : building.edges) {
+                std::string next;
+                if (edge.from == cur.first) next = edge.to;
+                else if (edge.to == cur.first) next = edge.from;
+                else continue;
+                double nd = cur.second + edge.distance;
+                double* old = dist.get(next);
+                if (!old || nd < *old) {
+                    dist.insert(next, nd);
+                    prev.insert(next, cur.first);
+                    queue.push_back({next, nd});
+                }
+            }
+        }
+        double* total = dist.get(goal);
+        if (!total) return {};
+        std::vector<std::string> path;
+        for (std::string x = goal; x != start;) {
+            path.push_back(x);
+            std::string* p = prev.get(x);
+            if (!p) return {};
+            x = *p;
+        }
+        path.push_back(start);
+        std::reverse(path.begin(), path.end());
+        return {true, *total, path};
+    }
+
+    static const IndoorNode* findIndoorNode(const IndoorBuilding& building, const std::string& id) {
+        for (const auto& node : building.nodes) {
+            if (node.id == id) return &node;
+        }
+        return nullptr;
+    }
+
+    static void printIndoorPath(const IndoorBuilding& building, const IndoorPathResult& path) {
+        std::cout << "Indoor route " << building.id << " (" << building.name
+                  << ") total=" << std::fixed << std::setprecision(1)
+                  << path.distance << " meters\n";
+        for (size_t i = 0; i < path.nodes.size(); ++i) {
+            const IndoorNode* node = findIndoorNode(building, path.nodes[i]);
+            std::cout << "  " << i << ". " << path.nodes[i];
+            if (node) std::cout << " " << node->name << " [" << node->floor << "]";
+            std::cout << "\n";
+        }
+        printIndoorBreakdown(building, path);
+    }
+
+    static void printIndoorBreakdown(const IndoorBuilding& building, const IndoorPathResult& path) {
+        if (path.nodes.empty()) return;
+        std::vector<size_t> transfers;
+        for (size_t i = 1; i < path.nodes.size(); ++i) {
+            const IndoorNode* prev = findIndoorNode(building, path.nodes[i - 1]);
+            const IndoorNode* cur = findIndoorNode(building, path.nodes[i]);
+            if (prev && cur && prev->floor != cur->floor) transfers.push_back(i);
+        }
+        size_t last = path.nodes.size() - 1;
+        size_t entryEnd = transfers.empty() ? last : transfers.front() - 1;
+        size_t transferStart = transfers.empty() ? entryEnd : transfers.front() - 1;
+        size_t transferEnd = transfers.empty() ? transferStart : transfers.back();
+        size_t roomStart = transfers.empty() ? entryEnd : transfers.back();
+        std::cout << "entry-to-elevator: " << indoorSlice(building, path, 0, entryEnd) << "\n";
+        std::cout << "floor-transfer: "
+                  << (transfers.empty() ? std::string("same-floor") : indoorSlice(building, path, transferStart, transferEnd))
+                  << "\n";
+        std::cout << "floor-to-room: " << indoorSlice(building, path, roomStart, last) << "\n";
+    }
+
+    static std::string indoorSlice(const IndoorBuilding& building, const IndoorPathResult& path, size_t from, size_t to) {
+        if (path.nodes.empty() || from >= path.nodes.size()) return "-";
+        to = std::min(to, path.nodes.size() - 1);
+        std::ostringstream out;
+        for (size_t i = from; i <= to; ++i) {
+            if (i > from) out << " -> ";
+            const IndoorNode* node = findIndoorNode(building, path.nodes[i]);
+            out << (node ? node->name : path.nodes[i]);
+            if (node) out << "(" << node->floor << ")";
+        }
+        return out.str();
+    }
+
+    static SpotPathResult shortestSpotPath(DataManager& data, int start, int goal, const std::string& mode, const std::string& strategy = "distance") {
         if (start == goal) return {true, 0, 0, 0, strategy, {start}};
         HashMap<int, double> dist;
         HashMap<int, int> prev;
@@ -321,7 +483,7 @@ private:
             const auto* edges = data.graph.neighbors(cur.node);
             if (!edges) continue;
             for (const auto& e : *edges) {
-                PathSegmentMetric metric = roadMetric(e, bike, strategy);
+                PathSegmentMetric metric = roadMetric(e, mode, strategy);
                 double nd = cur.dist + metric.cost;
                 double* old = dist.get(e.to);
                 if (!old || nd < *old) {
@@ -379,9 +541,8 @@ private:
         }
         int start = readInt("起点 OSM node id: ");
         int goal = readInt("终点 OSM node id: ");
-        bool bike = readBikeMode();
+        std::string mode = readTravelMode();
         std::string strategy = readRouteStrategy();
-        std::string mode = modeName(bike);
 
         OsmNode* startNode = data.findOsmNode(start);
         OsmNode* goalNode = data.findOsmNode(goal);
@@ -452,8 +613,8 @@ private:
         printOsmPath(data, path, distance, *total, minutes, mode, strategy);
     }
 
-    static void printSpotPath(DataManager& data, const SpotPathResult& path, bool bike, const std::string& title) {
-        std::cout << title << " (" << modeName(bike)
+    static void printSpotPath(DataManager& data, const SpotPathResult& path, const std::string& mode, const std::string& title) {
+        std::cout << title << " (" << mode
                   << ", strategy=" << path.strategy
                   << "), total=" << std::fixed << std::setprecision(1) << path.total
                   << " meters, minutes=" << path.minutes
@@ -467,13 +628,14 @@ private:
             int from = path.nodes[i - 1];
             int to = path.nodes[i];
             const Road* road = data.graph.edgeBetween(from, to);
-            PathSegmentMetric metric = road ? roadMetric(*road, bike, path.strategy) : PathSegmentMetric{};
+            PathSegmentMetric metric = road ? roadMetric(*road, mode, path.strategy) : PathSegmentMetric{};
             cumulative += metric.distance;
             cumulativeMinutes += metric.minutes;
             std::cout << "  " << i << ". " << spotName(data, from)
                       << " -> " << spotName(data, to)
                       << " via road#" << from << "-" << to
-                      << " mode=" << modeName(bike)
+                      << " mode=" << metric.mode
+                      << " congestion=" << metric.congestion
                       << " segment=" << metric.distance
                       << " minutes=" << metric.minutes
                       << " cumulative=" << cumulative << " meters"
@@ -501,58 +663,92 @@ private:
         return targets;
     }
 
-    static bool readBikeMode() {
-        std::cout << "交通方式 walk/bike: ";
+    static std::string readTravelMode() {
+        std::cout << "交通方式 walk/bike/cart/mixed: ";
         std::string mode;
         std::getline(std::cin, mode);
-        mode = trim(mode);
-        return mode == "bike";
+        return normalizeTravelMode(mode);
     }
 
     static std::string readRouteStrategy() {
-        std::cout << "Route strategy distance/time/recommend: ";
+        std::cout << "Route strategy distance/time/recommend/transport: ";
         std::string strategy;
         std::getline(std::cin, strategy);
         return normalizeRouteStrategy(strategy);
+    }
+
+    static std::string normalizeTravelMode(std::string mode) {
+        mode = trim(mode);
+        if (mode == "2") return "bike";
+        if (mode == "3") return "cart";
+        if (mode == "4") return "mixed";
+        if (mode == "bike" || mode == "cart" || mode == "mixed") return mode;
+        return "walk";
     }
 
     static std::string normalizeRouteStrategy(std::string strategy) {
         strategy = trim(strategy);
         if (strategy == "2") return "time";
         if (strategy == "3") return "recommend";
-        if (strategy == "time" || strategy == "recommend") return strategy;
+        if (strategy == "4") return "transport";
+        if (strategy == "time" || strategy == "recommend" || strategy == "transport") return strategy;
         return "distance";
     }
 
-    static PathSegmentMetric roadMetric(const Road& road, bool bike, const std::string& strategy) {
-        double distance = bike ? road.distBike : road.distWalk;
-        double baseMetersPerMinute = bike ? 180.0 : 75.0;
-        double speedFactor = 0.82 + stableUnit("speed:" + std::to_string(road.from) + ":" + std::to_string(road.to)) * 0.46;
-        double minutes = distance / std::max(1.0, baseMetersPerMinute * speedFactor);
-        double scenicPenalty = 0.72 + stableUnit("recommend:" + std::to_string(road.from) + ":" + std::to_string(road.to)) * 0.72;
-        double cost = distance;
-        if (strategy == "time") cost = minutes;
-        else if (strategy == "recommend") cost = minutes * 0.7 + (distance / 100.0) * scenicPenalty;
-        return {cost, distance, minutes};
+    static PathSegmentMetric roadMetric(const Road& road, const std::string& mode, const std::string& strategy) {
+        std::vector<std::string> candidates;
+        if (strategy == "transport" || mode == "mixed") candidates = {"walk", "bike", "cart"};
+        else candidates = {mode};
+        PathSegmentMetric best;
+        best.cost = std::numeric_limits<double>::infinity();
+        for (const auto& candidate : candidates) {
+            double distance = (candidate == "bike") ? road.distBike : road.distWalk;
+            double baseMetersPerMinute = candidate == "bike" ? 180.0 : candidate == "cart" ? 300.0 : 75.0;
+            double speedFactor = 0.82 + stableUnit("speed:" + std::to_string(road.from) + ":" + std::to_string(road.to) + ":" + candidate) * 0.46;
+            double congestion = congestionFor("road:" + std::to_string(road.from) + ":" + std::to_string(road.to) + ":" + candidate, candidate);
+            double minutes = distance / std::max(1.0, baseMetersPerMinute * speedFactor * congestion);
+            if (candidate == "cart") minutes += 1.2;
+            double scenicPenalty = 0.72 + stableUnit("recommend:" + std::to_string(road.from) + ":" + std::to_string(road.to)) * 0.72;
+            double cost = distance;
+            if (strategy == "time" || strategy == "transport") cost = minutes;
+            else if (strategy == "recommend") cost = minutes * 0.7 + (distance / 100.0) * scenicPenalty;
+            PathSegmentMetric metric{cost, distance, minutes, candidate, congestion};
+            if (metric.cost < best.cost) best = metric;
+        }
+        return best;
     }
 
     static PathSegmentMetric osmEdgeMetric(const OsmEdge& edge, const std::string& mode, const std::string& strategy) {
-        double distance = edge.distance;
-        double baseMetersPerMinute = mode == "bike" ? 180.0 : 75.0;
-        double speedFactor = 0.82 + stableUnit("osm-speed:" + std::to_string(edge.from) + ":" + std::to_string(edge.to) + edge.roadName) * 0.46;
-        double minutes = distance / std::max(1.0, baseMetersPerMinute * speedFactor);
-        double scenicPenalty = 0.72 + stableUnit("osm-recommend:" + edge.roadName + ":" + std::to_string(edge.from)) * 0.72;
-        double cost = distance;
-        if (strategy == "time") cost = minutes;
-        else if (strategy == "recommend") cost = minutes * 0.7 + (distance / 100.0) * scenicPenalty;
-        return {cost, distance, minutes};
+        std::vector<std::string> candidates = (strategy == "transport" || mode == "mixed")
+            ? availableTravelModes(edge)
+            : std::vector<std::string>{mode};
+        PathSegmentMetric best;
+        best.cost = std::numeric_limits<double>::infinity();
+        for (const auto& candidate : candidates) {
+            if (!edgeSupportsMode(edge, candidate)) continue;
+            double distance = edge.distance;
+            double baseMetersPerMinute = candidate == "bike" ? 180.0 : candidate == "cart" ? 300.0 : 75.0;
+            double speedFactor = 0.82 + stableUnit("osm-speed:" + std::to_string(edge.from) + ":" + std::to_string(edge.to) + edge.roadName + ":" + candidate) * 0.46;
+            double congestion = congestionFor("osm:" + std::to_string(edge.from) + ":" + std::to_string(edge.to) + ":" + edge.roadName + ":" + candidate, candidate);
+            double minutes = distance / std::max(1.0, baseMetersPerMinute * speedFactor * congestion);
+            if (candidate == "cart") minutes += 1.2;
+            double scenicPenalty = 0.72 + stableUnit("osm-recommend:" + edge.roadName + ":" + std::to_string(edge.from)) * 0.72;
+            double cost = distance;
+            if (strategy == "time" || strategy == "transport") cost = minutes;
+            else if (strategy == "recommend") cost = minutes * 0.7 + (distance / 100.0) * scenicPenalty;
+            PathSegmentMetric metric{cost, distance, minutes, candidate, congestion};
+            if (metric.cost < best.cost) best = metric;
+        }
+        return best.cost == std::numeric_limits<double>::infinity()
+            ? PathSegmentMetric{}
+            : best;
     }
 
     static double heuristicCost(const OsmNode& a, const OsmNode& b, const std::string& mode, const std::string& strategy) {
         double straight = haversine(a, b);
         if (strategy == "distance") return straight;
-        double baseMetersPerMinute = mode == "bike" ? 180.0 : 75.0;
-        if (strategy == "time") return straight / (baseMetersPerMinute * 1.28);
+        double baseMetersPerMinute = mode == "bike" ? 180.0 : mode == "cart" || mode == "mixed" ? 300.0 : 75.0;
+        if (strategy == "time" || strategy == "transport") return straight / (baseMetersPerMinute * 1.28);
         return straight / 120.0;
     }
 
@@ -584,7 +780,7 @@ private:
     }
 
     static void printOsmPath(DataManager& data, const std::vector<int>& path, double total, double cost, double minutes, const std::string& mode, const std::string& strategy) {
-        std::cout << "OSM A* path (" << mode
+        std::cout << "OSM A* path mode=" << mode
                   << ", strategy=" << strategy
                   << "), total=" << std::fixed << std::setprecision(1) << total
                   << " meters, minutes=" << minutes
@@ -608,7 +804,8 @@ private:
             std::cout << (prevNode ? prevNode->name : std::to_string(path[i - 1]))
                       << " -> " << (n ? n->name : std::to_string(path[i]))
                       << " via " << (edge ? edge->roadName : "unknown road")
-                      << " mode=" << mode
+                      << " mode=" << metric.mode
+                      << " congestion=" << metric.congestion
                       << " segment=" << metric.distance
                       << " minutes=" << metric.minutes
                       << " cumulative=" << cumulative << " meters"
@@ -617,7 +814,38 @@ private:
     }
 
     static bool edgeSupportsMode(const OsmEdge& e, const std::string& mode) {
+        if (mode == "mixed" || mode == "transport") return !availableTravelModes(e).empty();
+        if (mode == "cart") return e.mode == "cart" || electricCartEligible(e);
         return e.mode == "both" || e.mode == mode;
+    }
+
+    static std::vector<std::string> availableTravelModes(const OsmEdge& e) {
+        std::vector<std::string> modes;
+        if (e.mode == "walk" || e.mode == "both") modes.push_back("walk");
+        if (e.mode == "bike" || e.mode == "both") modes.push_back("bike");
+        if (e.mode == "cart" || electricCartEligible(e)) modes.push_back("cart");
+        return modes;
+    }
+
+    static bool electricCartEligible(const OsmEdge& e) {
+        if (e.mode == "cart") return true;
+        const std::string text = e.roadName;
+        return text.find("东宫门") != std::string::npos
+            || text.find("仁寿殿") != std::string::npos
+            || text.find("排云门") != std::string::npos
+            || text.find("长廊") != std::string::npos
+            || text.find("苏州街") != std::string::npos
+            || text.find("北宫门") != std::string::npos
+            || text.find("昆明湖") != std::string::npos
+            || text.find("广场") != std::string::npos
+            || text.find("主路") != std::string::npos
+            || text.find("景点接入") != std::string::npos
+            || stableUnit("cart:" + std::to_string(e.from) + ":" + std::to_string(e.to)) > 0.82;
+    }
+
+    static double congestionFor(const std::string& key, const std::string& mode) {
+        double base = mode == "cart" ? 0.70 : mode == "bike" ? 0.66 : 0.62;
+        return std::max(0.55, std::min(0.98, base + stableUnit("congestion:" + key) * (0.98 - base)));
     }
 
     static double haversine(const OsmNode& a, const OsmNode& b) {

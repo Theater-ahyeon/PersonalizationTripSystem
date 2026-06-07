@@ -527,9 +527,12 @@ function runShortestPath() {
   const mode = strategy === "transport" ? "mixed" : state.mode;
   const result = shortestPath(start, goal, mode, strategy);
   if (!result) {
+    state.lastRouteResult = null;
+    renderCongestionPanel(null);
     summarize("当前交通方式下未找到可达路径。");
     return;
   }
+  state.lastRouteResult = result;
   drawRoute(result.path, routeStrategyInfo(strategy).color);
   summarizeRoute(routeStrategyInfo(strategy).label, result);
 }
@@ -568,10 +571,13 @@ function runMultiStopRoute() {
   const mode = strategy === "transport" ? "mixed" : state.mode;
   const tsp = solveTspDp(start, targets, mode, strategy);
   if (!tsp) {
+    state.lastRouteResult = null;
+    renderCongestionPanel(null);
     summarize("多点游览中存在不可达节点。");
     return;
   }
 
+  state.lastRouteResult = tsp;
   drawRoute(tsp.fullPath, routeStrategyInfo(tsp.strategy).color);
   summarizeMultiRoute(tsp.order, tsp);
 }
@@ -768,7 +774,19 @@ function edgeWeight(edge, mode, strategy = state.routeStrategy) {
   let cost = distance;
   if (strategy === "time" || strategy === "transport") cost = minutes;
   if (strategy === "recommend") cost = minutes * 0.7 + (distance / 100) * scenicPenalty;
-  return { cost, distance, minutes, congestion, travelMode, idealSpeed, realSpeed };
+  return {
+    cost,
+    distance,
+    minutes,
+    congestion,
+    travelMode,
+    idealSpeed,
+    realSpeed,
+    edgeKey: congestionEdgeKey(edge, travelMode),
+    from: Number(edge.from),
+    to: Number(edge.to),
+    roadName: edge.road_name || ""
+  };
 }
 
 function availableTravelModes(edge) {
@@ -822,10 +840,91 @@ function segmentModeSummary(result) {
 }
 
 function edgeCongestion(edge, travelMode = "walk") {
-  const name = `${edge.road_name || ""}${edge.from}-${edge.to}:${travelMode}`;
+  const key = congestionEdgeKey(edge, travelMode);
+  if (state.userCongestionOverride?.has(key)) {
+    return Number(state.userCongestionOverride.get(key));
+  }
+  const name = `${state.congestionSeed || "default"}:${edge.road_name || ""}${edge.from}-${edge.to}:${travelMode}`;
   const hash = stableFraction(name);
   const base = travelMode === "cart" ? 0.7 : travelMode === "bike" ? 0.66 : 0.62;
   return clamp(base + hash * (0.98 - base), 0.55, 0.98);
+}
+
+function congestionEdgeKey(edge, travelMode = "walk") {
+  return `${Number(edge.from)}>${Number(edge.to)}:${travelMode}`;
+}
+
+function renderCongestionPanel(result = state.lastRouteResult) {
+  const panel = byId("congestion-panel");
+  const list = byId("congestionList");
+  if (!panel || !list) return;
+  const segments = routeSegmentsForCongestion(result);
+  if (!segments.length) {
+    panel.hidden = true;
+    list.innerHTML = "";
+    return;
+  }
+  panel.hidden = false;
+  const seen = new Set();
+  const rows = [];
+  segments.forEach((segment) => {
+    const key = segment.edgeKey || `${segment.from}>${segment.to}:${segment.travelMode || "walk"}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    const from = findNode(segment.from)?.name || segment.from;
+    const to = findNode(segment.to)?.name || segment.to;
+    const congestion = clamp(Number(segment.congestion || 1), 0.55, 0.98);
+    const pct = Math.round(congestion * 100);
+    rows.push(`
+      <label class="congestion-row">
+        <span class="congestion-road">${escapeHtml(segment.roadName || `${from} -> ${to}`)}</span>
+        <small>${escapeHtml(from)} -> ${escapeHtml(to)} · ${escapeHtml(travelModeLabel(segment.travelMode))}</small>
+        <input type="range" min="55" max="98" value="${pct}" data-congestion-key="${escapeHtml(key)}">
+        <output>${pct}%</output>
+      </label>
+    `);
+  });
+  list.innerHTML = rows.join("");
+  list.querySelectorAll("[data-congestion-key]").forEach((input) => {
+    input.addEventListener("input", handleCongestionInput);
+    input.addEventListener("change", handleCongestionInput);
+  });
+}
+
+function routeSegmentsForCongestion(result) {
+  if (!result) return [];
+  if (Array.isArray(result.segments)) return result.segments;
+  if (Array.isArray(result.order)) return result.order.flatMap((leg) => leg.result?.segments || []);
+  return [];
+}
+
+let congestionRecalcTimer = null;
+
+function handleCongestionInput(event) {
+  const input = event.currentTarget;
+  const key = input.dataset.congestionKey;
+  const value = clamp(Number(input.value) / 100, 0.55, 0.98);
+  if (!key) return;
+  state.userCongestionOverride.set(key, value);
+  input.closest(".congestion-row")?.querySelector("output")?.replaceChildren(`${Math.round(value * 100)}%`);
+  clearTimeout(congestionRecalcTimer);
+  congestionRecalcTimer = setTimeout(recalculateCurrentRoute, 140);
+}
+
+function resetCongestion() {
+  state.userCongestionOverride.clear();
+  state.congestionSeed = `seed-${Date.now()}`;
+  recalculateCurrentRoute();
+}
+
+function recalculateCurrentRoute() {
+  const result = state.lastRouteResult;
+  if (!result) {
+    renderCongestionPanel(null);
+    return;
+  }
+  if (Array.isArray(result.order)) runMultiStopRoute();
+  else runShortestPath();
 }
 
 function drawRoute(path, color) {
@@ -876,6 +975,10 @@ function drawRoute(path, color) {
 function clearRouteLayers(writeSummary = true) {
   state.routeLayers.forEach((layer) => layer.remove());
   state.routeLayers = [];
+  if (writeSummary) {
+    state.lastRouteResult = null;
+    renderCongestionPanel(null);
+  }
   if (writeSummary) summarize("路线已清除，可以重新选择起终点。");
 }
 
@@ -894,6 +997,7 @@ function summarizeRoute(title, result) {
     minutes: result.minutes,
     mode: routeModeLabel(result.mode || state.mode, result.strategy)
   });
+  renderCongestionPanel(result);
   byId("route-summary").innerHTML = `
     <p class="eyebrow">${escapeHtml(title)}</p>
     <h3>${escapeHtml(start?.name || "-")} → ${escapeHtml(goal?.name || "-")}</h3>
@@ -913,6 +1017,7 @@ function summarizeMultiRoute(order, tsp) {
     minutes: tsp.totalMinutes,
     mode: routeModeLabel(tsp.mode || state.mode, tsp.strategy)
   });
+  renderCongestionPanel(tsp);
   byId("route-summary").innerHTML = `
     <p class="eyebrow">往返多点游览顺序</p>
     <h3>${escapeHtml(routeModeLabel(tsp.mode || state.mode, tsp.strategy))} · ${Math.max(0, order.length - 1)} 个目的地 · 返回起点</h3>
@@ -928,6 +1033,7 @@ function summarizeMultiRoute(order, tsp) {
 
 function summarize(message) {
   updateRouteQuickSummary(null);
+  renderCongestionPanel(null);
   byId("route-summary").innerHTML = `<p class="eyebrow">路线提示</p><h3>${escapeHtml(message)}</h3>`;
 }
 

@@ -247,6 +247,16 @@ foreach ($Needle in @("spotReviewSnippets", "spot-review-list", "diaryScopeSelec
     throw "Frontend missing planned optimization hook: $Needle"
   }
 }
+foreach ($Needle in @("web/assets/indoor", "F1.jpg", "hosp_1_entrance", "tsinghua_hospital", "pku_library", "wenchang", "congestion-panel", "renderCongestionPanel", "userCongestionOverride", "reset-congestion")) {
+  if ($IndexText -notlike "*$Needle*" -and $AppText -notlike "*$Needle*" -and $StyleText -notlike "*$Needle*") {
+    throw "Frontend missing indoor/route acceptance hook: $Needle"
+  }
+}
+foreach ($Needle in @('id: "teaching_building"', 'id: "palace_route"')) {
+  if ($AppText -like "*$Needle*") {
+    throw "Frontend indoor navigation should not expose removed building: $Needle"
+  }
+}
 if ($IndexText -like "*数据集*" -or $IndexText -like "*数据包*") {
   throw "Visible region UI must not use 数据集/数据包 naming."
 }

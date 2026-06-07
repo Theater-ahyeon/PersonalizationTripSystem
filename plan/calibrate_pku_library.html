@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PKU 图书馆室内导航 — 节点校准工具</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, 'Segoe UI', sans-serif; background: #f5f7fa; color: #1a1f2e; padding: 20px; }
+h1 { font-size: 20px; margin-bottom: 6px; }
+h2 { font-size: 14px; font-weight: 600; margin: 0 0 8px; color: #555; }
+.sub { color: #777; font-size: 13px; margin-bottom: 16px; }
+
+.toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+.toolbar button, .toolbar select { padding: 6px 14px; border: 1px solid #d0d5dd; border-radius: 6px; background: #fff; cursor: pointer; font-size: 13px; }
+.toolbar button:hover { background: #eef2ff; }
+.toolbar button.primary { background: #0058bc; color: #fff; border-color: #0058bc; }
+.toolbar button.primary:hover { background: #004a9f; }
+.toolbar .badge { background: #eef2ff; padding: 4px 10px; border-radius: 999px; font-size: 12px; color: #0058bc; }
+
+.canvas-wrap { position: relative; display: inline-block; border: 2px solid #d0d5dd; border-radius: 8px; overflow: hidden; background: #e8ecf2; }
+.canvas-wrap img { display: block; max-width: 100%; height: auto; }
+.canvas-wrap .overlay { position: absolute; inset: 0; pointer-events: none; }
+.canvas-wrap .overlay.dragging { pointer-events: auto; }
+
+.marker {
+  position: absolute;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: #0058bc;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  transform: translate(-50%, -50%);
+  cursor: grab;
+  pointer-events: auto;
+  z-index: 10;
+  transition: box-shadow 0.15s;
+}
+.marker:hover { box-shadow: 0 0 0 4px rgba(0,88,188,0.3), 0 2px 8px rgba(0,0,0,0.4); }
+.marker.dragging { cursor: grabbing; box-shadow: 0 0 0 4px rgba(220,50,50,0.4); z-index: 20; }
+.marker .label {
+  position: absolute;
+  left: 16px; top: -6px;
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 700;
+  color: #1a1f2e;
+  background: rgba(255,255,255,0.92);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid rgba(0,0,0,0.1);
+  pointer-events: none;
+}
+.marker.elevator { background: #e67e22; }
+.marker.entrance { background: #27ae60; }
+.marker.room { background: #0058bc; }
+.marker.minor { width: 8px; height: 8px; opacity: 0.5; }
+.marker.minor .label { display: none; }
+
+.output {
+  margin-top: 16px;
+  background: #1a1f2e;
+  color: #a0f0a0;
+  padding: 16px;
+  border-radius: 8px;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  max-height: 400px;
+  overflow: auto;
+}
+.output .comment { color: #888; }
+.copy-btn { margin-top: 8px; }
+
+.status-bar { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin: 8px 0; font-size: 13px; color: #555; }
+
+.note { background: #fff8e1; border: 1px solid #ffe082; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; font-size: 13px; line-height: 1.6; }
+.note strong { color: #e65100; }
+</style>
+</head>
+<body>
+
+<h1>🗺️ 北京大学图书馆 — 室内节点坐标校准工具</h1>
+<p class="sub">将节点拖拽到楼层平面图上的正确位置，然后复制修正后的坐标代码</p>
+
+<div class="note">
+  <strong>⚠️ 操作说明：</strong><br>
+  1. 从下拉框选择楼层（1F~4F）<br>
+  2. 拖拽每个彩色圆点到平面图上对应的实际位置<br>
+  3. 颜色说明：🟢 入口 &nbsp; 🔵 房间/功能区 &nbsp; 🟠 电梯/楼梯 &nbsp; ⚪ 次要节点<br>
+  4. 所有楼层调整完成后，点击 <strong>"生成修正代码"</strong>，复制下方输出的 JSON<br>
+  5. 将输出的节点坐标替换到 <code>web/scripts/core.js</code> 中对应楼层的 <code>nodes</code> 数组里
+</div>
+
+<div class="toolbar">
+  <select id="floorSelect">
+    <option value="1F">1F — 一层</option>
+    <option value="2F">2F — 二层</option>
+    <option value="3F">3F — 三层</option>
+    <option value="4F">4F — 四层</option>
+  </select>
+  <button id="resetBtn">🔄 重置本层</button>
+  <button id="snapBtn">📐 吸附到5%网格</button>
+  <button id="showAllBtn" class="primary">📋 生成修正代码</button>
+  <span class="badge" id="statusBadge">0 个节点</span>
+</div>
+
+<div class="status-bar">
+  <span>拖动节点到正确位置</span>
+  <span id="coordDisplay">坐标: —</span>
+</div>
+
+<div id="canvasContainer" class="canvas-wrap" style="max-width:800px;">
+  <img id="floorImage" src="" alt="楼层平面图" style="max-width:100%;">
+  <div id="overlay" class="overlay"></div>
+</div>
+
+<div>
+  <button id="copyBtn" class="copy-btn" style="display:none;padding:8px 20px;background:#0058bc;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:14px;">📋 复制到剪贴板</button>
+</div>
+<div id="output" class="output"></div>
+
+<script>
+// ====== 原始节点数据（与 core.js 一致） ======
+const RAW_NODES = [
+  // 1F
+  { id: "pku_1_east", name: "东门入口", floor: "1F", x: 84, y: 74, type: "entrance" },
+  { id: "pku_1_info", name: "咨询台", floor: "1F", x: 74, y: 70, type: "service" },
+  { id: "pku_1_service", name: "总服务台", floor: "1F", x: 58, y: 68, type: "service" },
+  { id: "pku_1_borrow", name: "自助借还区", floor: "1F", x: 43, y: 68, type: "room" },
+  { id: "pku_1_cards", name: "证卡服务", floor: "1F", x: 30, y: 69, type: "service" },
+  { id: "pku_1_catalog", name: "目录检索区", floor: "1F", x: 54, y: 51, minor: true },
+  { id: "pku_1_newspaper", name: "报刊阅览区", floor: "1F", x: 34, y: 42, type: "room" },
+  { id: "pku_1_exhibit", name: "展览厅", floor: "1F", x: 66, y: 42, type: "room" },
+  { id: "pku_1_lift", name: "一层电梯/楼梯", floor: "1F", x: 50, y: 31, type: "elevator" },
+  { id: "pku_1_west", name: "西侧学习区", floor: "1F", x: 22, y: 31, minor: true },
+  // 2F
+  { id: "pku_2_lift", name: "二层电梯/楼梯", floor: "2F", x: 50, y: 31, type: "elevator" },
+  { id: "pku_2_science", name: "自然科学阅览区", floor: "2F", x: 37, y: 39, type: "room" },
+  { id: "pku_2_social", name: "社会科学阅览区", floor: "2F", x: 62, y: 39, type: "room" },
+  { id: "pku_2_philosophy", name: "哲学宗教阅览区", floor: "2F", x: 28, y: 57, type: "room" },
+  { id: "pku_2_language", name: "语言文字阅览区", floor: "2F", x: 52, y: 57, type: "room" },
+  { id: "pku_2_art", name: "艺术阅览区", floor: "2F", x: 73, y: 57, type: "room" },
+  { id: "pku_2_self", name: "自助复印区", floor: "2F", x: 47, y: 74, minor: true },
+  { id: "pku_2_east", name: "东侧学习座", floor: "2F", x: 77, y: 73, minor: true },
+  // 3F
+  { id: "pku_3_lift", name: "三层电梯/楼梯", floor: "3F", x: 50, y: 31, type: "elevator" },
+  { id: "pku_3_literature", name: "文学阅览区", floor: "3F", x: 35, y: 41, type: "room" },
+  { id: "pku_3_history", name: "历史地理阅览区", floor: "3F", x: 62, y: 41, type: "room" },
+  { id: "pku_3_foreign", name: "外文图书阅览区", floor: "3F", x: 28, y: 61, type: "room" },
+  { id: "pku_3_reference", name: "工具书阅览区", floor: "3F", x: 52, y: 61, type: "room" },
+  { id: "pku_3_group", name: "小组研修室", floor: "3F", x: 74, y: 61, type: "room" },
+  { id: "pku_3_quiet", name: "静音学习区", floor: "3F", x: 47, y: 77, minor: true },
+  // 4F
+  { id: "pku_4_lift", name: "四层电梯/楼梯", floor: "4F", x: 50, y: 31, type: "elevator" },
+  { id: "pku_4_rare", name: "古籍阅览区", floor: "4F", x: 35, y: 41, type: "room" },
+  { id: "pku_4_periodical", name: "过刊阅览区", floor: "4F", x: 62, y: 41, type: "room" },
+  { id: "pku_4_local", name: "地方文献区", floor: "4F", x: 28, y: 61, type: "room" },
+  { id: "pku_4_special", name: "特藏资料区", floor: "4F", x: 52, y: 61, type: "room" },
+  { id: "pku_4_microfilm", name: "缩微资料区", floor: "4F", x: 74, y: 61, type: "room" },
+  { id: "pku_4_reading", name: "四层阅览座", floor: "4F", x: 48, y: 77, minor: true }
+];
+
+// ====== 楼层图片映射 ======
+const FLOOR_IMAGES = {
+  "1F": "plan/pku_library/1ceng.jpg",
+  "2F": "plan/pku_library/2ceng.jpg",
+  "3F": "plan/pku_library/3ceng.jpg",
+  "4F": "plan/pku_library/4ceng.jpg"
+};
+
+// ====== 状态 ======
+let currentFloor = "1F";
+let nodes = JSON.parse(JSON.stringify(RAW_NODES)); // deep copy
+let dragNode = null;
+let dragOffset = { x: 0, y: 0 };
+
+// ====== DOM 引用 ======
+const floorSelect = document.getElementById("floorSelect");
+const floorImage = document.getElementById("floorImage");
+const overlay = document.getElementById("overlay");
+const output = document.getElementById("output");
+const statusBadge = document.getElementById("statusBadge");
+const coordDisplay = document.getElementById("coordDisplay");
+const canvasContainer = document.getElementById("canvasContainer");
+
+// ====== 工具函数 ======
+function getFloorNodes(floor) {
+  return nodes.filter(n => n.floor === floor);
+}
+
+function percentToPixel(px, dimension) {
+  return (px / 100) * dimension;
+}
+function pixelToPercent(px, dimension) {
+  return Math.round((px / dimension) * 1000) / 10; // 保留1位小数
+}
+
+// ====== 渲染当前楼层 ======
+function renderFloor(floor) {
+  currentFloor = floor;
+  floorImage.src = FLOOR_IMAGES[floor];
+  floorImage.onload = () => {
+    syncOverlaySize();
+    renderMarkers(floor);
+  };
+  // If image already cached
+  if (floorImage.complete && floorImage.naturalWidth) {
+    syncOverlaySize();
+    renderMarkers(floor);
+  }
+  floorSelect.value = floor;
+}
+
+function syncOverlaySize() {
+  // Make overlay match the displayed image size
+  const rect = floorImage.getBoundingClientRect();
+  overlay.style.width = rect.width + "px";
+  overlay.style.height = rect.height + "px";
+}
+
+function renderMarkers(floor) {
+  overlay.innerHTML = "";
+  const floorNodes = getFloorNodes(floor);
+  statusBadge.textContent = `${floorNodes.length} 个节点`;
+  
+  const rect = floorImage.getBoundingClientRect();
+  const imgW = floorImage.naturalWidth || 160;
+  const imgH = floorImage.naturalHeight || 138;
+  
+  // Calculate displayed image dimensions (accounting for object-fit: contain)
+  const containerW = rect.width;
+  const containerH = rect.height;
+  const imageRatio = imgW / imgH;
+  const containerRatio = containerW / containerH;
+  
+  let displayW, displayH, offsetX, offsetY;
+  if (containerRatio > imageRatio) {
+    displayH = containerH;
+    displayW = displayH * imageRatio;
+    offsetX = (containerW - displayW) / 2;
+    offsetY = 0;
+  } else {
+    displayW = containerW;
+    displayH = displayW / imageRatio;
+    offsetX = 0;
+    offsetY = (containerH - displayH) / 2;
+  }
+  
+  floorNodes.forEach(node => {
+    const el = document.createElement("div");
+    el.className = "marker" + (node.type === "elevator" ? " elevator" : node.type === "entrance" ? " entrance" : node.type === "room" ? " room" : "") + (node.minor ? " minor" : "");
+    el.dataset.id = node.id;
+    
+    // Position: convert percentage to pixel within the displayed image area
+    const px = offsetX + (node.x / 100) * displayW;
+    const py = offsetY + (node.y / 100) * displayH;
+    el.style.left = px + "px";
+    el.style.top = py + "px";
+    
+    if (!node.minor) {
+      const label = document.createElement("span");
+      label.className = "label";
+      label.textContent = node.name;
+      el.appendChild(label);
+    }
+    
+    // Drag handlers
+    el.addEventListener("mousedown", (e) => startDrag(e, node, el, displayW, displayH, offsetX, offsetY));
+    el.addEventListener("touchstart", (e) => startDragTouch(e, node, el, displayW, displayH, offsetX, offsetY), { passive: false });
+    
+    overlay.appendChild(el);
+  });
+}
+
+// ====== 拖拽逻辑 ======
+function startDrag(e, node, el, displayW, displayH, offsetX, offsetY) {
+  e.preventDefault();
+  dragNode = { node, el, displayW, displayH, offsetX, offsetY };
+  el.classList.add("dragging");
+  overlay.classList.add("dragging");
+  
+  const rect = floorImage.getBoundingClientRect();
+  dragOffset.x = e.clientX - (offsetX + (node.x / 100) * displayW) - rect.left;
+  dragOffset.y = e.clientY - (offsetY + (node.y / 100) * displayH) - rect.top;
+  
+  document.addEventListener("mousemove", onDrag);
+  document.addEventListener("mouseup", endDrag);
+}
+
+function startDragTouch(e, node, el, displayW, displayH, offsetX, offsetY) {
+  e.preventDefault();
+  const touch = e.touches[0];
+  dragNode = { node, el, displayW, displayH, offsetX, offsetY };
+  el.classList.add("dragging");
+  overlay.classList.add("dragging");
+  
+  const rect = floorImage.getBoundingClientRect();
+  dragOffset.x = touch.clientX - (offsetX + (node.x / 100) * displayW) - rect.left;
+  dragOffset.y = touch.clientY - (offsetY + (node.y / 100) * displayH) - rect.top;
+  
+  document.addEventListener("touchmove", onDragTouch, { passive: false });
+  document.addEventListener("touchend", endDragTouch);
+}
+
+function onDrag(e) {
+  if (!dragNode) return;
+  const { node, el, displayW, displayH, offsetX, offsetY } = dragNode;
+  const rect = floorImage.getBoundingClientRect();
+  
+  const px = e.clientX - rect.left - dragOffset.x - offsetX;
+  const py = e.clientY - rect.top - dragOffset.y - offsetY;
+  
+  // Clamp to image area
+  const clampedPx = Math.max(0, Math.min(displayW, px));
+  const clampedPy = Math.max(0, Math.min(displayH, py));
+  
+  node.x = Math.round((clampedPx / displayW) * 1000) / 10;
+  node.y = Math.round((clampedPy / displayH) * 1000) / 10;
+  
+  el.style.left = (offsetX + clampedPx) + "px";
+  el.style.top = (offsetY + clampedPy) + "px";
+  
+  coordDisplay.textContent = `${node.name}: (x: ${node.x.toFixed(1)}%, y: ${node.y.toFixed(1)}%)`;
+}
+
+function onDragTouch(e) {
+  e.preventDefault();
+  if (!dragNode) return;
+  const touch = e.touches[0];
+  const { node, el, displayW, displayH, offsetX, offsetY } = dragNode;
+  const rect = floorImage.getBoundingClientRect();
+  
+  const px = touch.clientX - rect.left - dragOffset.x - offsetX;
+  const py = touch.clientY - rect.top - dragOffset.y - offsetY;
+  
+  const clampedPx = Math.max(0, Math.min(displayW, px));
+  const clampedPy = Math.max(0, Math.min(displayH, py));
+  
+  node.x = Math.round((clampedPx / displayW) * 1000) / 10;
+  node.y = Math.round((clampedPy / displayH) * 1000) / 10;
+  
+  el.style.left = (offsetX + clampedPx) + "px";
+  el.style.top = (offsetY + clampedPy) + "px";
+  
+  coordDisplay.textContent = `${node.name}: (x: ${node.x.toFixed(1)}%, y: ${node.y.toFixed(1)}%)`;
+}
+
+function endDrag() {
+  if (dragNode) dragNode.el.classList.remove("dragging");
+  overlay.classList.remove("dragging");
+  dragNode = null;
+  document.removeEventListener("mousemove", onDrag);
+  document.removeEventListener("mouseup", endDrag);
+}
+
+function endDragTouch() {
+  if (dragNode) dragNode.el.classList.remove("dragging");
+  overlay.classList.remove("dragging");
+  dragNode = null;
+  document.removeEventListener("touchmove", onDragTouch);
+  document.removeEventListener("touchend", endDragTouch);
+}
+
+// ====== 吸附到网格 ======
+function snapToGrid() {
+  const floorNodes = getFloorNodes(currentFloor);
+  floorNodes.forEach(node => {
+    node.x = Math.round(node.x / 5) * 5;
+    node.y = Math.round(node.y / 5) * 5;
+  });
+  renderMarkers(currentFloor);
+}
+
+// ====== 重置本层 ======
+function resetFloor() {
+  const floor = currentFloor;
+  const raw = RAW_NODES.filter(n => n.floor === floor);
+  raw.forEach(r => {
+    const n = nodes.find(x => x.id === r.id);
+    if (n) { n.x = r.x; n.y = r.y; }
+  });
+  renderMarkers(floor);
+}
+
+// ====== 生成修正代码 ======
+function generateOutput() {
+  let output = `// ===== 修正后的 PKU 图书馆节点坐标 =====\n`;
+  output += `// 生成时间: ${new Date().toLocaleString()}\n\n`;
+  
+  ["1F", "2F", "3F", "4F"].forEach(floor => {
+    const floorNodes = nodes.filter(n => n.floor === floor);
+    output += `// ---- ${floor} ----\n`;
+    floorNodes.forEach(n => {
+      const orig = RAW_NODES.find(x => x.id === n.id);
+      const changed = orig && (orig.x !== n.x || orig.y !== n.y);
+      output += `      { id: "${n.id}", name: "${n.name}", floor: "${n.floor}", x: ${n.x.toFixed(1)}, y: ${n.y.toFixed(1)}${n.type === "elevator" ? ', type: "elevator"' : n.type === "entrance" ? ', type: "entrance"' : n.type === "room" ? ', type: "room"' : n.type === "service" ? ', type: "service"' : ''}${n.minor ? ', minor: true' : ''} }${changed ? '  // ← 已调整' : ''}\n`;
+    });
+    output += "\n";
+  });
+  
+  // Also generate the complete nodes array block for easy copy-paste
+  output += `// ===== 完整 nodes 数组（可直接替换 core.js 对应楼层部分） =====\n`;
+  output += `    nodes: [\n`;
+  nodes.forEach((n, i) => {
+    output += `      { id: "${n.id}", name: "${n.name}", floor: "${n.floor}", x: ${n.x.toFixed(1)}, y: ${n.y.toFixed(1)}${n.type === "elevator" ? ', type: "elevator"' : n.type === "entrance" ? ', type: "entrance"' : n.type === "room" ? ', type: "room"' : n.type === "service" ? ', type: "service"' : ''}${n.minor ? ', minor: true' : ''} }${i < nodes.length - 1 ? ',' : ''}\n`;
+  });
+  output += `    ],\n`;
+  
+  output += `\n// ===== 仅变更的节点（与原始对比） =====\n`;
+  nodes.forEach(n => {
+    const orig = RAW_NODES.find(x => x.id === n.id);
+    if (orig && (orig.x !== n.x || orig.y !== n.y)) {
+      const dx = (n.x - orig.x).toFixed(1);
+      const dy = (n.y - orig.y).toFixed(1);
+      output += `// ${n.name}: (${orig.x}→${n.x}, ${orig.y}→${n.y}) [Δx=${dx}, Δy=${dy}]\n`;
+    }
+  });
+  
+  return output;
+}
+
+// ====== 事件绑定 ======
+floorSelect.addEventListener("change", () => renderFloor(floorSelect.value));
+
+document.getElementById("resetBtn").addEventListener("click", resetFloor);
+document.getElementById("snapBtn").addEventListener("click", snapToGrid);
+
+document.getElementById("showAllBtn").addEventListener("click", () => {
+  const text = generateOutput();
+  output.textContent = text;
+  document.getElementById("copyBtn").style.display = "inline-block";
+});
+
+document.getElementById("copyBtn").addEventListener("click", () => {
+  const text = output.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    document.getElementById("copyBtn").textContent = "✅ 已复制!";
+    setTimeout(() => {
+      document.getElementById("copyBtn").textContent = "📋 复制到剪贴板";
+    }, 2000);
+  });
+});
+
+// Window resize handling
+window.addEventListener("resize", () => {
+  syncOverlaySize();
+  renderMarkers(currentFloor);
+});
+
+// ====== 初始化 ======
+renderFloor("1F");
+
+</script>
+</body>
+</html>

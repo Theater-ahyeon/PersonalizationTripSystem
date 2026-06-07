@@ -4381,6 +4381,84 @@ textarea {
   line-height: 1.35;
 }
 
+.congestion-panel {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid rgba(15, 39, 66, 0.12);
+  border-radius: 10px;
+  background: rgba(248, 251, 255, 0.9);
+}
+
+.congestion-panel[hidden] {
+  display: none;
+}
+
+.congestion-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.congestion-panel-head span {
+  color: #0f2742;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.congestion-list {
+  display: grid;
+  gap: 9px;
+}
+
+.congestion-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 10px;
+  align-items: center;
+  padding: 8px 0;
+  border-top: 1px solid rgba(193, 198, 215, 0.45);
+}
+
+.congestion-row:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.congestion-row .congestion-road {
+  min-width: 0;
+  overflow: hidden;
+  color: #15283f;
+  font-size: 13px;
+  font-weight: 850;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.congestion-row small {
+  grid-column: 1 / -1;
+  color: #647085;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.congestion-row input {
+  grid-column: 1;
+  width: 100%;
+  margin: 0;
+}
+
+.congestion-row output {
+  grid-column: 2;
+  min-width: 42px;
+  color: #414755;
+  font-size: 12px;
+  font-weight: 850;
+  text-align: right;
+}
+
 .diary-compose-toggle {
   width: min(220px, 100%);
   justify-self: start;

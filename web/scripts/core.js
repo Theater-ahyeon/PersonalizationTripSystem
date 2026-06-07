@@ -51,6 +51,8 @@ const ROUTE_STRATEGIES = {
     color: "#7a45c8"
   }
 };
+const INDOOR_ASSET_ROOT = "./assets/indoor";
+const INDOOR_ASSET_SOURCE_NOTE = "web/assets/indoor";
 const INDOOR_NODES = [
   { id: "gate", name: "文昌院大门", floor: "1F" },
   { id: "lobby", name: "前厅导览台", floor: "1F" },
@@ -204,7 +206,7 @@ INDOOR_BUILDINGS.splice(0, INDOOR_BUILDINGS.length, ...[
     ]
   },
   {
-    id: "teaching_building",
+    id: "legacy_teaching_building",
     name: "清华大学教学楼模拟结构",
     source: "按教学楼常见结构建模：入口门厅、一层服务台、电梯/楼梯核心、各楼层走廊、教室、实验室和报告厅。",
     sourceUrl: "https://www.tsinghua.edu.cn/",
@@ -354,7 +356,7 @@ INDOOR_BUILDINGS.splice(0, INDOOR_BUILDINGS.length, ...[
     ]
   },
   {
-    id: "palace_route",
+    id: "legacy_palace_route",
     name: "故宫博物院开放区",
     source: "使用故宫博物院官网“开放区域”导览图作为底图，叠加自南向北参观动线。",
     sourceUrl: "https://www.dpm.org.cn/Visit.html",
@@ -425,6 +427,154 @@ INDOOR_BUILDINGS.splice(0, INDOOR_BUILDINGS.length, ...[
   }
 ]);
 
+INDOOR_BUILDINGS.splice(0, INDOOR_BUILDINGS.length, ...[
+  {
+    id: "wenchang",
+    name: "颐和园文昌院展厅",
+    source: "使用 plan/颐和园文昌院展厅.png 的本地展厅图校准节点。",
+    floorPlanImage: `${INDOOR_ASSET_ROOT}/wenchang-gallery.png`,
+    floorPlanCredit: "颐和园文昌院展厅图",
+    floorPlanFit: "contain",
+    floors: ["1F"],
+    nodes: [
+      { id: "wc_entrance", name: "入口", floor: "1F", x: 50, y: 92, role: "entrance" },
+      { id: "wc_general", name: "综合馆", floor: "1F", x: 50, y: 48, role: "room" },
+      { id: "wc_bronze", name: "铜器馆", floor: "1F", x: 23, y: 28, role: "room" },
+      { id: "wc_jade", name: "玉器馆", floor: "1F", x: 77, y: 28, role: "room" },
+      { id: "wc_porcelain", name: "瓷器馆", floor: "1F", x: 88, y: 56, role: "room" },
+      { id: "wc_study", name: "书斋", floor: "1F", x: 73, y: 67, role: "room" },
+      { id: "wc_treasures", name: "聚珍馆", floor: "1F", x: 10, y: 66, role: "room" },
+      { id: "wc_exit", name: "出口", floor: "1F", x: 50, y: 4, role: "entrance" }
+    ],
+    edges: [
+      ["wc_entrance", "wc_general", 32],
+      ["wc_general", "wc_bronze", 24],
+      ["wc_general", "wc_jade", 24],
+      ["wc_general", "wc_study", 18],
+      ["wc_study", "wc_porcelain", 16],
+      ["wc_general", "wc_treasures", 28],
+      ["wc_bronze", "wc_exit", 30],
+      ["wc_jade", "wc_exit", 30]
+    ]
+  },
+  {
+    id: "pku_library",
+    name: "北京大学图书馆",
+    source: "使用 plan/pku_library/ 下四层本地图，按校准计划第 4 节的建议坐标落点。",
+    floorPlanFit: "contain",
+    floorPlans: {
+      "1F": { image: `${INDOOR_ASSET_ROOT}/pku_library/1ceng.jpg`, credit: "北京大学图书馆一层馆藏分布图" },
+      "2F": { image: `${INDOOR_ASSET_ROOT}/pku_library/2ceng.jpg`, credit: "北京大学图书馆二层馆藏分布图" },
+      "3F": { image: `${INDOOR_ASSET_ROOT}/pku_library/3ceng.jpg`, credit: "北京大学图书馆三层馆藏分布图" },
+      "4F": { image: `${INDOOR_ASSET_ROOT}/pku_library/4ceng.jpg`, credit: "北京大学图书馆四层馆藏分布图" }
+    },
+    floors: ["1F", "2F", "3F", "4F"],
+    nodes: [
+      { id: "pku_1_east", name: "东门入口", floor: "1F", x: 84, y: 74, role: "entrance" },
+      { id: "pku_1_info", name: "咨询台", floor: "1F", x: 74, y: 70, role: "service" },
+      { id: "pku_1_service", name: "总服务台", floor: "1F", x: 58, y: 68, role: "service" },
+      { id: "pku_1_borrow", name: "自助借还区", floor: "1F", x: 43, y: 68, role: "service" },
+      { id: "pku_1_cards", name: "证卡服务", floor: "1F", x: 30, y: 69, role: "service" },
+      { id: "pku_1_catalog", name: "目录检索区", floor: "1F", x: 54, y: 51, role: "service" },
+      { id: "pku_1_newspaper", name: "报刊阅览区", floor: "1F", x: 34, y: 42, role: "room" },
+      { id: "pku_1_exhibit", name: "展览厅", floor: "1F", x: 66, y: 42, role: "room" },
+      { id: "pku_1_lift", name: "一层电梯/楼梯", floor: "1F", x: 50, y: 31, role: "elevator" },
+      { id: "pku_1_west", name: "西侧学习区", floor: "1F", x: 22, y: 31, role: "room" },
+      { id: "pku_2_lift", name: "二层电梯/楼梯", floor: "2F", x: 50, y: 31, role: "elevator" },
+      { id: "pku_2_science", name: "自然科学阅览区", floor: "2F", x: 37, y: 39, role: "room" },
+      { id: "pku_2_social", name: "社会科学阅览区", floor: "2F", x: 62, y: 39, role: "room" },
+      { id: "pku_2_philosophy", name: "哲学宗教阅览区", floor: "2F", x: 28, y: 57, role: "room" },
+      { id: "pku_2_language", name: "语言文字阅览区", floor: "2F", x: 52, y: 57, role: "room" },
+      { id: "pku_2_art", name: "艺术阅览区", floor: "2F", x: 73, y: 57, role: "room" },
+      { id: "pku_2_self", name: "自助复印区", floor: "2F", x: 47, y: 74, role: "service" },
+      { id: "pku_2_east", name: "东侧学习座", floor: "2F", x: 77, y: 73, role: "room" },
+      { id: "pku_3_lift", name: "三层电梯/楼梯", floor: "3F", x: 50, y: 31, role: "elevator" },
+      { id: "pku_3_literature", name: "文学阅览区", floor: "3F", x: 35, y: 41, role: "room" },
+      { id: "pku_3_history", name: "历史地理阅览区", floor: "3F", x: 62, y: 41, role: "room" },
+      { id: "pku_3_foreign", name: "外文图书阅览区", floor: "3F", x: 28, y: 61, role: "room" },
+      { id: "pku_3_reference", name: "工具书阅览区", floor: "3F", x: 52, y: 61, role: "room" },
+      { id: "pku_3_group", name: "小组研修室", floor: "3F", x: 74, y: 61, role: "room" },
+      { id: "pku_3_quiet", name: "静音学习区", floor: "3F", x: 47, y: 77, role: "room" },
+      { id: "pku_4_lift", name: "四层电梯/楼梯", floor: "4F", x: 50, y: 31, role: "elevator" },
+      { id: "pku_4_rare", name: "古籍阅览区", floor: "4F", x: 35, y: 41, role: "room" },
+      { id: "pku_4_periodical", name: "过刊阅览区", floor: "4F", x: 62, y: 41, role: "room" },
+      { id: "pku_4_local", name: "地方文献区", floor: "4F", x: 28, y: 61, role: "room" },
+      { id: "pku_4_special", name: "特藏资料区", floor: "4F", x: 52, y: 61, role: "room" },
+      { id: "pku_4_microfilm", name: "缩微资料区", floor: "4F", x: 74, y: 61, role: "room" },
+      { id: "pku_4_reading", name: "四层阅览座", floor: "4F", x: 48, y: 77, role: "room" },
+      { id: "pku_4_staff", name: "四层服务台", floor: "4F", x: 66, y: 77, role: "service" }
+    ],
+    edges: [
+      ["pku_1_east", "pku_1_info", 12], ["pku_1_info", "pku_1_service", 18],
+      ["pku_1_service", "pku_1_borrow", 16], ["pku_1_borrow", "pku_1_cards", 14],
+      ["pku_1_service", "pku_1_catalog", 14], ["pku_1_catalog", "pku_1_newspaper", 20],
+      ["pku_1_catalog", "pku_1_exhibit", 20], ["pku_1_catalog", "pku_1_lift", 18],
+      ["pku_1_cards", "pku_1_west", 18], ["pku_1_west", "pku_1_lift", 26],
+      ["pku_2_lift", "pku_2_science", 15], ["pku_2_lift", "pku_2_social", 15],
+      ["pku_2_science", "pku_2_philosophy", 20], ["pku_2_science", "pku_2_language", 18],
+      ["pku_2_social", "pku_2_art", 18], ["pku_2_language", "pku_2_self", 18],
+      ["pku_2_art", "pku_2_east", 17], ["pku_2_self", "pku_2_east", 28],
+      ["pku_3_lift", "pku_3_literature", 16], ["pku_3_lift", "pku_3_history", 16],
+      ["pku_3_literature", "pku_3_foreign", 22], ["pku_3_literature", "pku_3_reference", 19],
+      ["pku_3_history", "pku_3_group", 19], ["pku_3_reference", "pku_3_quiet", 18],
+      ["pku_3_group", "pku_3_quiet", 26],
+      ["pku_4_lift", "pku_4_rare", 16], ["pku_4_lift", "pku_4_periodical", 16],
+      ["pku_4_rare", "pku_4_local", 22], ["pku_4_rare", "pku_4_special", 19],
+      ["pku_4_periodical", "pku_4_microfilm", 19], ["pku_4_special", "pku_4_reading", 18],
+      ["pku_4_microfilm", "pku_4_reading", 26], ["pku_4_reading", "pku_4_staff", 12],
+      ["pku_1_lift", "pku_2_lift", 10], ["pku_2_lift", "pku_3_lift", 10],
+      ["pku_3_lift", "pku_4_lift", 10]
+    ]
+  },
+  {
+    id: "tsinghua_hospital",
+    name: "清华大学医院",
+    source: "使用 plan/清华大学医院F1-F4.jpg 四层真实平面图校准节点。",
+    floorPlanFit: "contain",
+    floorPlans: {
+      "1F": { image: `${INDOOR_ASSET_ROOT}/清华大学医院F1.jpg`, credit: "清华大学医院一层平面图" },
+      "2F": { image: `${INDOOR_ASSET_ROOT}/清华大学医院F2.jpg`, credit: "清华大学医院二层平面图" },
+      "3F": { image: `${INDOOR_ASSET_ROOT}/清华大学医院F3.jpg`, credit: "清华大学医院三层平面图" },
+      "4F": { image: `${INDOOR_ASSET_ROOT}/清华大学医院F4.jpg`, credit: "清华大学医院四层平面图" }
+    },
+    floors: ["1F", "2F", "3F", "4F"],
+    nodes: [
+      { id: "hosp_1_entrance", name: "入口", floor: "1F", x: 50, y: 94, role: "entrance" },
+      { id: "hosp_1_info", name: "导诊台", floor: "1F", x: 54, y: 75, role: "service" },
+      { id: "hosp_1_registration", name: "挂号收费", floor: "1F", x: 59, y: 62, role: "service" },
+      { id: "hosp_1_outpatient", name: "门诊大厅", floor: "1F", x: 36, y: 57, role: "room" },
+      { id: "hosp_1_exam", name: "影像检查区", floor: "1F", x: 44, y: 38, role: "room" },
+      { id: "hosp_1_pharmacy", name: "药房", floor: "1F", x: 82, y: 54, role: "service" },
+      { id: "hosp_1_lift", name: "一层电梯/楼梯", floor: "1F", x: 55, y: 48, role: "elevator" },
+      { id: "hosp_2_lift", name: "二层电梯/楼梯", floor: "2F", x: 55, y: 50, role: "elevator" },
+      { id: "hosp_2_clinic", name: "二层门诊区", floor: "2F", x: 25, y: 50, role: "room" },
+      { id: "hosp_2_check", name: "检查治疗区", floor: "2F", x: 50, y: 30, role: "room" },
+      { id: "hosp_2_ward", name: "病区/护士站", floor: "2F", x: 78, y: 42, role: "room" },
+      { id: "hosp_2_pharmacy", name: "二层药房", floor: "2F", x: 78, y: 65, role: "service" },
+      { id: "hosp_3_lift", name: "三层电梯/楼梯", floor: "3F", x: 55, y: 54, role: "elevator" },
+      { id: "hosp_3_admin", name: "行政办公区", floor: "3F", x: 25, y: 58, role: "service" },
+      { id: "hosp_3_lab", name: "检验/病理区", floor: "3F", x: 48, y: 37, role: "room" },
+      { id: "hosp_3_ward", name: "内科病区", floor: "3F", x: 78, y: 47, role: "room" },
+      { id: "hosp_4_lift", name: "四层电梯/楼梯", floor: "4F", x: 55, y: 62, role: "elevator" },
+      { id: "hosp_4_prepare", name: "术前准备区", floor: "4F", x: 48, y: 46, role: "service" },
+      { id: "hosp_4_surgery", name: "手术室", floor: "4F", x: 63, y: 30, role: "room" },
+      { id: "hosp_4_equipment", name: "设备/材料间", floor: "4F", x: 79, y: 31, role: "room" }
+    ],
+    edges: [
+      ["hosp_1_entrance", "hosp_1_info", 12], ["hosp_1_info", "hosp_1_registration", 10],
+      ["hosp_1_registration", "hosp_1_outpatient", 18], ["hosp_1_registration", "hosp_1_exam", 22],
+      ["hosp_1_registration", "hosp_1_pharmacy", 20], ["hosp_1_registration", "hosp_1_lift", 12],
+      ["hosp_1_lift", "hosp_2_lift", 8], ["hosp_2_lift", "hosp_3_lift", 8], ["hosp_3_lift", "hosp_4_lift", 8],
+      ["hosp_2_lift", "hosp_2_clinic", 22], ["hosp_2_lift", "hosp_2_check", 18],
+      ["hosp_2_lift", "hosp_2_ward", 24], ["hosp_2_ward", "hosp_2_pharmacy", 16],
+      ["hosp_3_lift", "hosp_3_admin", 20], ["hosp_3_lift", "hosp_3_lab", 16],
+      ["hosp_3_lift", "hosp_3_ward", 22],
+      ["hosp_4_lift", "hosp_4_prepare", 12], ["hosp_4_prepare", "hosp_4_surgery", 16],
+      ["hosp_4_surgery", "hosp_4_equipment", 12]
+    ]
+  }
+]);
+
 const state = {
   map: null,
   nodes: [],
@@ -463,6 +613,9 @@ const state = {
   searchCache: new Map(),
   edgeLayers: [],
   routeLayers: [],
+  lastRouteResult: null,
+  congestionSeed: "acceptance-20260607",
+  userCongestionOverride: new Map(),
   poiLayers: [],
   facilityLayers: [],
   selectedNodeId: null,

@@ -106,6 +106,7 @@ function bindStaticControls() {
     state.routeStrategy = event.target.value;
     runShortestPath();
   });
+  byId("reset-congestion")?.addEventListener("click", resetCongestion);
   const clearRouteButton = byId("clearRouteButton");
   if (clearRouteButton) clearRouteButton.addEventListener("click", clearRouteLayers);
   byId("runMultiButton").addEventListener("click", runMultiStopRoute);

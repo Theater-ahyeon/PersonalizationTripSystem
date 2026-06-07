@@ -53,6 +53,7 @@ public:
     std::vector<Road> roads;
     std::vector<OsmNode> osmNodes;
     std::vector<OsmEdge> osmEdges;
+    std::vector<IndoorBuilding> indoorBuildings;
     std::vector<Restaurant> restaurants;
     std::vector<User> users;
     std::vector<Diary> diaries;
@@ -82,6 +83,7 @@ public:
         loadSpots();
         loadRoads();
         loadOsm();
+        loadIndoorBuildings();
         loadRestaurants();
         loadUsers();
         if (users.empty()) {
@@ -125,6 +127,20 @@ public:
 
     const std::vector<OsmEdge>* osmNeighbors(int id) const {
         return osmAdj.get(id);
+    }
+
+    IndoorBuilding* findIndoorBuilding(const std::string& id) {
+        for (auto& building : indoorBuildings) {
+            if (building.id == id) return &building;
+        }
+        return nullptr;
+    }
+
+    const IndoorBuilding* findIndoorBuilding(const std::string& id) const {
+        for (const auto& building : indoorBuildings) {
+            if (building.id == id) return &building;
+        }
+        return nullptr;
     }
 
     Restaurant* findRestaurant(int id) {
@@ -1224,6 +1240,102 @@ private:
     // diaries/*.json: id, title, user_id, rating, heat, created_at, image,
     // bit_length and codebook entries with ch/code. Keep these comments in sync
     // with utils.hpp when adding fields parsed by regex helpers.
+    static std::string jsonArrayBody(const std::string& obj, const std::string& key) {
+        std::string needle = "\"" + key + "\"";
+        size_t keyPos = obj.find(needle);
+        if (keyPos == std::string::npos) return "";
+        size_t start = obj.find('[', keyPos + needle.size());
+        if (start == std::string::npos) return "";
+        int depth = 0;
+        bool inString = false;
+        for (size_t i = start; i < obj.size(); ++i) {
+            char c = obj[i];
+            if (c == '"' && (i == 0 || obj[i - 1] != '\\')) inString = !inString;
+            if (inString) continue;
+            if (c == '[') ++depth;
+            else if (c == ']') {
+                --depth;
+                if (depth == 0) return obj.substr(start + 1, i - start - 1);
+            }
+        }
+        return "";
+    }
+
+    void generateSampleIndoorBuildings() {
+        indoorBuildings.clear();
+        indoorBuildings.push_back({
+            "wenchang",
+            "Wenchang Gallery",
+            1,
+            {{"1F", "web/assets/indoor/wenchang-gallery.png"}},
+            {
+                {"wc_entrance", "Entrance", "1F", "entrance", 50, 92},
+                {"wc_general", "General Gallery", "1F", "room", 50, 48},
+                {"wc_bronze", "Bronze Gallery", "1F", "room", 23, 28},
+                {"wc_jade", "Jade Gallery", "1F", "room", 77, 28},
+                {"wc_porcelain", "Porcelain Gallery", "1F", "room", 88, 56},
+                {"wc_study", "Imperial Study", "1F", "room", 73, 67},
+                {"wc_treasures", "Treasure Gallery", "1F", "room", 10, 66},
+                {"wc_exit", "Exit", "1F", "entrance", 50, 4}
+            },
+            {
+                {"wc_entrance", "wc_general", 32}, {"wc_general", "wc_bronze", 24},
+                {"wc_general", "wc_jade", 24}, {"wc_general", "wc_study", 18},
+                {"wc_study", "wc_porcelain", 16}, {"wc_general", "wc_treasures", 28},
+                {"wc_bronze", "wc_exit", 30}, {"wc_jade", "wc_exit", 30}
+            }
+        });
+        indoorBuildings.push_back({
+            "pku_library",
+            "PKU Library",
+            4,
+            {{"1F", "web/assets/indoor/pku_library/1ceng.jpg"}, {"2F", "web/assets/indoor/pku_library/2ceng.jpg"}, {"3F", "web/assets/indoor/pku_library/3ceng.jpg"}, {"4F", "web/assets/indoor/pku_library/4ceng.jpg"}},
+            {
+                {"pku_1_east", "East Entrance", "1F", "entrance", 84, 74},
+                {"pku_1_service", "Main Service Desk", "1F", "service", 58, 68},
+                {"pku_1_lift", "1F Elevator", "1F", "elevator", 50, 31},
+                {"pku_2_lift", "2F Elevator", "2F", "elevator", 50, 31},
+                {"pku_2_science", "Science Reading Area", "2F", "room", 37, 39},
+                {"pku_3_lift", "3F Elevator", "3F", "elevator", 50, 31},
+                {"pku_3_literature", "Literature Reading Area", "3F", "room", 35, 41},
+                {"pku_4_lift", "4F Elevator", "4F", "elevator", 50, 31},
+                {"pku_4_rare", "Rare Books Area", "4F", "room", 35, 41}
+            },
+            {
+                {"pku_1_east", "pku_1_service", 30}, {"pku_1_service", "pku_1_lift", 24},
+                {"pku_1_lift", "pku_2_lift", 10}, {"pku_2_lift", "pku_3_lift", 10},
+                {"pku_3_lift", "pku_4_lift", 10}, {"pku_2_lift", "pku_2_science", 15},
+                {"pku_3_lift", "pku_3_literature", 16}, {"pku_4_lift", "pku_4_rare", 16}
+            }
+        });
+        indoorBuildings.push_back({
+            "tsinghua_hospital",
+            "Tsinghua University Hospital",
+            4,
+            {{"1F", "web/assets/indoor/清华大学医院F1.jpg"}, {"2F", "web/assets/indoor/清华大学医院F2.jpg"}, {"3F", "web/assets/indoor/清华大学医院F3.jpg"}, {"4F", "web/assets/indoor/清华大学医院F4.jpg"}},
+            {
+                {"hosp_1_entrance", "Entrance", "1F", "entrance", 50, 94},
+                {"hosp_1_info", "Information Desk", "1F", "service", 54, 75},
+                {"hosp_1_registration", "Registration and Cashier", "1F", "service", 59, 62},
+                {"hosp_1_lift", "1F Elevator", "1F", "elevator", 55, 48},
+                {"hosp_2_lift", "2F Elevator", "2F", "elevator", 55, 50},
+                {"hosp_2_clinic", "2F Clinic", "2F", "room", 25, 50},
+                {"hosp_3_lift", "3F Elevator", "3F", "elevator", 55, 54},
+                {"hosp_3_admin", "Administration", "3F", "service", 25, 58},
+                {"hosp_4_lift", "4F Elevator", "4F", "elevator", 55, 62},
+                {"hosp_4_prepare", "Pre-op Area", "4F", "service", 48, 46},
+                {"hosp_4_surgery", "Operating Room", "4F", "room", 63, 30}
+            },
+            {
+                {"hosp_1_entrance", "hosp_1_info", 12}, {"hosp_1_info", "hosp_1_registration", 10},
+                {"hosp_1_registration", "hosp_1_lift", 12}, {"hosp_1_lift", "hosp_2_lift", 8},
+                {"hosp_2_lift", "hosp_3_lift", 8}, {"hosp_3_lift", "hosp_4_lift", 8},
+                {"hosp_2_lift", "hosp_2_clinic", 22}, {"hosp_3_lift", "hosp_3_admin", 20},
+                {"hosp_4_lift", "hosp_4_prepare", 12}, {"hosp_4_prepare", "hosp_4_surgery", 16}
+            }
+        });
+    }
+
     void loadSpots() {
         spots.clear();
         for (const auto& obj : jsonObjects(readText(dataDir_ / "spots.json"))) {
@@ -1256,6 +1368,50 @@ private:
         for (const auto& obj : jsonObjects(readText(dataDir_ / "osm_edges.json"))) {
             osmEdges.push_back({static_cast<int>(jsonNumber(obj, "from")), static_cast<int>(jsonNumber(obj, "to")), jsonNumber(obj, "distance"), jsonString(obj, "mode"), jsonString(obj, "road_name")});
         }
+    }
+
+    void loadIndoorBuildings() {
+        indoorBuildings.clear();
+        std::string text = readText(dataDir_ / "indoor_buildings.json");
+        if (text.empty()) {
+            generateSampleIndoorBuildings();
+            return;
+        }
+        for (const auto& obj : jsonObjects(text)) {
+            IndoorBuilding building;
+            building.id = jsonString(obj, "id");
+            building.name = jsonString(obj, "name");
+            building.floorCount = static_cast<int>(jsonNumber(obj, "floorCount"));
+
+            for (const auto& planObj : jsonObjects(jsonArrayBody(obj, "floorPlans"))) {
+                building.floorPlans.push_back({
+                    jsonString(planObj, "floor"),
+                    jsonString(planObj, "image")
+                });
+            }
+            for (const auto& nodeObj : jsonObjects(jsonArrayBody(obj, "nodes"))) {
+                building.nodes.push_back({
+                    jsonString(nodeObj, "id"),
+                    jsonString(nodeObj, "name"),
+                    jsonString(nodeObj, "floor"),
+                    jsonString(nodeObj, "role"),
+                    jsonNumber(nodeObj, "x"),
+                    jsonNumber(nodeObj, "y")
+                });
+            }
+            for (const auto& edgeObj : jsonObjects(jsonArrayBody(obj, "edges"))) {
+                building.edges.push_back({
+                    jsonString(edgeObj, "from"),
+                    jsonString(edgeObj, "to"),
+                    jsonNumber(edgeObj, "distance")
+                });
+            }
+            if (building.floorCount == 0) building.floorCount = static_cast<int>(building.floorPlans.size());
+            if (!building.id.empty() && !building.nodes.empty() && !building.edges.empty()) {
+                indoorBuildings.push_back(building);
+            }
+        }
+        if (indoorBuildings.empty()) generateSampleIndoorBuildings();
     }
 
     void loadRestaurants() {

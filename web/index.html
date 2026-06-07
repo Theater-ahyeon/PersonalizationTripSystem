@@ -135,6 +135,13 @@
                 <span>路线待生成</span>
                 <strong>选择起终点后查看距离和耗时</strong>
               </div>
+              <div id="congestion-panel" class="congestion-panel" aria-live="polite" hidden>
+                <div class="congestion-panel-head">
+                  <span>道路拥挤度</span>
+                  <button id="reset-congestion" type="button" class="small-button">重置</button>
+                </div>
+                <div id="congestionList" class="congestion-list"></div>
+              </div>
             </div>
 
             <div class="planner-card glass-panel">

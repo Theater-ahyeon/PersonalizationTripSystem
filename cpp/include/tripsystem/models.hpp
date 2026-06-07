@@ -40,6 +40,35 @@ struct OsmEdge {
     std::string roadName;
 };
 
+struct IndoorNode {
+    std::string id;
+    std::string name;
+    std::string floor;
+    std::string role;
+    double x = 0;
+    double y = 0;
+};
+
+struct IndoorEdge {
+    std::string from;
+    std::string to;
+    double distance = 0;
+};
+
+struct IndoorFloorPlan {
+    std::string floor;
+    std::string image;
+};
+
+struct IndoorBuilding {
+    std::string id;
+    std::string name;
+    int floorCount = 0;
+    std::vector<IndoorFloorPlan> floorPlans;
+    std::vector<IndoorNode> nodes;
+    std::vector<IndoorEdge> edges;
+};
+
 struct Restaurant {
     int id = 0;
     std::string name;
