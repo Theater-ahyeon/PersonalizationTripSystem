@@ -138,12 +138,18 @@
                 <strong>选择起终点后查看距离和耗时</strong>
               </div>
               <div id="modeSegmentPanel" class="mode-segment-panel" hidden aria-live="polite"></div>
-              <div id="congestion-panel" class="congestion-panel" aria-live="polite" hidden>
+              <div id="congestion-panel" class="congestion-panel is-collapsed" aria-live="polite" hidden>
                 <div class="congestion-panel-head">
-                  <span>道路拥挤度</span>
-                  <button id="reset-congestion" type="button" class="small-button">重置</button>
+                  <div class="congestion-panel-title">
+                    <span>道路拥挤度</span>
+                    <small id="congestion-panel-summary"></small>
+                  </div>
+                  <div class="congestion-panel-actions">
+                    <button id="toggle-congestion-panel" type="button" class="small-button" aria-expanded="false" aria-controls="congestionList">展开</button>
+                    <button id="reset-congestion" type="button" class="small-button">重置</button>
+                  </div>
                 </div>
-                <div id="congestionList" class="congestion-list"></div>
+                <div id="congestionList" class="congestion-list" hidden></div>
               </div>
             </div>
 

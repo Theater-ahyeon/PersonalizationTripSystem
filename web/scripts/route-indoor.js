@@ -1064,17 +1064,40 @@ function congestionEdgeKey(edge, travelMode = "walk") {
   return `${Number(edge.from)}>${Number(edge.to)}:${travelMode}`;
 }
 
+function syncCongestionPanelOpen() {
+  const panel = byId("congestion-panel");
+  const list = byId("congestionList");
+  const toggle = byId("toggle-congestion-panel");
+  if (!panel || !list) return;
+  const open = Boolean(state.congestionPanelOpen);
+  panel.classList.toggle("is-collapsed", !open);
+  list.hidden = !open;
+  if (toggle) {
+    toggle.textContent = open ? "收起" : "展开";
+    toggle.setAttribute("aria-expanded", open ? "true" : "false");
+  }
+}
+
+function toggleCongestionPanel() {
+  state.congestionPanelOpen = !state.congestionPanelOpen;
+  syncCongestionPanelOpen();
+}
+
 function renderCongestionPanel(result = state.lastRouteResult) {
   const panel = byId("congestion-panel");
   const list = byId("congestionList");
+  const summary = byId("congestion-panel-summary");
   if (!panel || !list) return;
   const segments = routeSegmentsForCongestion(result);
   if (!segments.length) {
     panel.hidden = true;
     list.innerHTML = "";
+    if (summary) summary.textContent = "";
     return;
   }
+  const wasHidden = panel.hidden;
   panel.hidden = false;
+  if (wasHidden) state.congestionPanelOpen = false;
   const seen = new Set();
   const rows = [];
   segments.forEach((segment) => {
@@ -1096,10 +1119,14 @@ function renderCongestionPanel(result = state.lastRouteResult) {
     `);
   });
   list.innerHTML = rows.join("");
+  if (summary) {
+    summary.textContent = `共 ${rows.length} 段，展开后可调节`;
+  }
   list.querySelectorAll("[data-congestion-key]").forEach((input) => {
     input.addEventListener("input", handleCongestionInput);
     input.addEventListener("change", handleCongestionInput);
   });
+  syncCongestionPanelOpen();
 }
 
 function routeSegmentsForCongestion(result) {
