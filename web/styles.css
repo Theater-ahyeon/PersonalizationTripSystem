@@ -4473,6 +4473,110 @@ textarea {
   text-align: right;
 }
 
+.mode-segment-breakdown {
+  margin: 0;
+  padding: 0;
+  border-top: 0;
+}
+
+.mode-segment-panel {
+  margin-top: 10px;
+}
+
+.mode-segment-panel[hidden] {
+  display: none;
+}
+
+.map-mode-legend {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  z-index: 500;
+  min-width: 132px;
+  padding: 10px 12px;
+}
+
+.map-mode-legend[hidden] {
+  display: none;
+}
+
+.map-mode-legend .eyebrow {
+  margin: 0 0 6px;
+}
+
+.mode-segment-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0 10px;
+}
+
+.mode-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px 4px 6px;
+  border-radius: 999px;
+  background: #f4f7ff;
+  color: #2f3440;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.mode-chip i {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.mode-segment-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.mode-segment-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
+  align-items: start;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #f8faff;
+  border: 1px solid #e3ebfb;
+}
+
+.mode-segment-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 52px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.mode-segment-copy strong {
+  display: block;
+  color: #1f2430;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.mode-segment-copy small {
+  display: block;
+  margin-top: 4px;
+  color: #5d6472;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
 .diary-compose-toggle {
   width: min(220px, 100%);
   justify-self: start;

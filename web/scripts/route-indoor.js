@@ -552,7 +552,7 @@ function runShortestPath() {
     return;
   }
   state.lastRouteResult = result;
-  drawRoute(result.path, routeStrategyInfo(strategy).color);
+  drawRoute(result.path, routeStrategyInfo(strategy).color, result);
   summarizeRoute(routeStrategyInfo(strategy).label, result);
 }
 
@@ -597,7 +597,7 @@ function runMultiStopRoute() {
   }
 
   state.lastRouteResult = tsp;
-  drawRoute(tsp.fullPath, routeStrategyInfo(tsp.strategy).color);
+  drawRoute(tsp.fullPath, routeStrategyInfo(tsp.strategy).color, tsp);
   summarizeMultiRoute(tsp.order, tsp);
 }
 
@@ -778,9 +778,16 @@ function neighborsOf(id, mode, strategy = state.routeStrategy) {
   return state.edges.filter((edge) => Number(edge.from) === Number(id) && edgeSupportsMode(edge, mode, strategy));
 }
 
+function isCampusRegion() {
+  return state.currentRegionPackId === "tsinghua_campus";
+}
+
 function edgeSupportsMode(edge, mode, strategy = state.routeStrategy) {
-  if (strategy === "transport" || mode === "mixed") return availableTravelModes(edge).length > 0;
-  return edge.mode === "both" || edge.mode === mode;
+  const allowed = availableTravelModes(edge);
+  if (strategy === "transport" || mode === "mixed") return allowed.length > 0;
+  if (mode === "bike") return allowed.includes("bike");
+  if (mode === "cart") return allowed.includes("cart");
+  return allowed.includes("walk");
 }
 
 function edgeWeight(edge, mode, strategy = state.routeStrategy) {
@@ -809,29 +816,57 @@ function edgeWeight(edge, mode, strategy = state.routeStrategy) {
 }
 
 function availableTravelModes(edge) {
-  const modes = [];
-  const edgeMode = edge.mode || "both";
-  if (edgeMode === "walk" || edgeMode === "both") modes.push("walk");
-  if (edgeMode === "bike" || edgeMode === "both") modes.push("bike");
-  if (electricCartEligible(edge)) modes.push("cart");
-  return modes;
+  return resolveEdgeModes(edge);
+}
+
+function resolveEdgeModes(edge) {
+  const explicit = String(edge.mode || "both").toLowerCase();
+  const name = `${edge.road_name || ""}`;
+  const campus = isCampusRegion();
+
+  if (explicit === "walk") return ["walk"];
+  if (explicit === "bike") return campus ? ["bike"] : ["walk"];
+  if (explicit === "cart") return ["cart"];
+
+  if (/骑行|自行车|环校|cycleway|bike/i.test(name)) {
+    return campus ? ["walk", "bike"] : ["walk"];
+  }
+  if (/电瓶|观光|环园|景区车|摆渡/i.test(name)) {
+    return campus ? ["walk"] : ["cart"];
+  }
+
+  if (explicit === "both") {
+    if (campus) return ["walk", "bike"];
+    return electricCartEligible(edge) ? ["walk", "cart"] : ["walk"];
+  }
+
+  return campus ? ["walk", "bike"] : ["walk"];
 }
 
 function electricCartEligible(edge) {
+  if (isCampusRegion()) return false;
   const name = `${edge.road_name || ""}`;
   const from = findNode(edge.from);
   const to = findNode(edge.to);
   const text = `${name} ${from?.name || ""} ${to?.name || ""}`;
-  return /东宫门|仁寿殿|排云门|长廊|苏州街|北宫门|昆明湖|广场|主路|宫门|清华路|校河|主楼/.test(text)
+  return /东宫门|仁寿殿|排云门|长廊|苏州街|北宫门|昆明湖|广场|主路|宫门|观光|电瓶|环园/.test(text)
     || stableFraction(`${edge.from}:${edge.to}:cart`) > 0.82;
 }
 
-function travelModeWeight(edge, travelMode, distance = Number(edge.distance) || 0) {
+function idealSpeedForEdge(edge, travelMode) {
+  const modeKey = `ideal_speed_${travelMode}`;
+  const configured = Number(edge[modeKey]);
+  if (configured > 0) return configured;
+  if (travelMode === "walk" && Number(edge.ideal_speed) > 0) return Number(edge.ideal_speed);
   const speedFactor = 0.55 + stableFraction(`${edge.road_name || ""}:${edge.from}:${edge.to}:${travelMode}:speed`) * 1.1;
   const baseSpeed = travelMode === "bike" ? 12 : travelMode === "cart" ? 18 : 4.5;
-  const idealSpeed = baseSpeed * speedFactor;
+  return baseSpeed * speedFactor;
+}
+
+function travelModeWeight(edge, travelMode, distance = Number(edge.distance) || 0) {
+  const idealSpeed = idealSpeedForEdge(edge, travelMode);
   const congestion = edgeCongestion(edge, travelMode);
-  const realSpeed = Math.max(1, idealSpeed * congestion);
+  const realSpeed = Math.max(0.5, idealSpeed * congestion);
   const boardingDelay = travelMode === "cart" ? 1.2 : 0;
   const minutes = distance / (realSpeed * 1000 / 60) + boardingDelay;
   return { travelMode, idealSpeed, congestion, realSpeed, minutes };
@@ -850,6 +885,159 @@ function travelModeLabel(mode) {
   return "步行";
 }
 
+const ROAD_NAME_LABELS = {
+  tertiary: "三级道路",
+  tertiary_link: "连接匝道",
+  secondary: "二级道路",
+  secondary_link: "二级连接匝道",
+  primary: "一级道路",
+  primary_link: "一级连接匝道",
+  footway: "步行路",
+  path: "小径",
+  pedestrian: "步行街",
+  cycleway: "骑行道",
+  service: "服务道路",
+  residential: "生活区道路",
+  living_street: "生活街区道路",
+  unclassified: "道路",
+  track: "便道",
+  steps: "台阶",
+  road: "道路"
+};
+
+function formatRoadLabel(name = "") {
+  const raw = String(name || "").trim();
+  if (!raw) return "未命名道路";
+  if (/[\u4e00-\u9fff]/.test(raw)) return raw;
+
+  const direct = ROAD_NAME_LABELS[raw.toLowerCase()];
+  if (direct) return direct;
+
+  const nodeMatch = raw.match(/^([a-z_]+)(节点\d+)$/i);
+  if (nodeMatch) {
+    const label = ROAD_NAME_LABELS[nodeMatch[1].toLowerCase()] || nodeMatch[1];
+    return `${label}${nodeMatch[2]}`;
+  }
+
+  const osmMatch = raw.match(/^OSM way (\d+)$/i);
+  if (osmMatch) return `OSM 道路 ${osmMatch[1]}`;
+
+  return raw.replace(/_/g, " ");
+}
+
+function formatNodeLabel(nodeOrId) {
+  const node = typeof nodeOrId === "object" ? nodeOrId : findNode(nodeOrId);
+  if (!node) return String(nodeOrId ?? "-");
+  const name = String(node.name || "").trim();
+  if (!name) return `节点 ${node.id}`;
+  return formatRoadLabel(name);
+}
+
+const TRAVEL_MODE_COLORS = {
+  walk: "#0b8a5b",
+  bike: "#e67a00",
+  cart: "#7a45c8"
+};
+
+function travelModeColor(mode = "walk") {
+  return TRAVEL_MODE_COLORS[mode] || TRAVEL_MODE_COLORS.walk;
+}
+
+function groupRouteSegmentsByMode(segments) {
+  if (!Array.isArray(segments) || !segments.length) return [];
+  const groups = [];
+  let current = null;
+  segments.forEach((segment) => {
+    const mode = segment.travelMode || "walk";
+    if (!current || current.travelMode !== mode) {
+      if (current) groups.push(current);
+      current = {
+        travelMode: mode,
+        from: segment.from,
+        to: segment.to,
+        distance: Number(segment.distance) || 0,
+        minutes: Number(segment.minutes) || 0,
+        roads: segment.roadName ? [segment.roadName] : []
+      };
+      return;
+    }
+    current.to = segment.to;
+    current.distance += Number(segment.distance) || 0;
+    current.minutes += Number(segment.minutes) || 0;
+    if (segment.roadName && current.roads[current.roads.length - 1] !== segment.roadName) {
+      current.roads.push(segment.roadName);
+    }
+  });
+  if (current) groups.push(current);
+  return groups;
+}
+
+function renderModeSegmentBreakdown(result) {
+  const groups = groupRouteSegmentsByMode(routeSegmentsForCongestion(result));
+  if (!groups.length) return "";
+  const modes = unique(groups.map((group) => group.travelMode));
+  const legend = modes.map((mode) => `
+    <span class="mode-chip" data-mode="${mode}">
+      <i style="background:${travelModeColor(mode)}"></i>${escapeHtml(travelModeLabel(mode))}
+    </span>
+  `).join("");
+  const items = groups.map((group, index) => {
+    const from = formatNodeLabel(group.from);
+    const to = formatNodeLabel(group.to);
+    const roadHint = group.roads.map((road) => formatRoadLabel(road)).slice(0, 2).join("、");
+    return `
+      <li class="mode-segment-item" data-mode="${group.travelMode}">
+        <span class="mode-segment-badge" style="background:${travelModeColor(group.travelMode)}">${escapeHtml(travelModeLabel(group.travelMode))}</span>
+        <div class="mode-segment-copy">
+          <strong>${index + 1}. ${escapeHtml(from)} → ${escapeHtml(to)}</strong>
+          <small>${group.distance.toFixed(0)} 米 · 约 ${group.minutes.toFixed(1)} 分钟${roadHint ? ` · ${escapeHtml(roadHint)}` : ""}</small>
+        </div>
+      </li>
+    `;
+  }).join("");
+  return `
+    <div class="mode-segment-breakdown">
+      <p class="eyebrow">分段交通方式</p>
+      <div class="mode-segment-legend" aria-label="交通方式图例">${legend}</div>
+      <ol class="mode-segment-list">${items}</ol>
+    </div>
+  `;
+}
+
+function updateModeSegmentPanel(result) {
+  const panel = byId("modeSegmentPanel");
+  if (!panel) return;
+  const html = renderModeSegmentBreakdown(result);
+  if (!html) {
+    panel.hidden = true;
+    panel.innerHTML = "";
+    return;
+  }
+  panel.hidden = false;
+  panel.innerHTML = html;
+}
+
+function renderMapModeLegend(segments) {
+  const legend = byId("mapModeLegend");
+  if (!legend) return;
+  const modes = unique(segments.map((segment) => segment.travelMode || "walk"));
+  const mixedRoute = state.mode === "mixed" || state.routeStrategy === "transport";
+  if (!segments.length || (!mixedRoute && modes.length <= 1)) {
+    legend.hidden = true;
+    legend.innerHTML = "";
+    return;
+  }
+  legend.hidden = false;
+  legend.innerHTML = `
+    <p class="eyebrow">路线颜色</p>
+    <div class="mode-segment-legend">${modes.map((mode) => `
+      <span class="mode-chip" data-mode="${mode}">
+        <i style="background:${travelModeColor(mode)}"></i>${escapeHtml(travelModeLabel(mode))}
+      </span>
+    `).join("")}</div>
+  `;
+}
+
 function segmentModeSummary(result) {
   const segments = result?.segments || [];
   if (!segments.length) return routeModeLabel(result?.mode || state.mode, result?.strategy || state.routeStrategy);
@@ -863,6 +1051,9 @@ function edgeCongestion(edge, travelMode = "walk") {
   if (state.userCongestionOverride?.has(key)) {
     return Number(state.userCongestionOverride.get(key));
   }
+  const modeCongestion = Number(edge[`congestion_${travelMode}`]);
+  if (modeCongestion > 0) return clamp(modeCongestion, 0.01, 1);
+  if (Number(edge.congestion) > 0) return clamp(Number(edge.congestion), 0.01, 1);
   const name = `${state.congestionSeed || "default"}:${edge.road_name || ""}${edge.from}-${edge.to}:${travelMode}`;
   const hash = stableFraction(name);
   const base = travelMode === "cart" ? 0.7 : travelMode === "bike" ? 0.66 : 0.62;
@@ -890,14 +1081,15 @@ function renderCongestionPanel(result = state.lastRouteResult) {
     const key = segment.edgeKey || `${segment.from}>${segment.to}:${segment.travelMode || "walk"}`;
     if (seen.has(key)) return;
     seen.add(key);
-    const from = findNode(segment.from)?.name || segment.from;
-    const to = findNode(segment.to)?.name || segment.to;
+    const from = formatNodeLabel(segment.from);
+    const to = formatNodeLabel(segment.to);
     const congestion = clamp(Number(segment.congestion || 1), 0.55, 0.98);
     const pct = Math.round(congestion * 100);
+    const roadLabel = formatRoadLabel(segment.roadName) || `${from} → ${to}`;
     rows.push(`
       <label class="congestion-row">
-        <span class="congestion-road">${escapeHtml(segment.roadName || `${from} -> ${to}`)}</span>
-        <small>${escapeHtml(from)} -> ${escapeHtml(to)} · ${escapeHtml(travelModeLabel(segment.travelMode))}</small>
+        <span class="congestion-road">${escapeHtml(roadLabel)}</span>
+        <small>${escapeHtml(from)} → ${escapeHtml(to)} · ${escapeHtml(travelModeLabel(segment.travelMode))}</small>
         <input type="range" min="55" max="98" value="${pct}" data-congestion-key="${escapeHtml(key)}">
         <output>${pct}%</output>
       </label>
@@ -946,38 +1138,69 @@ function recalculateCurrentRoute() {
   else runShortestPath();
 }
 
-function drawRoute(path, color) {
+function drawRoute(path, color, routeResult = null) {
   clearRouteLayers(false);
   if (!state.map || path.length < 2) return;
-  const latLngs = path.reduce((acc, id) => {
-    const node = findNode(id);
-    if (node && node.lat != null && node.lon != null) {
-      acc.push([node.lat, node.lon]);
-    }
-    return acc;
-  }, []);
-  if (latLngs.length < 2) return;
-  const bg = L.polyline(latLngs, {
-    color: "#ffffff",
-    weight: 12,
-    opacity: 0.92,
-    lineCap: "round",
-    lineJoin: "round"
-  }).addTo(state.map);
-  state.routeLayers.push(bg);
-  const fg = L.polyline(latLngs, {
-    color,
-    weight: 6,
-    opacity: 0.95,
-    dashArray: "12 10",
-    lineCap: "round",
-    lineJoin: "round"
-  }).addTo(state.map);
-  state.routeLayers.push(fg);
+  const segments = routeResult ? routeSegmentsForCongestion(routeResult) : [];
+  const boundsLayers = [];
+
+  if (segments.length) {
+    segments.forEach((segment) => {
+      const fromNode = findNode(segment.from);
+      const toNode = findNode(segment.to);
+      if (!fromNode || !toNode || fromNode.lat == null || toNode.lat == null) return;
+      const latLngs = [[fromNode.lat, fromNode.lon], [toNode.lat, toNode.lon]];
+      const segColor = travelModeColor(segment.travelMode || "walk");
+      const bg = L.polyline(latLngs, {
+        color: "#ffffff",
+        weight: 10,
+        opacity: 0.92,
+        lineCap: "round",
+        lineJoin: "round"
+      }).addTo(state.map);
+      const fg = L.polyline(latLngs, {
+        color: segColor,
+        weight: 5,
+        opacity: 0.96,
+        lineCap: "round",
+        lineJoin: "round"
+      }).addTo(state.map);
+      state.routeLayers.push(bg, fg);
+      boundsLayers.push(bg);
+    });
+  } else {
+    const latLngs = path.reduce((acc, id) => {
+      const node = findNode(id);
+      if (node && node.lat != null && node.lon != null) {
+        acc.push([node.lat, node.lon]);
+      }
+      return acc;
+    }, []);
+    if (latLngs.length < 2) return;
+    const bg = L.polyline(latLngs, {
+      color: "#ffffff",
+      weight: 12,
+      opacity: 0.92,
+      lineCap: "round",
+      lineJoin: "round"
+    }).addTo(state.map);
+    state.routeLayers.push(bg);
+    const fg = L.polyline(latLngs, {
+      color,
+      weight: 6,
+      opacity: 0.95,
+      dashArray: "12 10",
+      lineCap: "round",
+      lineJoin: "round"
+    }).addTo(state.map);
+    state.routeLayers.push(fg);
+    boundsLayers.push(bg);
+  }
+
   path.forEach((id, index) => {
     const node = findNode(id);
     const shouldMark = index === 0 || index === path.length - 1 || Number(node?.spot_id) > 0;
-    if (!shouldMark) return;
+    if (!shouldMark || !node || node.lat == null) return;
     const marker = L.circleMarker([node.lat, node.lon], {
       radius: index === 0 || index === path.length - 1 ? 8 : 6,
       color,
@@ -988,15 +1211,21 @@ function drawRoute(path, color) {
     marker.bindTooltip(node.name);
     state.routeLayers.push(marker);
   });
-  state.map.fitBounds(bg.getBounds(), { padding: [48, 48] });
+
+  if (boundsLayers.length) {
+    state.map.fitBounds(L.featureGroup(boundsLayers).getBounds(), { padding: [48, 48] });
+  }
+  renderMapModeLegend(segments);
 }
 
 function clearRouteLayers(writeSummary = true) {
   state.routeLayers.forEach((layer) => layer.remove());
   state.routeLayers = [];
+  renderMapModeLegend([]);
   if (writeSummary) {
     state.lastRouteResult = null;
     renderCongestionPanel(null);
+    updateModeSegmentPanel(null);
   }
   if (writeSummary) summarize("路线已清除，可以重新选择起终点。");
 }
@@ -1017,6 +1246,7 @@ function summarizeRoute(title, result) {
     mode: routeModeLabel(result.mode || state.mode, result.strategy)
   });
   renderCongestionPanel(result);
+  updateModeSegmentPanel(result);
   byId("route-summary").innerHTML = `
     <p class="eyebrow">${escapeHtml(title)}</p>
     <h3>${escapeHtml(start?.name || "-")} → ${escapeHtml(goal?.name || "-")}</h3>
@@ -1037,6 +1267,7 @@ function summarizeMultiRoute(order, tsp) {
     mode: routeModeLabel(tsp.mode || state.mode, tsp.strategy)
   });
   renderCongestionPanel(tsp);
+  updateModeSegmentPanel(tsp);
   byId("route-summary").innerHTML = `
     <p class="eyebrow">往返多点游览顺序</p>
     <h3>${escapeHtml(routeModeLabel(tsp.mode || state.mode, tsp.strategy))} · ${Math.max(0, order.length - 1)} 个目的地 · 返回起点</h3>
@@ -1053,6 +1284,7 @@ function summarizeMultiRoute(order, tsp) {
 function summarize(message) {
   updateRouteQuickSummary(null);
   renderCongestionPanel(null);
+  updateModeSegmentPanel(null);
   byId("route-summary").innerHTML = `<p class="eyebrow">路线提示</p><h3>${escapeHtml(message)}</h3>`;
 }
 
@@ -1085,6 +1317,30 @@ function bindResultButtons(container) {
   container.querySelectorAll("[data-focus-node], [data-route-goal]").forEach((button) => {
     button.dataset.actionReady = "true";
   });
+}
+
+function syncTransportModeUi() {
+  const campus = isCampusRegion();
+  const secondary = document.querySelector('.mode-button[data-mode="bike"], .mode-button[data-mode="cart"]');
+  const mixed = document.querySelector('.mode-button[data-mode="mixed"]');
+  if (secondary) {
+    secondary.dataset.mode = campus ? "bike" : "cart";
+    secondary.textContent = campus ? "骑行" : "电瓶车";
+  }
+  if (mixed) {
+    mixed.textContent = campus ? "混合(步+骑)" : "混合(步+车)";
+  }
+  if (state.mode === "cart" && campus) state.mode = "bike";
+  if (state.mode === "bike" && !campus) state.mode = "cart";
+  document.querySelectorAll(".mode-button").forEach((button) => {
+    button.classList.toggle("active", button.dataset.mode === state.mode);
+  });
+  const hint = byId("routeModeHint");
+  if (hint) {
+    hint.textContent = campus
+      ? "校区：步行走全部道路，骑行仅走骑行/通用道路；混合模式按最短时间选步骑组合。"
+      : "景区：步行走全部道路，电瓶车仅走观光路线；混合模式按最短时间选步+电瓶车组合。";
+  }
 }
 
 window.addEventListener("resize", debounce(syncIndoorPlanOverlays, 120));

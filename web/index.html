@@ -6,7 +6,7 @@
   <title>岚迹 LumaTrail</title>
   <link rel="icon" href="./assets/brand/lumatrail-logo.svg">
   <link rel="stylesheet" href="./vendor/leaflet.css">
-  <link rel="stylesheet" href="./styles.css?v=20260607-palace-network">
+  <link rel="stylesheet" href="./styles.css?v=20260608-mixed-segments">
 </head>
 <body>
   <div class="app-shell">
@@ -99,6 +99,7 @@
               <label for="nodeSearchInput">地图节点搜索</label>
               <input id="nodeSearchInput" type="search" placeholder="东宫门、长廊、苏州街..." autocomplete="off">
             </div>
+            <div id="mapModeLegend" class="map-mode-legend glass-panel" hidden aria-label="路线颜色图例"></div>
           </div>
 
           <aside class="route-sidebar" aria-label="路线详情">
@@ -124,6 +125,7 @@
                 <button type="button" class="mode-button" data-mode="bike">骑行</button>
                 <button type="button" class="mode-button" data-mode="mixed">混合</button>
               </div>
+              <p id="routeModeHint" class="storyboard-hint">选择区域后显示对应交通说明。</p>
               <label class="strategy-select">路线策略<select id="routeStrategySelect">
                 <option value="distance">最短距离</option>
                 <option value="time">最短时间</option>
@@ -135,6 +137,7 @@
                 <span>路线待生成</span>
                 <strong>选择起终点后查看距离和耗时</strong>
               </div>
+              <div id="modeSegmentPanel" class="mode-segment-panel" hidden aria-live="polite"></div>
               <div id="congestion-panel" class="congestion-panel" aria-live="polite" hidden>
                 <div class="congestion-panel-head">
                   <span>道路拥挤度</span>
@@ -580,10 +583,10 @@
   </div>
 
   <script src="./vendor/leaflet.js"></script>
-  <script src="./scripts/core.js?v=20260607-palace-network"></script>
+  <script src="./scripts/core.js?v=20260608-cart-restore"></script>
   <script src="./scripts/data.js?v=20260606-remaining"></script>
   <script src="./scripts/map-controller.js?v=20260606-remaining"></script>
-  <script src="./scripts/route-indoor.js?v=20260607-palace-network"></script>
+  <script src="./scripts/route-indoor.js?v=20260608-cart-restore"></script>
   <script src="./scripts/recommend-search.js?v=20260606-remaining"></script>
   <script src="./scripts/diary-aigc.js?v=20260606-remaining"></script>
   <script src="./scripts/food.js?v=20260606-remaining"></script>

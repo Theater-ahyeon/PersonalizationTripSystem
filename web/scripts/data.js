@@ -57,6 +57,7 @@ function populateControls() {
   fillCuisineSelect();
   fillIndoorSelects();
   fillRegionPackSelect();
+  if (typeof syncTransportModeUi === "function") syncTransportModeUi();
   if (byId("diaryScopeSelect")) byId("diaryScopeSelect").value = state.diaryScope || "all";
   renderMultiStopList();
 

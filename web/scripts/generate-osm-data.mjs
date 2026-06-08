@@ -491,7 +491,8 @@ function buildRoadGraph(overpass) {
 }
 
 function edgeMode(highway) {
-  if (["footway", "path", "pedestrian", "cycleway"].includes(highway)) return "both";
+  if (highway === "cycleway") return "bike";
+  if (["footway", "path", "pedestrian"].includes(highway)) return "walk";
   return "both";
 }
 
@@ -505,7 +506,12 @@ function highwayLabel(highway) {
     residential: "生活区道路",
     living_street: "生活街区道路",
     unclassified: "道路",
-    tertiary: "三级道路"
+  tertiary: "三级道路",
+    tertiary_link: "连接匝道",
+    secondary: "二级道路",
+    primary: "一级道路",
+    track: "便道",
+    steps: "台阶"
   };
   return labels[highway] || highway || "道路";
 }

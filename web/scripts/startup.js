@@ -81,6 +81,7 @@ function bindStaticControls() {
       state.mode = button.dataset.mode;
       document.querySelectorAll(".mode-button").forEach((item) => item.classList.remove("active"));
       button.classList.add("active");
+      if (byId("startSelect")?.value && byId("goalSelect")?.value) runShortestPath();
     });
   });
 

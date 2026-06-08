@@ -6,30 +6,46 @@ $GitName = "Theater-ahyeon"
 $GitEmail = "Theater-ahyeon@users.noreply.github.com"
 
 if (Test-Path ".git\rebase-merge") {
-    Write-Host "Rebase in progress: staging conflict resolution..."
-    git add web/app.js
-    git -c "user.name=$GitName" -c "user.email=$GitEmail" rebase --continue
-} else {
-    Write-Host "1/4 Fetch remote..."
-    git fetch origin my-feature
-
-    Write-Host "2/4 Stage files (excluding .env)..."
-    git add .env.example .gitignore `
-      web/scripts/aigc-proxy.py web/scripts/aigc-proxy.mjs `
-      web/scripts/start-aigc.ps1 web/scripts/start-demo.ps1 `
-      web/scripts/push-to-github.ps1 `
-      web/app.js web/index.html web/styles.css
-
-    $pending = git diff --cached --name-only
-    if ($pending) {
-        Write-Host "3/4 Commit..."
-        git -c "user.name=$GitName" -c "user.email=$GitEmail" commit -m "Switch AIGC defaults to economical free-tier models." -m "Use qwen-turbo, wanx2.0-t2i-turbo, and wanx2.1-t2v-turbo to maximize Bailian free quotas, and improve proxy env reload and audio mode reporting."
-    }
-
-    Write-Host "4/4 Pull rebase + push..."
-    git pull --rebase origin my-feature
+    Write-Host "Rebase in progress. Finish or abort it first:"
+    Write-Host "  git rebase --continue   OR   git rebase --abort"
+    exit 1
 }
 
+Write-Host "1/5 Fetch remote..."
+git fetch origin my-feature
+
+Write-Host "2/5 Stage files (never .env)..."
+git add `
+  web/index.html `
+  web/styles.css `
+  web/scripts/core.js `
+  web/scripts/route-indoor.js `
+  web/scripts/data.js `
+  web/scripts/startup.js `
+  web/scripts/map-controller.js `
+  web/scripts/generate-osm-data.mjs `
+  web/scripts/push-to-github.ps1
+
+$pending = git diff --cached --name-only
+if (-not $pending) {
+    Write-Host "No staged changes. Showing status:"
+    git status -sb
+    exit 0
+}
+
+Write-Host "Staged:"
+$pending | ForEach-Object { Write-Host "  $_" }
+
+Write-Host "3/5 Commit..."
+$CommitBody = @"
+Show per-segment walk/cart colors on the map, surface segment breakdown in the route panel, and translate OSM road names for the Summer Palace demo.
+"@
+git -c "user.name=$GitName" -c "user.email=$GitEmail" commit -m "Add mixed-route segment display and localized road labels." -m $CommitBody
+
+Write-Host "4/5 Pull rebase..."
+git pull --rebase origin my-feature
+
+Write-Host "5/5 Push..."
 git push -u origin HEAD
 
 Write-Host ""
