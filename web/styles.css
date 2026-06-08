@@ -4151,6 +4151,20 @@ textarea {
   box-shadow: 0 0 0 2px rgba(0, 88, 188, 0.22), 0 4px 12px rgba(17, 28, 45, 0.18);
 }
 
+.indoor-node.hidden-node,
+.indoor-plan.has-floor-plan .indoor-node.hidden-node {
+  display: none;
+}
+
+.indoor-node.hidden-node.active,
+.indoor-plan.has-floor-plan .indoor-node.hidden-node.active {
+  display: inline-flex;
+}
+
+.indoor-edge.hidden-edge {
+  display: none;
+}
+
 .indoor-plan.has-floor-plan .indoor-node.minor:hover,
 .indoor-plan.has-floor-plan .indoor-node.minor:focus {
   width: auto;

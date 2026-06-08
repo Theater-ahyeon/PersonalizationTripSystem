@@ -14,14 +14,16 @@ function fillIndoorSelects() {
   [start, goal].forEach((select) => {
     select.innerHTML = "";
     building.nodes.forEach((node) => {
+      if (node.visible === false) return;
       const option = document.createElement("option");
       option.value = node.id;
       option.textContent = `${node.name} · ${node.floor}`;
       select.appendChild(option);
     });
   });
-  start.value = building.nodes[0]?.id || "";
-  goal.value = building.nodes[building.nodes.length - 1]?.id || "";
+  const visibleNodes = building.nodes.filter((n) => n.visible !== false);
+  start.value = visibleNodes[0]?.id || "";
+  goal.value = visibleNodes[visibleNodes.length - 1]?.id || "";
   renderIndoorBuildingIntro();
 }
 
@@ -164,31 +166,39 @@ function indoorNodeTypeLabel(node) {
 }
 
 function renderIndoorPlan(result, building = currentIndoorBuilding(), options = {}) {
-  if (building.floorPlans && Object.keys(building.floorPlans).length) {
+  const hasFloorPlans = building.floorPlans && (
+    (Array.isArray(building.floorPlans) && building.floorPlans.length > 0) ||
+    (!Array.isArray(building.floorPlans) && Object.keys(building.floorPlans).length > 0)
+  );
+  if (hasFloorPlans) {
     return renderIndoorFloorStack(result, building, options);
   }
 
   const expandable = options.expandable !== false;
   const pathSet = new Set(result.path);
+  const routeOnly = !!(building.displayRules?.showOnlySelectedRoute || building.recommendedDisplay?.defaultMode?.showEdges === false);
+  const hasRoute = result.path?.length > 1;
   const nodes = building.nodes.map((node) => {
     const left = Number(node.x || 50);
     const top = Number(node.y || 50);
     const active = pathSet.has(node.id) ? " active" : "";
     const minor = node.minor && !active ? " minor" : "";
-    return `<span class="indoor-node${active}${minor}" title="${escapeHtml(node.name)}" style="left:${left}%;top:${top}%">${escapeHtml(node.name)}</span>`;
+    const hiddenClass = node.visible === false && !active ? " hidden-node" : "";
+    return `<span class="indoor-node${active}${minor}${hiddenClass}" title="${escapeHtml(node.name)}" style="left:${left}%;top:${top}%">${escapeHtml(node.name)}</span>`;
   }).join("");
   const lines = building.edges.map(([from, to]) => {
     const a = building.nodes.find((node) => node.id === from);
     const b = building.nodes.find((node) => node.id === to);
     if (!a || !b) return "";
     const active = pathHasIndoorEdge(result.path, from, to) ? " active" : "";
+    const edgeHidden = routeOnly && !active ? " hidden-edge" : "";
     const x1 = Number(a.x || 0);
     const y1 = Number(a.y || 0);
     const x2 = Number(b.x || 0);
     const y2 = Number(b.y || 0);
     const length = Math.hypot(x2 - x1, y2 - y1);
     const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
-    return `<span class="indoor-edge${active}" style="left:${x1}%;top:${y1}%;width:${length}%;transform:rotate(${angle}deg)"></span>`;
+    return `<span class="indoor-edge${active}${edgeHidden}" style="left:${x1}%;top:${y1}%;width:${length}%;transform:rotate(${angle}deg)"></span>`;
   }).join("");
   const floors = (building.floors && building.floors.length ? building.floors : unique(building.nodes.map((node) => node.floor))).slice(0, 5);
   const floorLabels = floors.map((floor, index) => {
@@ -231,6 +241,8 @@ function renderIndoorFloorStack(result, building = currentIndoorBuilding(), opti
 
 function renderIndoorFloorSection(result, building, floor, options = {}) {
   const pathSet = new Set(result.path);
+  const routeOnly = !!(building.displayRules?.showOnlySelectedRoute || building.recommendedDisplay?.defaultMode?.showEdges === false);
+  const hasRoute = result.path?.length > 1;
   const floorNodes = building.nodes.filter((node) => node.floor === floor);
   const nodeMap = new Map(building.nodes.map((node) => [node.id, node]));
   const nodes = floorNodes.map((node) => {
@@ -238,20 +250,22 @@ function renderIndoorFloorSection(result, building, floor, options = {}) {
     const top = Number(node.y || 50);
     const active = pathSet.has(node.id) ? " active" : "";
     const minor = node.minor && !active ? " minor" : "";
-    return `<span class="indoor-node${active}${minor}" title="${escapeHtml(node.name)}" style="left:${left}%;top:${top}%">${escapeHtml(node.name)}</span>`;
+    const hiddenClass = node.visible === false && !active ? " hidden-node" : "";
+    return `<span class="indoor-node${active}${minor}${hiddenClass}" title="${escapeHtml(node.name)}" style="left:${left}%;top:${top}%">${escapeHtml(node.name)}</span>`;
   }).join("");
   const lines = building.edges.map(([from, to]) => {
     const a = nodeMap.get(from);
     const b = nodeMap.get(to);
     if (!a || !b || a.floor !== floor || b.floor !== floor) return "";
     const active = pathHasIndoorEdge(result.path, from, to) ? " active" : "";
+    const edgeHidden = routeOnly && !active ? " hidden-edge" : "";
     const x1 = Number(a.x || 0);
     const y1 = Number(a.y || 0);
     const x2 = Number(b.x || 0);
     const y2 = Number(b.y || 0);
     const length = Math.hypot(x2 - x1, y2 - y1);
     const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
-    return `<span class="indoor-edge${active}" style="left:${x1}%;top:${y1}%;width:${length}%;transform:rotate(${angle}deg)"></span>`;
+    return `<span class="indoor-edge${active}${edgeHidden}" style="left:${x1}%;top:${y1}%;width:${length}%;transform:rotate(${angle}deg)"></span>`;
   }).join("");
   const floorPlan = floorPlanFor(building, floor);
   const planImage = floorPlan.image
@@ -295,7 +309,12 @@ function floorsForIndoorResult(result, building, options = {}) {
 }
 
 function floorPlanFor(building, floor) {
-  const plan = building.floorPlans?.[floor] || {};
+  let plan = building.floorPlans?.[floor];
+  // Support array format from JSON (C++ parser output)
+  if (!plan && Array.isArray(building.floorPlans)) {
+    plan = building.floorPlans.find((p) => p.floor === floor);
+  }
+  plan = plan || {};
   return {
     image: plan.image || building.floorPlanImage || "",
     sourceUrl: plan.sourceUrl || building.sourceUrl || "",
