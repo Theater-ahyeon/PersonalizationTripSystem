@@ -6,12 +6,14 @@ $Index = Join-Path $WebRoot "index.html"
 $Styles = Join-Path $WebRoot "styles.css"
 $App = Join-Path $WebRoot "app.js"
 $ScriptsDir = Join-Path $WebRoot "scripts"
+$StartAigc = Join-Path $ScriptsDir "start-aigc.ps1"
+$StartDemo = Join-Path $ScriptsDir "start-demo.ps1"
 $Assets = Join-Path $WebRoot "assets\spots"
 $AttributionsPath = Join-Path $WebRoot "assets\ATTRIBUTIONS.md"
 $CppData = Join-Path $RepoRoot "cpp\data"
 $WebData = Join-Path $RepoRoot "web\data"
 
-foreach ($Path in @($Index, $Styles, $App, $ScriptsDir, $Assets, $AttributionsPath, $CppData, $WebData)) {
+foreach ($Path in @($Index, $Styles, $App, $ScriptsDir, $StartAigc, $StartDemo, $Assets, $AttributionsPath, $CppData, $WebData)) {
   if (-not (Test-Path -LiteralPath $Path)) { throw "Missing required path: $Path" }
 }
 
@@ -226,6 +228,9 @@ foreach ($RequiredType in $RequiredFacilityTypes) {
 
 $IndexText = Get-Content -Raw -Encoding UTF8 -Path $Index
 $StyleText = Get-Content -Raw -Encoding UTF8 -Path $Styles
+$StartAigcText = Get-Content -Raw -Encoding UTF8 -Path $StartAigc
+$StartDemoText = Get-Content -Raw -Encoding UTF8 -Path $StartDemo
+$IndoorDataText = Get-Content -Raw -Encoding UTF8 -Path (Join-Path $WebData "indoor_buildings.json")
 $ScriptTexts = @((Get-Content -Raw -Encoding UTF8 -Path $App))
 Get-ChildItem -LiteralPath $ScriptsDir -Filter "*.js" | Sort-Object Name | ForEach-Object {
   $ScriptTexts += Get-Content -Raw -Encoding UTF8 -Path $_.FullName
@@ -237,6 +242,9 @@ foreach ($Needle in @("mapRegionSelect", "datasetMapButton", "MAP_REGIONS", "全
     throw "Frontend active UI/code must not contain stale map option/reference: $Needle"
   }
 }
+if ($IndexText -like '*value="transport"*' -or $AppText -match 'transport\s*:\s*\{' -or $AppText -like "*电瓶车*" -or $AppText -match 'mode\s*===\s*"cart"') {
+  throw "Frontend route UI/code must expose only distance/time/recommend and walk/bike/mixed."
+}
 foreach ($Needle in @("fixed-map-region", "regionPackSelect", "selectableRouteNodes", "renderRoadNetwork", "route-summary", "diaries_path")) {
   if ($IndexText -notlike "*$Needle*" -and $AppText -notlike "*$Needle*" -and $StyleText -notlike "*$Needle*") {
     throw "Frontend missing expected dual-region hook: $Needle"
@@ -247,9 +255,65 @@ foreach ($Needle in @("spotReviewSnippets", "spot-review-list", "diaryScopeSelec
     throw "Frontend missing planned optimization hook: $Needle"
   }
 }
-foreach ($Needle in @("web/assets/indoor", "F1.jpg", "hosp_1_entrance", "tsinghua_hospital", "pku_library", "wenchang", "congestion-panel", "renderCongestionPanel", "userCongestionOverride", "reset-congestion")) {
+foreach ($Needle in @("hasBrowserAigcConfig", "callBrowserAigcStoryboard", "proxyConfigured", "browser-direct-storyboard")) {
   if ($IndexText -notlike "*$Needle*" -and $AppText -notlike "*$Needle*" -and $StyleText -notlike "*$Needle*") {
+    throw "Frontend AIGC config must support browser direct storyboard generation: $($Needle)"
+  }
+}
+foreach ($Needle in @("scheduleAigcStatusRetry", "aigcStatusRetryTimer")) {
+  if ($IndexText -notlike "*$Needle*" -and $AppText -notlike "*$Needle*" -and $StyleText -notlike "*$Needle*") {
+    throw "Frontend AIGC status should auto-retry for demo startup timing: $($Needle)"
+  }
+}
+foreach ($Needle in @("PYTHONDONTWRITEBYTECODE", "python -B -u", "/api/aigc/health")) {
+  if ($StartAigcText -notlike "*$Needle*") {
+    throw "AIGC startup script must be stable for demo launch: $($Needle)"
+  }
+}
+foreach ($Needle in @("web/index.html", "--directory `$RepoRoot")) {
+  if ($StartDemoText -notlike "*$Needle*") {
+    throw "Demo startup script must expose the same route used in browser acceptance: $($Needle)"
+  }
+}
+if ($IndexText -like "*标题精确*") {
+  throw "Diary title search UI should say 标题检索, not 标题精确."
+}
+if ($AppText -like "*exactTitleCandidates*") {
+  throw "Diary title search must not be truncated by exact-title candidates."
+}
+if ($AppText -like '*mode === "title") return String(diary.title || "").trim().toLowerCase() === keyword*') {
+  throw "Diary title search must use title contains matching, not whole-title equality."
+}
+$DiaryKeyword = New-Text @(21271, 23467, 38376)
+$SummerDiariesForSearch = Read-Json (Join-Path $WebData "diaries\index.json")
+$TitleHits = @($SummerDiariesForSearch | Where-Object { [string]$_.title -like "*$DiaryKeyword*" })
+$DestinationHits = @($SummerDiariesForSearch | Where-Object { [string]$_.destination -like "*$DiaryKeyword*" })
+$FulltextHits = @($SummerDiariesForSearch | Where-Object { "$($_.title) $($_.destination) $($_.content)" -like "*$DiaryKeyword*" })
+if ($TitleHits.Count -lt 1 -or @($TitleHits | ForEach-Object { [int]$_.id }) -notcontains 8) {
+  throw "Diary title-search fixture must include diary id 8 for the demo keyword."
+}
+if ($DestinationHits.Count -lt 1 -or @($DestinationHits | ForEach-Object { [int]$_.id }) -notcontains 9) {
+  throw "Diary destination-search fixture must include diary id 9 for the demo keyword."
+}
+if ($FulltextHits.Count -lt 2) {
+  throw "Diary fulltext-search fixture must include at least two matches for the demo keyword."
+}
+foreach ($EnglishCopy in @(">About Us<", ">Safety Guide<", ">Terms of Service<", ">Privacy Policy<", ">Contact<", ">Status<", ">Settings<", ">Indoor Navigation<")) {
+  if ($IndexText -like "*$EnglishCopy*") {
+    throw "Frontend demo UI must not expose English placeholder copy: $($EnglishCopy)"
+  }
+}
+if ($AppText -like "*课程模拟*") {
+  throw "Frontend indoor source copy must not expose course-simulation wording."
+}
+foreach ($Needle in @("web/assets/indoor", "floorPlans", "J0", "tsinghua_hospital", "pku_library", "wenchang", "congestion-panel", "renderCongestionPanel", "userCongestionOverride", "reset-congestion")) {
+  if ($IndexText -notlike "*$Needle*" -and $AppText -notlike "*$Needle*" -and $StyleText -notlike "*$Needle*" -and $IndoorDataText -notlike "*$Needle*") {
     throw "Frontend missing indoor/route acceptance hook: $Needle"
+  }
+}
+foreach ($Needle in @("indoor-route-card", "indoor-map-shell", "indoor-node.start-node", "indoor-node.goal-node")) {
+  if ($IndexText -notlike "*$Needle*" -and $AppText -notlike "*$Needle*" -and $StyleText -notlike "*$Needle*") {
+    throw "Frontend indoor display polish hook missing: $($Needle)"
   }
 }
 foreach ($Needle in @('id: "teaching_building"', 'id: "palace_route"')) {

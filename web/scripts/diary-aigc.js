@@ -1,3 +1,5 @@
+let aigcStatusRetryTimer = null;
+
 function setupAccountSystem() {
   byId("accountButton")?.addEventListener("click", () => openModal("accountModal"));
   byId("statusButton")?.addEventListener("click", () => {
@@ -445,6 +447,7 @@ function saveSettingsForm() {
   updateModeButtons();
   renderDiaryList();
   byId("settingsFeedback").textContent = "设置已保存。";
+  refreshAigcServiceStatus();
 }
 
 function applyAppSettings() {
@@ -476,13 +479,12 @@ function renderDiaryList() {
   const scopedDiaries = diaryScope === "mine"
     ? state.diaries.filter((diary) => Number(diary.user_id) === Number(user?.id))
     : state.diaries;
-  const exactTitleCandidates = mode === "title" && keyword
-    ? (state.diaryTitleIndex.get(keyword) || []).filter((diary) => scopedDiaries.includes(diary))
-    : null;
-  const indexedDiaries = keyword
+  const indexedDiaries = keyword && mode !== "title"
     ? invertedIndexCandidates(state.diaryInvertedIndex, keyword, scopedDiaries)
     : scopedDiaries;
-  const lshCandidates = exactTitleCandidates || (sort === "interest"
+  const lshCandidates = mode === "title"
+    ? indexedDiaries
+    : (sort === "interest"
     ? getLshCandidates(state.diaryLshIndex, `${interest} ${keyword}`, indexedDiaries, 8)
     : indexedDiaries);
   const filtered = lshCandidates
@@ -521,7 +523,7 @@ function renderDiaryList() {
       <article class="result-card">
         <p class="eyebrow">检索结果</p>
         <h3>没有找到匹配日记</h3>
-        <p>可以切换全文检索、标题精确或目的地查询，再输入新的关键词。</p>
+        <p>可以切换全文检索、标题检索或目的地查询，再输入新的关键词。</p>
       </article>
     `;
     return;
@@ -596,7 +598,7 @@ function diaryCardImage(diary) {
 
 function matchesDiarySearch(diary, keyword, mode) {
   if (!keyword) return true;
-  if (mode === "title") return String(diary.title || "").trim().toLowerCase() === keyword;
+  if (mode === "title") return kmpContains(String(diary.title || "").toLowerCase(), keyword);
   if (mode === "destination") return kmpContains(String(diary.destination || "").toLowerCase(), keyword);
   return kmpContains(textOfDiary(diary).toLowerCase(), keyword);
 }
@@ -933,27 +935,60 @@ function formatAigcVideoHint(audioMode) {
   return "视频为静音短片（当前模型不含自动配音）。";
 }
 
+function scheduleAigcStatusRetry(delayMs = 5000) {
+  window.clearTimeout(aigcStatusRetryTimer);
+  aigcStatusRetryTimer = window.setTimeout(() => {
+    refreshAigcServiceStatus();
+  }, delayMs);
+}
+
 async function refreshAigcServiceStatus() {
   const status = byId("aigcServiceStatus");
   if (!status) return;
+  window.clearTimeout(aigcStatusRetryTimer);
+  const browserConfigured = hasBrowserAigcConfig();
+  state.aigc.directConfigured = browserConfigured;
   try {
     const response = await fetch(`${AIGC_API_BASE}/api/aigc/health`, { cache: "no-store" });
     const data = await response.json();
     state.aigc.ready = Boolean(data.ok);
-    state.aigc.configured = Boolean(data.configured);
+    state.aigc.proxyReady = Boolean(data.ok);
+    state.aigc.proxyConfigured = Boolean(data.configured);
+    state.aigc.configured = Boolean(data.configured) || browserConfigured;
     state.aigc.textModel = data.textModel || "";
     state.aigc.imageModel = data.imageModel || "";
     state.aigc.videoModel = data.videoModel || "";
     state.aigc.videoAudio = data.videoAudio || "none";
-    status.textContent = data.configured
-      ? `AIGC 服务已连接（${data.textModel} / ${data.imageModel} / ${data.videoModel}${formatAigcAudioLabel(data.videoAudio)}）`
-      : "AIGC 代理已启动，但未配置 DASHSCOPE_API_KEY（将使用本地模拟）";
-    status.classList.toggle("aigc-ready", data.configured);
+    if (data.configured) {
+      status.textContent = `AIGC 服务已连接（${data.textModel} / ${data.imageModel} / ${data.videoModel}${formatAigcAudioLabel(data.videoAudio)}）`;
+      status.dataset.aigcMode = "proxy";
+    } else if (browserConfigured) {
+      status.textContent = "已启用浏览器直连分镜接口；代理未配置 DASHSCOPE_API_KEY，配图/视频仍需启动代理。";
+      status.dataset.aigcMode = "browser-direct-storyboard";
+      scheduleAigcStatusRetry(8000);
+    } else {
+      status.textContent = "AIGC 代理已启动，但未配置 DASHSCOPE_API_KEY（将使用本地模拟）";
+      status.dataset.aigcMode = "mock";
+      scheduleAigcStatusRetry(8000);
+    }
+    status.classList.toggle("aigc-ready", Boolean(data.configured) || browserConfigured);
   } catch {
+    state.aigc.proxyReady = false;
+    state.aigc.proxyConfigured = false;
+    state.aigc.directConfigured = browserConfigured;
     state.aigc.ready = false;
-    state.aigc.configured = false;
-    status.textContent = "AIGC 代理未启动：请运行 web/scripts/start-aigc.ps1（未连接时使用本地模拟）";
-    status.classList.remove("aigc-ready");
+    state.aigc.configured = browserConfigured;
+    if (browserConfigured) {
+      status.textContent = "已启用浏览器直连分镜接口；AIGC 代理未启动，分镜可用，配图/视频需运行 web/scripts/start-aigc.ps1。";
+      status.dataset.aigcMode = "browser-direct-storyboard";
+      status.classList.add("aigc-ready");
+      scheduleAigcStatusRetry(8000);
+    } else {
+      status.textContent = "AIGC 代理未启动：请运行 web/scripts/start-aigc.ps1（未连接时使用本地模拟）";
+      status.dataset.aigcMode = "mock";
+      status.classList.remove("aigc-ready");
+      scheduleAigcStatusRetry(5000);
+    }
   }
 }
 
@@ -1019,6 +1054,94 @@ function normalizeAigcBaseUrl(value) {
   return base || "https://dashscope.aliyuncs.com/compatible-mode/v1";
 }
 
+function hasBrowserAigcConfig() {
+  return Boolean(state.aigcConfig?.enabled && state.aigcConfig?.apiKey);
+}
+
+function hasAigcProxyConfigured() {
+  return Boolean(state.aigc.proxyConfigured);
+}
+
+function buildBrowserAigcPrompt(context) {
+  const user = selectedUser();
+  const preferences = (user?.preference_tags || []).slice(0, 5).join("、") || "文化、路线、拍照";
+  return [
+    "请为旅行日记生成一个中文旅行故事板，只返回 JSON，不要 Markdown。",
+    "JSON 格式：",
+    '{"title":"标题","summary":"80字以内摘要","video_prompt":"视频生成提示词","frames":[{"title":"镜头标题","narration":"旁白","visual_prompt":"英文图像提示词","duration_sec":3}]}',
+    "frames 必须为 4 个，duration_sec 为 2 到 5。",
+    `标题：${context.title || "未填写"}`,
+    `目的地：${context.destination || "未填写"}`,
+    `正文：${context.content || "未填写"}`,
+    `用户偏好：${preferences}`
+  ].join("\n");
+}
+
+function extractJsonObject(text) {
+  const raw = String(text || "").trim();
+  if (!raw) throw new Error("AIGC 返回为空。");
+  try {
+    return JSON.parse(raw);
+  } catch {
+    const start = raw.indexOf("{");
+    const end = raw.lastIndexOf("}");
+    if (start === -1 || end <= start) throw new Error("AIGC 返回不是可解析的 JSON。");
+    return JSON.parse(raw.slice(start, end + 1));
+  }
+}
+
+function normalizeBrowserStoryboard(data, context) {
+  const storyboard = data && typeof data === "object" ? data : {};
+  const frames = Array.isArray(storyboard.frames) ? storyboard.frames.slice(0, 4) : [];
+  const safeFrames = frames.map((frame, index) => ({
+    title: String(frame?.title || `镜头 ${index + 1}`),
+    narration: String(frame?.narration || frame?.summary || ""),
+    visual_prompt: String(frame?.visual_prompt || frame?.prompt || `${context.destination || "travel"} cinematic travel shot`),
+    duration_sec: Math.min(5, Math.max(2, Number(frame?.duration_sec || 3)))
+  }));
+  while (safeFrames.length < 4) {
+    const index = safeFrames.length;
+    safeFrames.push({
+      title: `镜头 ${index + 1}`,
+      narration: index === 0 ? "抵达目的地，建立旅行氛围。" : "沿路线记录关键景别与体验。",
+      visual_prompt: `${context.destination || "travel destination"} cinematic travel vlog frame ${index + 1}`,
+      duration_sec: 3
+    });
+  }
+  return {
+    title: String(storyboard.title || context.title || `${context.destination || "旅行"}分镜`),
+    summary: String(storyboard.summary || "由浏览器直连 AIGC 接口生成的旅行故事板。"),
+    video_prompt: String(storyboard.video_prompt || `${context.destination || "travel"} cinematic travel vlog`),
+    frames: safeFrames
+  };
+}
+
+async function callBrowserAigcStoryboard(context) {
+  const baseUrl = normalizeAigcBaseUrl(state.aigcConfig.baseUrl);
+  const response = await fetch(`${baseUrl}/chat/completions`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${state.aigcConfig.apiKey}`
+    },
+    body: JSON.stringify({
+      model: state.aigcConfig.model || "qwen-plus",
+      messages: [
+        { role: "system", content: "你是旅行短视频分镜策划助手，输出必须是严格 JSON。" },
+        { role: "user", content: buildBrowserAigcPrompt(context) }
+      ],
+      temperature: 0.7
+    })
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const message = data?.error?.message || data?.message || `浏览器直连 AIGC 请求失败 (${response.status})`;
+    throw new Error(message);
+  }
+  const content = data?.choices?.[0]?.message?.content || data?.output?.text || "";
+  return normalizeBrowserStoryboard(extractJsonObject(content), context);
+}
+
 function mockStoryboard() {
   const user = selectedUser();
   const context = collectDiaryAigcContext();
@@ -1075,7 +1198,7 @@ async function generateAigcStoryboard({ useApi = true } = {}) {
     renderAigcPanel({ title: "请先填写标题、目的地或正文", hint: "AI 分镜需要基础日记内容。" });
     return;
   }
-  if (useApi && state.aigc.configured) {
+  if (useApi && hasAigcProxyConfigured()) {
     try {
       renderAigcLoading("Qwen 正在生成分镜脚本…");
       const data = await callAigcApi("/api/aigc/storyboard", { context });
@@ -1096,18 +1219,45 @@ async function generateAigcStoryboard({ useApi = true } = {}) {
       return;
     }
   }
+  if (useApi && hasBrowserAigcConfig()) {
+    try {
+      renderAigcLoading(`${state.aigcConfig.model || "AIGC"} 正在通过浏览器直连生成分镜脚本…`);
+      const storyboard = await callBrowserAigcStoryboard(context);
+      state.aigc.storyboard = storyboard;
+      renderAigcPanel({
+        title: storyboard.title || "AI 分镜脚本",
+        hint: "分镜脚本已通过浏览器直连接口生成；配图和视频需要启动本地 AIGC 代理。",
+        storyboard
+      });
+      return;
+    } catch (error) {
+      renderAigcPanel({
+        title: "浏览器直连分镜失败，已回退本地模拟",
+        hint: error.message || String(error),
+        storyboard: mockStoryboard()
+      });
+      state.aigc.storyboard = mockStoryboard();
+      return;
+    }
+  }
   state.aigc.storyboard = mockStoryboard();
   renderAigcPanel({
     title: "旅行分镜（本地模拟）",
-    hint: "配置 .env 并启动 aigc-proxy 后可调用千问 + 万相真实 API。",
+    hint: "在设置中启用浏览器直连分镜接口，或配置 .env 并启动 aigc-proxy 后可调用真实 API。",
     storyboard: state.aigc.storyboard
   });
 }
 
 async function generateAigcImages() {
   const context = collectDiaryAigcContext();
-  if (!state.aigc.configured) {
-    renderAigcPanel({ title: "无法生图", hint: "请先配置 DASHSCOPE_API_KEY 并启动 web/scripts/start-aigc.ps1。" });
+  if (!hasAigcProxyConfigured()) {
+    renderAigcPanel({
+      title: "配图需要本地 AIGC 代理",
+      hint: hasBrowserAigcConfig()
+        ? "你填写的浏览器 API Key 已可用于分镜脚本；分镜配图调用 DashScope 原生图像任务，需要运行 web/scripts/start-aigc.ps1 并在 .env 中配置 DASHSCOPE_API_KEY。"
+        : "请先配置 DASHSCOPE_API_KEY 并启动 web/scripts/start-aigc.ps1。",
+      storyboard: state.aigc.storyboard
+    });
     return;
   }
   try {
@@ -1130,8 +1280,14 @@ async function generateAigcImages() {
 
 async function generateAigcVideo() {
   const context = collectDiaryAigcContext();
-  if (!state.aigc.configured) {
-    renderAigcPanel({ title: "无法生成视频", hint: "请先配置 DASHSCOPE_API_KEY 并启动 web/scripts/start-aigc.ps1。" });
+  if (!hasAigcProxyConfigured()) {
+    renderAigcPanel({
+      title: "视频需要本地 AIGC 代理",
+      hint: hasBrowserAigcConfig()
+        ? "你填写的浏览器 API Key 已可用于分镜脚本；视频生成调用 DashScope 原生异步任务，需要运行 web/scripts/start-aigc.ps1 并在 .env 中配置 DASHSCOPE_API_KEY。"
+        : "请先配置 DASHSCOPE_API_KEY 并启动 web/scripts/start-aigc.ps1。",
+      storyboard: state.aigc.storyboard
+    });
     return;
   }
   try {
@@ -1159,11 +1315,13 @@ async function generateAigcPipeline() {
     renderAigcPanel({ title: "请先填写标题、目的地或正文", hint: "一键生成需要基础日记内容。" });
     return;
   }
-  if (!state.aigc.configured) {
-    await generateAigcStoryboard({ useApi: false });
+  if (!hasAigcProxyConfigured()) {
+    await generateAigcStoryboard({ useApi: hasBrowserAigcConfig() });
     renderAigcPanel({
-      title: "未连接 API，仅展示本地模拟",
-      hint: "配置 .env 后可一键生成脚本 + 配图 + 视频。",
+      title: hasBrowserAigcConfig() ? "已生成分镜，配图/视频等待代理" : "未连接 API，仅展示本地模拟",
+      hint: hasBrowserAigcConfig()
+        ? "浏览器直连已完成分镜脚本；要一键生成配图和视频，请运行 web/scripts/start-aigc.ps1 并配置 DASHSCOPE_API_KEY。"
+        : "配置浏览器直连可生成分镜；配置 .env 并启动代理后可一键生成脚本 + 配图 + 视频。",
       storyboard: state.aigc.storyboard
     });
     return;

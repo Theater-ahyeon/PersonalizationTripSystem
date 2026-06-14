@@ -206,7 +206,7 @@ async function applyInitialUrlState() {
 
   setSelectValueIfPresent("startSelect", params.get("start"));
   setSelectValueIfPresent("goalSelect", params.get("goal"));
-  setSelectValueIfPresent("routeStrategySelect", params.get("strategy"));
+  setSelectValueIfPresent("routeStrategySelect", normalizeRouteStrategy(params.get("strategy")));
   if (params.get("diarySort")) {
     setSelectValueIfPresent("diarySort", params.get("diarySort"));
     renderDiaryList();
@@ -214,7 +214,7 @@ async function applyInitialUrlState() {
     setSelectValueIfPresent("diarySort", state.appSettings.defaultDiarySort);
     renderDiaryList();
   }
-  const routeMode = params.get("mode") || state.appSettings.defaultRouteMode;
+  const routeMode = normalizeTravelMode(params.get("mode") || state.appSettings.defaultRouteMode);
   if (routeMode) {
     const modeButton = document.querySelector(`[data-mode="${routeMode}"]`);
     if (modeButton) modeButton.click();
@@ -226,7 +226,7 @@ function setSelectValueIfPresent(id, value) {
   if (!value) return;
   const select = byId(id);
   if (!select) return;
-  const stringValue = String(value);
+  const stringValue = id === "routeStrategySelect" ? normalizeRouteStrategy(value) : String(value);
   if (Array.from(select.options).some((option) => option.value === stringValue)) {
     select.value = stringValue;
     if (id === "routeStrategySelect") state.routeStrategy = stringValue;

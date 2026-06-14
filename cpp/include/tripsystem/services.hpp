@@ -664,14 +664,14 @@ private:
     }
 
     static std::string readTravelMode() {
-        std::cout << "交通方式 walk/bike/cart/mixed: ";
+        std::cout << "交通方式 walk/bike/mixed: ";
         std::string mode;
         std::getline(std::cin, mode);
         return normalizeTravelMode(mode);
     }
 
     static std::string readRouteStrategy() {
-        std::cout << "Route strategy distance/time/recommend/transport: ";
+        std::cout << "Route strategy distance/time/recommend: ";
         std::string strategy;
         std::getline(std::cin, strategy);
         return normalizeRouteStrategy(strategy);
@@ -680,9 +680,10 @@ private:
     static std::string normalizeTravelMode(std::string mode) {
         mode = trim(mode);
         if (mode == "2") return "bike";
-        if (mode == "3") return "cart";
+        if (mode == "3") return "bike";
         if (mode == "4") return "mixed";
-        if (mode == "bike" || mode == "cart" || mode == "mixed") return mode;
+        if (mode == "cart") return "bike";
+        if (mode == "bike" || mode == "mixed") return mode;
         return "walk";
     }
 
@@ -690,28 +691,30 @@ private:
         strategy = trim(strategy);
         if (strategy == "2") return "time";
         if (strategy == "3") return "recommend";
-        if (strategy == "4") return "transport";
-        if (strategy == "time" || strategy == "recommend" || strategy == "transport") return strategy;
+        if (strategy == "4" || strategy == "transport" || strategy == "congestion") return "time";
+        if (strategy == "time" || strategy == "recommend") return strategy;
         return "distance";
     }
 
     static PathSegmentMetric roadMetric(const Road& road, const std::string& mode, const std::string& strategy) {
         std::vector<std::string> candidates;
-        if (strategy == "transport" || mode == "mixed") candidates = {"walk", "bike", "cart"};
-        else candidates = {mode};
+        std::string travelMode = normalizeTravelMode(mode);
+        std::string routeStrategy = normalizeRouteStrategy(strategy);
+        if (travelMode == "mixed") candidates = {"walk", "bike"};
+        else candidates = {travelMode};
         PathSegmentMetric best;
         best.cost = std::numeric_limits<double>::infinity();
         for (const auto& candidate : candidates) {
             double distance = (candidate == "bike") ? road.distBike : road.distWalk;
-            double baseMetersPerMinute = candidate == "bike" ? 180.0 : candidate == "cart" ? 300.0 : 75.0;
+            double baseMetersPerMinute = candidate == "bike" ? 180.0 : 75.0;
             double speedFactor = 0.82 + stableUnit("speed:" + std::to_string(road.from) + ":" + std::to_string(road.to) + ":" + candidate) * 0.46;
             double congestion = congestionFor("road:" + std::to_string(road.from) + ":" + std::to_string(road.to) + ":" + candidate, candidate);
             double minutes = distance / std::max(1.0, baseMetersPerMinute * speedFactor * congestion);
-            if (candidate == "cart") minutes += 1.2;
             double scenicPenalty = 0.72 + stableUnit("recommend:" + std::to_string(road.from) + ":" + std::to_string(road.to)) * 0.72;
+            double congestionPenalty = congestionRoutingPenalty(congestion);
             double cost = distance;
-            if (strategy == "time" || strategy == "transport") cost = minutes;
-            else if (strategy == "recommend") cost = minutes * 0.7 + (distance / 100.0) * scenicPenalty;
+            if (routeStrategy == "time") cost = minutes * congestionPenalty;
+            else if (routeStrategy == "recommend") cost = minutes * 0.55 * congestionPenalty + (distance / 100.0) * scenicPenalty + (1.0 - congestion) * 8.0;
             PathSegmentMetric metric{cost, distance, minutes, candidate, congestion};
             if (metric.cost < best.cost) best = metric;
         }
@@ -719,23 +722,25 @@ private:
     }
 
     static PathSegmentMetric osmEdgeMetric(const OsmEdge& edge, const std::string& mode, const std::string& strategy) {
-        std::vector<std::string> candidates = (strategy == "transport" || mode == "mixed")
+        std::string travelMode = normalizeTravelMode(mode);
+        std::string routeStrategy = normalizeRouteStrategy(strategy);
+        std::vector<std::string> candidates = (travelMode == "mixed")
             ? availableTravelModes(edge)
-            : std::vector<std::string>{mode};
+            : std::vector<std::string>{travelMode};
         PathSegmentMetric best;
         best.cost = std::numeric_limits<double>::infinity();
         for (const auto& candidate : candidates) {
             if (!edgeSupportsMode(edge, candidate)) continue;
             double distance = edge.distance;
-            double baseMetersPerMinute = candidate == "bike" ? 180.0 : candidate == "cart" ? 300.0 : 75.0;
+            double baseMetersPerMinute = candidate == "bike" ? 180.0 : 75.0;
             double speedFactor = 0.82 + stableUnit("osm-speed:" + std::to_string(edge.from) + ":" + std::to_string(edge.to) + edge.roadName + ":" + candidate) * 0.46;
             double congestion = congestionFor("osm:" + std::to_string(edge.from) + ":" + std::to_string(edge.to) + ":" + edge.roadName + ":" + candidate, candidate);
             double minutes = distance / std::max(1.0, baseMetersPerMinute * speedFactor * congestion);
-            if (candidate == "cart") minutes += 1.2;
             double scenicPenalty = 0.72 + stableUnit("osm-recommend:" + edge.roadName + ":" + std::to_string(edge.from)) * 0.72;
+            double congestionPenalty = congestionRoutingPenalty(congestion);
             double cost = distance;
-            if (strategy == "time" || strategy == "transport") cost = minutes;
-            else if (strategy == "recommend") cost = minutes * 0.7 + (distance / 100.0) * scenicPenalty;
+            if (routeStrategy == "time") cost = minutes * congestionPenalty;
+            else if (routeStrategy == "recommend") cost = minutes * 0.55 * congestionPenalty + (distance / 100.0) * scenicPenalty + (1.0 - congestion) * 8.0;
             PathSegmentMetric metric{cost, distance, minutes, candidate, congestion};
             if (metric.cost < best.cost) best = metric;
         }
@@ -746,9 +751,11 @@ private:
 
     static double heuristicCost(const OsmNode& a, const OsmNode& b, const std::string& mode, const std::string& strategy) {
         double straight = haversine(a, b);
-        if (strategy == "distance") return straight;
-        double baseMetersPerMinute = mode == "bike" ? 180.0 : mode == "cart" || mode == "mixed" ? 300.0 : 75.0;
-        if (strategy == "time" || strategy == "transport") return straight / (baseMetersPerMinute * 1.28);
+        std::string routeStrategy = normalizeRouteStrategy(strategy);
+        std::string travelMode = normalizeTravelMode(mode);
+        if (routeStrategy == "distance") return straight;
+        double baseMetersPerMinute = (travelMode == "bike" || travelMode == "mixed") ? 180.0 : 75.0;
+        if (routeStrategy == "time") return straight / (baseMetersPerMinute * 1.28);
         return straight / 120.0;
     }
 
@@ -814,38 +821,28 @@ private:
     }
 
     static bool edgeSupportsMode(const OsmEdge& e, const std::string& mode) {
-        if (mode == "mixed" || mode == "transport") return !availableTravelModes(e).empty();
-        if (mode == "cart") return e.mode == "cart" || electricCartEligible(e);
-        return e.mode == "both" || e.mode == mode;
+        std::string travelMode = normalizeTravelMode(mode);
+        if (travelMode == "mixed") return !availableTravelModes(e).empty();
+        if (travelMode == "bike") return e.mode == "both" || e.mode == "bike" || e.mode == "cart";
+        return e.mode == "both" || e.mode == "walk";
     }
 
     static std::vector<std::string> availableTravelModes(const OsmEdge& e) {
         std::vector<std::string> modes;
         if (e.mode == "walk" || e.mode == "both") modes.push_back("walk");
-        if (e.mode == "bike" || e.mode == "both") modes.push_back("bike");
-        if (e.mode == "cart" || electricCartEligible(e)) modes.push_back("cart");
+        if (e.mode == "bike" || e.mode == "both" || e.mode == "cart") modes.push_back("bike");
         return modes;
     }
 
-    static bool electricCartEligible(const OsmEdge& e) {
-        if (e.mode == "cart") return true;
-        const std::string text = e.roadName;
-        return text.find("东宫门") != std::string::npos
-            || text.find("仁寿殿") != std::string::npos
-            || text.find("排云门") != std::string::npos
-            || text.find("长廊") != std::string::npos
-            || text.find("苏州街") != std::string::npos
-            || text.find("北宫门") != std::string::npos
-            || text.find("昆明湖") != std::string::npos
-            || text.find("广场") != std::string::npos
-            || text.find("主路") != std::string::npos
-            || text.find("景点接入") != std::string::npos
-            || stableUnit("cart:" + std::to_string(e.from) + ":" + std::to_string(e.to)) > 0.82;
+    static double congestionRoutingPenalty(double congestion) {
+        double efficiency = std::max(0.2, std::min(1.0, congestion));
+        double crowded = 1.0 - efficiency;
+        return 1.0 + crowded * crowded * 6.0;
     }
 
     static double congestionFor(const std::string& key, const std::string& mode) {
-        double base = mode == "cart" ? 0.70 : mode == "bike" ? 0.66 : 0.62;
-        return std::max(0.55, std::min(0.98, base + stableUnit("congestion:" + key) * (0.98 - base)));
+        double base = mode == "bike" ? 0.32 : 0.28;
+        return std::max(0.2, std::min(1.0, base + stableUnit("congestion:" + key) * (1.0 - base)));
     }
 
     static double haversine(const OsmNode& a, const OsmNode& b) {

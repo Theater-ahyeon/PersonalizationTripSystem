@@ -26,7 +26,7 @@ $InputLines = @(
   "1",
   "8",
   "mixed",
-  "transport",
+  "time",
   "2",
   "4",
   "tsinghua_hospital",
@@ -88,6 +88,11 @@ $Output = $InputText | & $Exe $SmokeData 2>&1 | Out-String
 if ($LASTEXITCODE -ne 0) {
   Write-Host $Output
   throw "Smoke run exited with code $LASTEXITCODE"
+}
+
+if ($Output -like "*mode=cart*" -or $Output -like "*transport*") {
+  Write-Host $Output
+  throw "Route smoke output must not expose cart mode or transport strategy."
 }
 
 $Expected = @(

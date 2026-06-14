@@ -7,6 +7,8 @@ $App = Join-Path $WebRoot "app.js"
 $ScriptsDir = Join-Path $WebRoot "scripts"
 $Styles = Join-Path $WebRoot "styles.css"
 $SetupData = Join-Path $ScriptsDir "setup-data.ps1"
+$StartAigc = Join-Path $ScriptsDir "start-aigc.ps1"
+$StartDemo = Join-Path $ScriptsDir "start-demo.ps1"
 $WebManifest = Join-Path $WebRoot "data\regions\manifest.json"
 $UtilsHeader = Join-Path $RepoRoot "cpp\include\tripsystem\utils.hpp"
 $DataManagerHeader = Join-Path $RepoRoot "cpp\include\tripsystem\data_manager.hpp"
@@ -18,6 +20,8 @@ $SplitScriptText = (Get-ChildItem -LiteralPath $ScriptsDir -Filter "*.js" | Sort
 }) -join "`n"
 $StyleText = Get-Content -Raw -Encoding UTF8 -Path $Styles
 $SetupText = Get-Content -Raw -Encoding UTF8 -Path $SetupData
+$StartAigcText = Get-Content -Raw -Encoding UTF8 -Path $StartAigc
+$StartDemoText = Get-Content -Raw -Encoding UTF8 -Path $StartDemo
 $ManifestText = Get-Content -Raw -Encoding UTF8 -Path $WebManifest
 $UtilsText = Get-Content -Raw -Encoding UTF8 -Path $UtilsHeader
 $DataManagerText = Get-Content -Raw -Encoding UTF8 -Path $DataManagerHeader
@@ -46,6 +50,12 @@ if ($IndexText -notmatch '<option value="recommend">') { throw "Route selector m
 foreach ($Removed in @("congestion", "transport")) {
   if ($IndexText -like "*value=`"$Removed`"*") { throw "Route selector must not expose $Removed." }
 }
+if ($SplitScriptText -match 'transport\s*:\s*\{') {
+  throw "Route strategy definitions must not include transport."
+}
+if ($SplitScriptText -like "*电瓶车*" -or $SplitScriptText -match 'mode\s*===\s*"cart"') {
+  throw "Frontend route code must use bike instead of electric cart."
+}
 
 if ($AppText -notmatch 'ROUTE_STRATEGIES\s*=\s*\{\s*distance:' -and $SplitScriptText -notmatch 'ROUTE_STRATEGIES\s*=\s*\{\s*distance:') {
   throw "Route strategies must be defined in split scripts."
@@ -54,6 +64,52 @@ if ($AppText -notmatch 'ROUTE_STRATEGIES\s*=\s*\{\s*distance:' -and $SplitScript
 foreach ($Needle in @("indoor-route-meta", "indoor-step-list", "indoor-visualization-note")) {
   if ($StyleText -notlike "*$Needle*" -and $AppText -notlike "*$Needle*" -and $SplitScriptText -notlike "*$Needle*") {
     throw "Indoor visualization hook missing: $Needle"
+  }
+}
+
+foreach ($Needle in @("hasBrowserAigcConfig", "callBrowserAigcStoryboard", "proxyConfigured", "browser-direct-storyboard")) {
+  if ($SplitScriptText -notlike "*$Needle*") {
+    throw "Browser AIGC settings must be wired into storyboard generation: $($Needle)"
+  }
+}
+foreach ($Needle in @("scheduleAigcStatusRetry", "aigcStatusRetryTimer")) {
+  if ($SplitScriptText -notlike "*$Needle*") {
+    throw "AIGC status should auto-retry for demo startup timing: $($Needle)"
+  }
+}
+foreach ($Needle in @("PYTHONDONTWRITEBYTECODE", "python -B -u", "/api/aigc/health")) {
+  if ($StartAigcText -notlike "*$Needle*") {
+    throw "AIGC startup script must be stable for demo launch: $($Needle)"
+  }
+}
+foreach ($Needle in @("web/index.html", "--directory `$RepoRoot")) {
+  if ($StartDemoText -notlike "*$Needle*") {
+    throw "Demo startup script must expose the same route used in browser acceptance: $($Needle)"
+  }
+}
+if ($IndexText -like "*标题精确*") {
+  throw "Diary title search UI should say 标题检索, not 标题精确."
+}
+if ($SplitScriptText -like "*exactTitleCandidates*") {
+  throw "Diary title search must not be truncated by exact-title candidates."
+}
+if ($SplitScriptText -like '*mode === "title") return String(diary.title || "").trim().toLowerCase() === keyword*') {
+  throw "Diary title search must use title contains matching, not whole-title equality."
+}
+
+foreach ($EnglishCopy in @(">About Us<", ">Safety Guide<", ">Terms of Service<", ">Privacy Policy<", ">Contact<", ">Status<", ">Settings<", ">Indoor Navigation<")) {
+  if ($IndexText -like "*$EnglishCopy*") {
+    throw "Demo UI must not expose English placeholder copy: $($EnglishCopy)"
+  }
+}
+
+if ($SplitScriptText -like "*课程模拟*") {
+  throw "Indoor source copy must not expose course-simulation wording."
+}
+
+foreach ($Needle in @("indoor-route-card", "indoor-map-shell", "indoor-node.start-node", "indoor-node.goal-node")) {
+  if ($StyleText -notlike "*$Needle*" -and $SplitScriptText -notlike "*$Needle*") {
+    throw "Indoor premium display hook missing: $($Needle)"
   }
 }
 

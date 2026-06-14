@@ -43,13 +43,18 @@ function runIndoorRoute() {
   lastIndoorBuilding = building;
   const minutes = indoorEstimatedMinutes(result.distance);
   container.innerHTML = `
-    <strong>室内最短路径 ${result.distance}m</strong>
-    ${renderIndoorRouteMeta(result, minutes)}
-    ${renderIndoorSource(building, true)}
-    ${renderIndoorRouteBreakdown(result, building)}
-    ${renderIndoorPlan(result, building)}
-    <button class="link-button indoor-expand-button" type="button" data-indoor-expand>展开平面图</button>
-    ${renderIndoorStepList(result, building, "indoor-step-list")}
+    <div class="indoor-route-card">
+      <div class="indoor-route-card-head">
+        <span>室内最短路径</span>
+        <strong>${result.distance}m</strong>
+      </div>
+      ${renderIndoorRouteMeta(result, minutes)}
+      ${renderIndoorSource(building, true)}
+      ${renderIndoorRouteBreakdown(result, building)}
+      ${renderIndoorPlan(result, building)}
+      <button class="link-button indoor-expand-button" type="button" data-indoor-expand>展开平面图</button>
+      ${renderIndoorStepList(result, building, "indoor-step-list")}
+    </div>
   `;
   requestAnimationFrame(syncIndoorPlanOverlays);
 }
@@ -66,10 +71,15 @@ function renderIndoorBuildingIntro() {
   lastIndoorRoute = { path: [], distance: 0 };
   lastIndoorBuilding = building;
   container.innerHTML = `
-    <strong>${escapeHtml(building.name)}</strong>
-    ${renderIndoorSource(building, false)}
-    ${renderIndoorPlan({ path: [], distance: 0 }, building)}
-    <button class="link-button indoor-expand-button" type="button" data-indoor-expand>展开平面图</button>
+    <div class="indoor-route-card indoor-route-card-empty">
+      <div class="indoor-route-card-head">
+        <span>室内导览</span>
+        <strong>${escapeHtml(building.name)}</strong>
+      </div>
+      ${renderIndoorSource(building, false)}
+      ${renderIndoorPlan({ path: [], distance: 0 }, building)}
+      <button class="link-button indoor-expand-button" type="button" data-indoor-expand>展开平面图</button>
+    </div>
   `;
   requestAnimationFrame(syncIndoorPlanOverlays);
 }
@@ -82,9 +92,9 @@ function renderIndoorRouteMeta(result, minutes = indoorEstimatedMinutes(result.d
   const stops = Array.isArray(result.path) ? result.path.length : 0;
   return `
     <div class="indoor-route-meta">
-      <span>${Number(result.distance || 0).toFixed(0)}m</span>
-      <span>${minutes} 分钟</span>
-      <span>${stops} 个节点</span>
+      <span><small>距离</small><strong>${Number(result.distance || 0).toFixed(0)}m</strong></span>
+      <span><small>预计</small><strong>${minutes} 分钟</strong></span>
+      <span><small>节点</small><strong>${stops} 个</strong></span>
     </div>
   `;
 }
@@ -165,6 +175,39 @@ function indoorNodeTypeLabel(node) {
   return "节点";
 }
 
+function indoorNodeClassName(result, node, { active = false, minor = false, hidden = false } = {}) {
+  const path = Array.isArray(result?.path) ? result.path : [];
+  const endpoint = path.length && node.id === path[0]
+    ? " start-node"
+    : path.length && node.id === path[path.length - 1] ? " goal-node" : "";
+  const typeClass = ` role-${indoorNodeType(node)}`;
+  return `indoor-node${endpoint}${active ? " active" : ""}${minor ? " minor" : ""}${hidden ? " hidden-node" : ""}${typeClass}`;
+}
+
+function renderIndoorMapShell(innerHtml, result, building) {
+  const path = Array.isArray(result?.path) ? result.path : [];
+  const nodeMap = new Map((building.nodes || []).map((node) => [node.id, node]));
+  const start = nodeMap.get(path[0]);
+  const goal = nodeMap.get(path[path.length - 1]);
+  const detail = start && goal
+    ? `${start.name} → ${goal.name}`
+    : `${(building.nodes || []).filter((node) => node.visible !== false).length} 个可导航点`;
+  return `
+    <div class="indoor-map-shell">
+      <div class="indoor-map-shell-bar">
+        <span>室内平面导览</span>
+        <strong>${escapeHtml(detail)}</strong>
+      </div>
+      ${innerHtml}
+      <div class="indoor-map-legend" aria-label="室内图例">
+        <span><i class="legend-dot start"></i>起点</span>
+        <span><i class="legend-dot goal"></i>终点</span>
+        <span><i class="legend-line"></i>当前路径</span>
+      </div>
+    </div>
+  `;
+}
+
 function renderIndoorPlan(result, building = currentIndoorBuilding(), options = {}) {
   const hasFloorPlans = building.floorPlans && (
     (Array.isArray(building.floorPlans) && building.floorPlans.length > 0) ||
@@ -181,10 +224,11 @@ function renderIndoorPlan(result, building = currentIndoorBuilding(), options = 
   const nodes = building.nodes.map((node) => {
     const left = Number(node.x || 50);
     const top = Number(node.y || 50);
-    const active = pathSet.has(node.id) ? " active" : "";
-    const minor = node.minor && !active ? " minor" : "";
-    const hiddenClass = node.visible === false && !active ? " hidden-node" : "";
-    return `<span class="indoor-node${active}${minor}${hiddenClass}" title="${escapeHtml(node.name)}" style="left:${left}%;top:${top}%">${escapeHtml(node.name)}</span>`;
+    const active = pathSet.has(node.id);
+    const minor = node.minor && !active;
+    const hidden = node.visible === false && !active;
+    const nodeClass = indoorNodeClassName(result, node, { active, minor, hidden });
+    return `<span class="${nodeClass}" title="${escapeHtml(node.name)}" style="left:${left}%;top:${top}%">${escapeHtml(node.name)}</span>`;
   }).join("");
   const lines = building.edges.map(([from, to]) => {
     const a = building.nodes.find((node) => node.id === from);
@@ -213,7 +257,7 @@ function renderIndoorPlan(result, building = currentIndoorBuilding(), options = 
   const credit = building.floorPlanCredit
     ? `<span class="indoor-plan-credit">${escapeHtml(building.floorPlanCredit)}</span>`
     : "";
-  return `
+  return renderIndoorMapShell(`
     <div class="indoor-plan${planClass}${expandable ? " indoor-plan-preview" : ""}" aria-label="indoor route plan"${expandable ? " data-indoor-expand" : ""}${fitStyle}>
       ${planImage}
       <div class="indoor-plan-overlay" data-indoor-plan-overlay>
@@ -223,7 +267,7 @@ function renderIndoorPlan(result, building = currentIndoorBuilding(), options = 
       </div>
       ${credit}
     </div>
-  `;
+  `, result, building);
 }
 
 function renderIndoorFloorStack(result, building = currentIndoorBuilding(), options = {}) {
@@ -231,12 +275,12 @@ function renderIndoorFloorStack(result, building = currentIndoorBuilding(), opti
   const floors = floorsForIndoorResult(result, building, options);
   const sections = floors.map((floor) => renderIndoorFloorSection(result, building, floor, options)).join("");
   const transfers = renderIndoorTransferList(result, building);
-  return `
+  return renderIndoorMapShell(`
     <div class="indoor-floor-stack${expandable ? " indoor-plan-preview" : ""}" aria-label="multi-floor indoor route plan"${expandable ? " data-indoor-expand" : ""}>
       ${sections}
       ${transfers}
     </div>
-  `;
+  `, result, building);
 }
 
 function renderIndoorFloorSection(result, building, floor, options = {}) {
@@ -248,10 +292,11 @@ function renderIndoorFloorSection(result, building, floor, options = {}) {
   const nodes = floorNodes.map((node) => {
     const left = Number(node.x || 50);
     const top = Number(node.y || 50);
-    const active = pathSet.has(node.id) ? " active" : "";
-    const minor = node.minor && !active ? " minor" : "";
-    const hiddenClass = node.visible === false && !active ? " hidden-node" : "";
-    return `<span class="indoor-node${active}${minor}${hiddenClass}" title="${escapeHtml(node.name)}" style="left:${left}%;top:${top}%">${escapeHtml(node.name)}</span>`;
+    const active = pathSet.has(node.id);
+    const minor = node.minor && !active;
+    const hidden = node.visible === false && !active;
+    const nodeClass = indoorNodeClassName(result, node, { active, minor, hidden });
+    return `<span class="${nodeClass}" title="${escapeHtml(node.name)}" style="left:${left}%;top:${top}%">${escapeHtml(node.name)}</span>`;
   }).join("");
   const lines = building.edges.map(([from, to]) => {
     const a = nodeMap.get(from);
@@ -542,8 +587,10 @@ function indoorEdgeDistance(from, to, building = currentIndoorBuilding()) {
 function runShortestPath() {
   const start = Number(byId("startSelect").value);
   const goal = Number(byId("goalSelect").value);
-  const strategy = state.routeStrategy === "transport" ? "transport" : state.routeStrategy;
-  const mode = strategy === "transport" ? "mixed" : state.mode;
+  const strategy = normalizeRouteStrategy(state.routeStrategy);
+  const mode = normalizeTravelMode(state.mode);
+  state.routeStrategy = strategy;
+  state.mode = mode;
   const result = shortestPath(start, goal, mode, strategy);
   if (!result) {
     state.lastRouteResult = null;
@@ -586,8 +633,10 @@ function runMultiStopRoute() {
     return;
   }
 
-  const strategy = state.routeStrategy === "transport" ? "transport" : state.routeStrategy;
-  const mode = strategy === "transport" ? "mixed" : state.mode;
+  const strategy = normalizeRouteStrategy(state.routeStrategy);
+  const mode = normalizeTravelMode(state.mode);
+  state.routeStrategy = strategy;
+  state.mode = mode;
   const tsp = solveTspDp(start, targets, mode, strategy);
   if (!tsp) {
     state.lastRouteResult = null;
@@ -783,23 +832,28 @@ function isCampusRegion() {
 }
 
 function edgeSupportsMode(edge, mode, strategy = state.routeStrategy) {
+  const routeMode = normalizeTravelMode(mode);
   const allowed = availableTravelModes(edge);
-  if (strategy === "transport" || mode === "mixed") return allowed.length > 0;
-  if (mode === "bike") return allowed.includes("bike");
-  if (mode === "cart") return allowed.includes("cart");
+  if (routeMode === "mixed") return allowed.length > 0;
+  if (routeMode === "bike") return allowed.includes("bike");
   return allowed.includes("walk");
 }
 
 function edgeWeight(edge, mode, strategy = state.routeStrategy) {
+  const routeStrategy = normalizeRouteStrategy(strategy);
+  const routeMode = normalizeTravelMode(mode);
   const distance = Number(edge.distance) || 0;
-  const candidates = (strategy === "transport" || mode === "mixed") ? availableTravelModes(edge) : [mode];
+  const candidates = routeMode === "mixed" ? availableTravelModes(edge) : [routeMode];
   const weights = candidates.map((travelMode) => travelModeWeight(edge, travelMode, distance));
   const selected = weights.sort((a, b) => a.minutes - b.minutes)[0] || travelModeWeight(edge, "walk", distance);
   const { travelMode, idealSpeed, congestion, realSpeed, minutes } = selected;
   const scenicPenalty = 0.72 + stableFraction(`${edge.road_name || ""}:${edge.from}:${edge.to}:recommend`) * 0.72;
+  const congestionPenalty = congestionRoutingPenalty(congestion);
   let cost = distance;
-  if (strategy === "time" || strategy === "transport") cost = minutes;
-  if (strategy === "recommend") cost = minutes * 0.7 + (distance / 100) * scenicPenalty;
+  if (routeStrategy === "time") cost = minutes * congestionPenalty;
+  if (routeStrategy === "recommend") {
+    cost = minutes * 0.55 * congestionPenalty + (distance / 100) * scenicPenalty + (1 - congestion) * 8;
+  }
   return {
     cost,
     distance,
@@ -822,35 +876,20 @@ function availableTravelModes(edge) {
 function resolveEdgeModes(edge) {
   const explicit = String(edge.mode || "both").toLowerCase();
   const name = `${edge.road_name || ""}`;
-  const campus = isCampusRegion();
 
   if (explicit === "walk") return ["walk"];
-  if (explicit === "bike") return campus ? ["bike"] : ["walk"];
-  if (explicit === "cart") return ["cart"];
+  if (explicit === "bike") return ["bike"];
+  if (explicit === "cart") return ["bike"];
 
   if (/骑行|自行车|环校|cycleway|bike/i.test(name)) {
-    return campus ? ["walk", "bike"] : ["walk"];
-  }
-  if (/电瓶|观光|环园|景区车|摆渡/i.test(name)) {
-    return campus ? ["walk"] : ["cart"];
+    return ["walk", "bike"];
   }
 
   if (explicit === "both") {
-    if (campus) return ["walk", "bike"];
-    return electricCartEligible(edge) ? ["walk", "cart"] : ["walk"];
+    return ["walk", "bike"];
   }
 
-  return campus ? ["walk", "bike"] : ["walk"];
-}
-
-function electricCartEligible(edge) {
-  if (isCampusRegion()) return false;
-  const name = `${edge.road_name || ""}`;
-  const from = findNode(edge.from);
-  const to = findNode(edge.to);
-  const text = `${name} ${from?.name || ""} ${to?.name || ""}`;
-  return /东宫门|仁寿殿|排云门|长廊|苏州街|北宫门|昆明湖|广场|主路|宫门|观光|电瓶|环园/.test(text)
-    || stableFraction(`${edge.from}:${edge.to}:cart`) > 0.82;
+  return ["walk", "bike"];
 }
 
 function idealSpeedForEdge(edge, travelMode) {
@@ -859,7 +898,7 @@ function idealSpeedForEdge(edge, travelMode) {
   if (configured > 0) return configured;
   if (travelMode === "walk" && Number(edge.ideal_speed) > 0) return Number(edge.ideal_speed);
   const speedFactor = 0.55 + stableFraction(`${edge.road_name || ""}:${edge.from}:${edge.to}:${travelMode}:speed`) * 1.1;
-  const baseSpeed = travelMode === "bike" ? 12 : travelMode === "cart" ? 18 : 4.5;
+  const baseSpeed = travelMode === "bike" ? 12 : 4.5;
   return baseSpeed * speedFactor;
 }
 
@@ -867,21 +906,19 @@ function travelModeWeight(edge, travelMode, distance = Number(edge.distance) || 
   const idealSpeed = idealSpeedForEdge(edge, travelMode);
   const congestion = edgeCongestion(edge, travelMode);
   const realSpeed = Math.max(0.5, idealSpeed * congestion);
-  const boardingDelay = travelMode === "cart" ? 1.2 : 0;
-  const minutes = distance / (realSpeed * 1000 / 60) + boardingDelay;
+  const minutes = distance / (realSpeed * 1000 / 60);
   return { travelMode, idealSpeed, congestion, realSpeed, minutes };
 }
 
 function routeModeLabel(mode = state.mode, strategy = state.routeStrategy) {
-  if (strategy === "transport" || mode === "mixed") return "混合交通";
-  if (mode === "bike") return "骑行";
-  if (mode === "cart") return "电瓶车";
+  const routeMode = normalizeTravelMode(mode);
+  if (routeMode === "mixed") return "混合交通";
+  if (routeMode === "bike") return "骑行";
   return "步行";
 }
 
 function travelModeLabel(mode) {
   if (mode === "bike") return "骑行";
-  if (mode === "cart") return "电瓶车";
   return "步行";
 }
 
@@ -935,8 +972,7 @@ function formatNodeLabel(nodeOrId) {
 
 const TRAVEL_MODE_COLORS = {
   walk: "#0b8a5b",
-  bike: "#e67a00",
-  cart: "#7a45c8"
+  bike: "#e67a00"
 };
 
 function travelModeColor(mode = "walk") {
@@ -1021,7 +1057,7 @@ function renderMapModeLegend(segments) {
   const legend = byId("mapModeLegend");
   if (!legend) return;
   const modes = unique(segments.map((segment) => segment.travelMode || "walk"));
-  const mixedRoute = state.mode === "mixed" || state.routeStrategy === "transport";
+  const mixedRoute = normalizeTravelMode(state.mode) === "mixed";
   if (!segments.length || (!mixedRoute && modes.length <= 1)) {
     legend.hidden = true;
     legend.innerHTML = "";
@@ -1049,15 +1085,21 @@ function segmentModeSummary(result) {
 function edgeCongestion(edge, travelMode = "walk") {
   const key = congestionEdgeKey(edge, travelMode);
   if (state.userCongestionOverride?.has(key)) {
-    return Number(state.userCongestionOverride.get(key));
+    return clamp(Number(state.userCongestionOverride.get(key)), 0.2, 1);
   }
   const modeCongestion = Number(edge[`congestion_${travelMode}`]);
-  if (modeCongestion > 0) return clamp(modeCongestion, 0.01, 1);
-  if (Number(edge.congestion) > 0) return clamp(Number(edge.congestion), 0.01, 1);
+  if (modeCongestion > 0) return clamp(modeCongestion, 0.2, 1);
+  if (Number(edge.congestion) > 0) return clamp(Number(edge.congestion), 0.2, 1);
   const name = `${state.congestionSeed || "default"}:${edge.road_name || ""}${edge.from}-${edge.to}:${travelMode}`;
   const hash = stableFraction(name);
-  const base = travelMode === "cart" ? 0.7 : travelMode === "bike" ? 0.66 : 0.62;
-  return clamp(base + hash * (0.98 - base), 0.55, 0.98);
+  const base = travelMode === "bike" ? 0.32 : 0.28;
+  return clamp(base + hash * (1 - base), 0.2, 1);
+}
+
+function congestionRoutingPenalty(congestion) {
+  const efficiency = clamp(Number(congestion) || 1, 0.2, 1);
+  const crowded = 1 - efficiency;
+  return 1 + crowded * crowded * 6;
 }
 
 function congestionEdgeKey(edge, travelMode = "walk") {
@@ -1106,14 +1148,14 @@ function renderCongestionPanel(result = state.lastRouteResult) {
     seen.add(key);
     const from = formatNodeLabel(segment.from);
     const to = formatNodeLabel(segment.to);
-    const congestion = clamp(Number(segment.congestion || 1), 0.55, 0.98);
+    const congestion = clamp(Number(segment.congestion || 1), 0.2, 1);
     const pct = Math.round(congestion * 100);
     const roadLabel = formatRoadLabel(segment.roadName) || `${from} → ${to}`;
     rows.push(`
       <label class="congestion-row">
         <span class="congestion-road">${escapeHtml(roadLabel)}</span>
         <small>${escapeHtml(from)} → ${escapeHtml(to)} · ${escapeHtml(travelModeLabel(segment.travelMode))}</small>
-        <input type="range" min="55" max="98" value="${pct}" data-congestion-key="${escapeHtml(key)}">
+        <input type="range" min="20" max="100" value="${pct}" data-congestion-key="${escapeHtml(key)}">
         <output>${pct}%</output>
       </label>
     `);
@@ -1141,7 +1183,7 @@ let congestionRecalcTimer = null;
 function handleCongestionInput(event) {
   const input = event.currentTarget;
   const key = input.dataset.congestionKey;
-  const value = clamp(Number(input.value) / 100, 0.55, 0.98);
+  const value = clamp(Number(input.value) / 100, 0.2, 1);
   if (!key) return;
   state.userCongestionOverride.set(key, value);
   input.closest(".congestion-row")?.querySelector("output")?.replaceChildren(`${Math.round(value * 100)}%`);
@@ -1347,26 +1389,22 @@ function bindResultButtons(container) {
 }
 
 function syncTransportModeUi() {
-  const campus = isCampusRegion();
-  const secondary = document.querySelector('.mode-button[data-mode="bike"], .mode-button[data-mode="cart"]');
+  const secondary = document.querySelector('.mode-button[data-mode="bike"]');
   const mixed = document.querySelector('.mode-button[data-mode="mixed"]');
   if (secondary) {
-    secondary.dataset.mode = campus ? "bike" : "cart";
-    secondary.textContent = campus ? "骑行" : "电瓶车";
+    secondary.dataset.mode = "bike";
+    secondary.textContent = "骑行";
   }
   if (mixed) {
-    mixed.textContent = campus ? "混合(步+骑)" : "混合(步+车)";
+    mixed.textContent = "混合(步+骑)";
   }
-  if (state.mode === "cart" && campus) state.mode = "bike";
-  if (state.mode === "bike" && !campus) state.mode = "cart";
+  state.mode = normalizeTravelMode(state.mode);
   document.querySelectorAll(".mode-button").forEach((button) => {
     button.classList.toggle("active", button.dataset.mode === state.mode);
   });
   const hint = byId("routeModeHint");
   if (hint) {
-    hint.textContent = campus
-      ? "校区：步行走全部道路，骑行仅走骑行/通用道路；混合模式按最短时间选步骑组合。"
-      : "景区：步行走全部道路，电瓶车仅走观光路线；混合模式按最短时间选步+电瓶车组合。";
+    hint.textContent = "步行走步行道路，骑行走骑行/通用道路；混合模式按当前策略在步行和骑行间自动选择。";
   }
 }
 

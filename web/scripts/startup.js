@@ -78,7 +78,7 @@ function bindStaticControls() {
 
   document.querySelectorAll(".mode-button").forEach((button) => {
     button.addEventListener("click", () => {
-      state.mode = button.dataset.mode;
+      state.mode = normalizeTravelMode(button.dataset.mode);
       document.querySelectorAll(".mode-button").forEach((item) => item.classList.remove("active"));
       button.classList.add("active");
       if (byId("startSelect")?.value && byId("goalSelect")?.value) runShortestPath();
@@ -104,7 +104,8 @@ function bindStaticControls() {
 
   byId("routeButton").addEventListener("click", runShortestPath);
   byId("routeStrategySelect").addEventListener("change", (event) => {
-    state.routeStrategy = event.target.value;
+    state.routeStrategy = normalizeRouteStrategy(event.target.value);
+    event.target.value = state.routeStrategy;
     runShortestPath();
   });
   byId("toggle-congestion-panel")?.addEventListener("click", toggleCongestionPanel);

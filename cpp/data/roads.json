@@ -1,146 +1,26 @@
 [
-  {
-    "from": 1,
-    "to": 2,
-    "dist_walk": 713.1,
-    "dist_bike": 713.1
-  },
-  {
-    "from": 2,
-    "to": 17,
-    "dist_walk": 465.1,
-    "dist_bike": 465.1
-  },
-  {
-    "from": 17,
-    "to": 3,
-    "dist_walk": 86.8,
-    "dist_bike": 86.8
-  },
-  {
-    "from": 3,
-    "to": 4,
-    "dist_walk": 354.8,
-    "dist_bike": 354.8
-  },
-  {
-    "from": 4,
-    "to": 5,
-    "dist_walk": 674.3,
-    "dist_bike": 674.3
-  },
-  {
-    "from": 5,
-    "to": 6,
-    "dist_walk": 84.3,
-    "dist_bike": 84.3
-  },
-  {
-    "from": 6,
-    "to": 7,
-    "dist_walk": 472.8,
-    "dist_bike": 472.8
-  },
-  {
-    "from": 7,
-    "to": 8,
-    "dist_walk": 586.4,
-    "dist_bike": 586.4
-  },
-  {
-    "from": 8,
-    "to": 9,
-    "dist_walk": 203,
-    "dist_bike": 203
-  },
-  {
-    "from": 8,
-    "to": 10,
-    "dist_walk": 391.8,
-    "dist_bike": 391.8
-  },
-  {
-    "from": 10,
-    "to": 16,
-    "dist_walk": 1481.9,
-    "dist_bike": 1481.9
-  },
-  {
-    "from": 16,
-    "to": 3,
-    "dist_walk": 1880.8,
-    "dist_bike": 1880.8
-  },
-  {
-    "from": 1,
-    "to": 18,
-    "dist_walk": 236.2,
-    "dist_bike": 236.2
-  },
-  {
-    "from": 18,
-    "to": 12,
-    "dist_walk": 537.6,
-    "dist_bike": 537.6
-  },
-  {
-    "from": 12,
-    "to": 11,
-    "dist_walk": 1272.4,
-    "dist_bike": 1272.4
-  },
-  {
-    "from": 11,
-    "to": 19,
-    "dist_walk": 3040.6,
-    "dist_bike": 3040.6
-  },
-  {
-    "from": 19,
-    "to": 13,
-    "dist_walk": 2240.5,
-    "dist_bike": 2240.5
-  },
-  {
-    "from": 13,
-    "to": 14,
-    "dist_walk": 1971.6,
-    "dist_bike": 1971.6
-  },
-  {
-    "from": 14,
-    "to": 15,
-    "dist_walk": 5222.6,
-    "dist_bike": 5222.6
-  },
-  {
-    "from": 15,
-    "to": 7,
-    "dist_walk": 1157.9,
-    "dist_bike": 1157.9
-  },
-  {
-    "from": 11,
-    "to": 4,
-    "dist_walk": 2185.4,
-    "dist_bike": 2185.4
-  },
-  {
-    "from": 20,
-    "to": 19,
-    "dist_walk": 876.3,
-    "dist_bike": 876.3
-  },
-  {
-    "from": 20,
-    "to": 13,
-    "dist_walk": 2028.8,
-    "dist_bike": 2028.8
-  },
-  {
-    "from": 1,
-    "to": 12,
-    "dist_walk": 443.3,
-    "dist_bike": 443.3
-  }
+  {"from": 1, "to": 2, "dist_walk": 713.1, "dist_bike": 713.1},
+  {"from": 2, "to": 17, "dist_walk": 465.1, "dist_bike": 465.1},
+  {"from": 17, "to": 3, "dist_walk": 86.8, "dist_bike": 86.8},
+  {"from": 3, "to": 4, "dist_walk": 354.8, "dist_bike": 354.8},
+  {"from": 4, "to": 5, "dist_walk": 674.3, "dist_bike": 674.3},
+  {"from": 5, "to": 6, "dist_walk": 84.3, "dist_bike": 84.3},
+  {"from": 6, "to": 7, "dist_walk": 472.8, "dist_bike": 472.8},
+  {"from": 7, "to": 8, "dist_walk": 586.4, "dist_bike": 586.4},
+  {"from": 8, "to": 9, "dist_walk": 203, "dist_bike": 203},
+  {"from": 8, "to": 10, "dist_walk": 391.8, "dist_bike": 391.8},
+  {"from": 10, "to": 16, "dist_walk": 1481.9, "dist_bike": 1481.9},
+  {"from": 16, "to": 3, "dist_walk": 1880.8, "dist_bike": 1880.8},
+  {"from": 1, "to": 18, "dist_walk": 236.2, "dist_bike": 236.2},
+  {"from": 18, "to": 12, "dist_walk": 537.6, "dist_bike": 537.6},
+  {"from": 12, "to": 11, "dist_walk": 1272.4, "dist_bike": 1272.4},
+  {"from": 11, "to": 19, "dist_walk": 3040.6, "dist_bike": 3040.6},
+  {"from": 19, "to": 13, "dist_walk": 2240.5, "dist_bike": 2240.5},
+  {"from": 13, "to": 14, "dist_walk": 1971.6, "dist_bike": 1971.6},
+  {"from": 14, "to": 15, "dist_walk": 5222.6, "dist_bike": 5222.6},
+  {"from": 15, "to": 7, "dist_walk": 1157.9, "dist_bike": 1157.9},
+  {"from": 11, "to": 4, "dist_walk": 2185.4, "dist_bike": 2185.4},
+  {"from": 20, "to": 19, "dist_walk": 876.3, "dist_bike": 876.3},
+  {"from": 20, "to": 13, "dist_walk": 2028.8, "dist_bike": 2028.8},
+  {"from": 1, "to": 12, "dist_walk": 443.3, "dist_bike": 443.3}
 ]

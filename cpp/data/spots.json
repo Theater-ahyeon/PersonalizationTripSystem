@@ -1,162 +1,22 @@
 [
-  {
-    "id": 1,
-    "name": "颐和园东宫门",
-    "category": "出入口",
-    "rating": 4.8,
-    "heat": 657,
-    "tags": "入口,交通,服务"
-  },
-  {
-    "id": 2,
-    "name": "仁寿殿",
-    "category": "建筑",
-    "rating": 4.6,
-    "heat": 794,
-    "tags": "建筑,历史,室内"
-  },
-  {
-    "id": 3,
-    "name": "德和园",
-    "category": "建筑",
-    "rating": 4.4,
-    "heat": 931,
-    "tags": "建筑,历史,室内"
-  },
-  {
-    "id": 4,
-    "name": "长廊东口",
-    "category": "道路",
-    "rating": 4.2,
-    "heat": 1068,
-    "tags": "步行,路线,湖景"
-  },
-  {
-    "id": 5,
-    "name": "排云门",
-    "category": "道路",
-    "rating": 4.9,
-    "heat": 1205,
-    "tags": "路线,中转,登高"
-  },
-  {
-    "id": 6,
-    "name": "佛香阁",
-    "category": "景点",
-    "rating": 4.7,
-    "heat": 522,
-    "tags": "地标,拍照,观景"
-  },
-  {
-    "id": 7,
-    "name": "石舫",
-    "category": "景点",
-    "rating": 4.5,
-    "heat": 659,
-    "tags": "地标,拍照,观景"
-  },
-  {
-    "id": 8,
-    "name": "苏州街入口",
-    "category": "文化",
-    "rating": 4.3,
-    "heat": 796,
-    "tags": "文化,购物,体验"
-  },
-  {
-    "id": 9,
-    "name": "北宫门",
-    "category": "出入口",
-    "rating": 4.1,
-    "heat": 933,
-    "tags": "入口,交通,服务"
-  },
-  {
-    "id": 10,
-    "name": "万寿山后湖",
-    "category": "自然",
-    "rating": 4.8,
-    "heat": 1070,
-    "tags": "湖景,安静,休闲"
-  },
-  {
-    "id": 11,
-    "name": "昆明湖东堤",
-    "category": "道路",
-    "rating": 4.6,
-    "heat": 1207,
-    "tags": "步行,路线,湖景"
-  },
-  {
-    "id": 12,
-    "name": "知春亭",
-    "category": "景点",
-    "rating": 4.4,
-    "heat": 524,
-    "tags": "地标,拍照,观景"
-  },
-  {
-    "id": 13,
-    "name": "十七孔桥",
-    "category": "景点",
-    "rating": 4.2,
-    "heat": 661,
-    "tags": "桥梁,摄影,夕阳"
-  },
-  {
-    "id": 14,
-    "name": "南湖岛",
-    "category": "自然",
-    "rating": 4.9,
-    "heat": 798,
-    "tags": "湖区,环线,拍照"
-  },
-  {
-    "id": 15,
-    "name": "西堤",
-    "category": "道路",
-    "rating": 4.7,
-    "heat": 935,
-    "tags": "步行,路线,湖景"
-  },
-  {
-    "id": 16,
-    "name": "谐趣园",
-    "category": "园林",
-    "rating": 4.5,
-    "heat": 1072,
-    "tags": "园林,安静,文化"
-  },
-  {
-    "id": 17,
-    "name": "乐寿堂",
-    "category": "建筑",
-    "rating": 4.3,
-    "heat": 1209,
-    "tags": "建筑,历史,室内"
-  },
-  {
-    "id": 18,
-    "name": "文昌院",
-    "category": "文化展馆",
-    "rating": 4.1,
-    "heat": 526,
-    "tags": "展览,室内,文化"
-  },
-  {
-    "id": 19,
-    "name": "铜牛广场",
-    "category": "服务",
-    "rating": 4.8,
-    "heat": 663,
-    "tags": "休息,补给,拍照"
-  },
-  {
-    "id": 20,
-    "name": "新建宫门",
-    "category": "出入口",
-    "rating": 4.6,
-    "heat": 800,
-    "tags": "入口,交通,服务"
-  }
+  {"id": 1, "name": "颐和园东宫门", "category": "出入口", "rating": 4.8, "heat": 657, "tags": "入口,交通,服务"},
+  {"id": 2, "name": "仁寿殿", "category": "建筑", "rating": 4.6, "heat": 794, "tags": "建筑,历史,室内"},
+  {"id": 3, "name": "德和园", "category": "建筑", "rating": 4.4, "heat": 931, "tags": "建筑,历史,室内"},
+  {"id": 4, "name": "长廊东口", "category": "道路", "rating": 4.2, "heat": 1068, "tags": "步行,路线,湖景"},
+  {"id": 5, "name": "排云门", "category": "道路", "rating": 4.9, "heat": 1205, "tags": "路线,中转,登高"},
+  {"id": 6, "name": "佛香阁", "category": "景点", "rating": 4.7, "heat": 522, "tags": "地标,拍照,观景"},
+  {"id": 7, "name": "石舫", "category": "景点", "rating": 4.5, "heat": 659, "tags": "地标,拍照,观景"},
+  {"id": 8, "name": "苏州街入口", "category": "文化", "rating": 4.3, "heat": 796, "tags": "文化,购物,体验"},
+  {"id": 9, "name": "北宫门", "category": "出入口", "rating": 4.1, "heat": 933, "tags": "入口,交通,服务"},
+  {"id": 10, "name": "万寿山后湖", "category": "自然", "rating": 4.8, "heat": 1070, "tags": "湖景,安静,休闲"},
+  {"id": 11, "name": "昆明湖东堤", "category": "道路", "rating": 4.6, "heat": 1207, "tags": "步行,路线,湖景"},
+  {"id": 12, "name": "知春亭", "category": "景点", "rating": 4.4, "heat": 524, "tags": "地标,拍照,观景"},
+  {"id": 13, "name": "十七孔桥", "category": "景点", "rating": 4.2, "heat": 661, "tags": "桥梁,摄影,夕阳"},
+  {"id": 14, "name": "南湖岛", "category": "自然", "rating": 4.9, "heat": 798, "tags": "湖区,环线,拍照"},
+  {"id": 15, "name": "西堤", "category": "道路", "rating": 4.7, "heat": 935, "tags": "步行,路线,湖景"},
+  {"id": 16, "name": "谐趣园", "category": "园林", "rating": 4.5, "heat": 1072, "tags": "园林,安静,文化"},
+  {"id": 17, "name": "乐寿堂", "category": "建筑", "rating": 4.3, "heat": 1209, "tags": "建筑,历史,室内"},
+  {"id": 18, "name": "文昌院", "category": "文化展馆", "rating": 4.1, "heat": 526, "tags": "展览,室内,文化"},
+  {"id": 19, "name": "铜牛广场", "category": "服务", "rating": 4.8, "heat": 663, "tags": "休息,补给,拍照"},
+  {"id": 20, "name": "新建宫门", "category": "出入口", "rating": 4.6, "heat": 800, "tags": "入口,交通,服务"}
 ]

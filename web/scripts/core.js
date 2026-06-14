@@ -44,13 +44,22 @@ const ROUTE_STRATEGIES = {
     label: "推荐路线",
     algorithm: "综合预计用时、距离和游览舒适度",
     color: "#008733"
-  },
-  transport: {
-    label: "混合交通最短时间",
-    algorithm: "在步行、自行车和景区电瓶车之间自动选择可通行且预计耗时最短的路段",
-    color: "#7a45c8"
   }
 };
+const ROUTE_STRATEGY_KEYS = Object.keys(ROUTE_STRATEGIES);
+const ROUTE_MODE_KEYS = ["walk", "bike", "mixed"];
+
+function normalizeRouteStrategy(value) {
+  const routeStrategy = String(value || "").trim();
+  if (routeStrategy === "transport" || routeStrategy === "congestion") return "time";
+  return ROUTE_STRATEGY_KEYS.includes(routeStrategy) ? routeStrategy : "distance";
+}
+
+function normalizeTravelMode(value) {
+  const routeMode = String(value || "").trim();
+  if (["cart"].includes(routeMode)) return "bike";
+  return ROUTE_MODE_KEYS.includes(routeMode) ? routeMode : "walk";
+}
 const INDOOR_ASSET_ROOT = "./assets/indoor";
 const INDOOR_ASSET_SOURCE_NOTE = "web/assets/indoor";
 const INDOOR_NODES = [
@@ -73,7 +82,7 @@ const INDOOR_BUILDINGS = [
   {
     id: "wenchang",
     name: "颐和园文昌院",
-    source: "课程模拟楼层图，可替换为授权平面图",
+    source: "示例楼层图建模，可替换为授权平面图",
     nodes: [
       { id: "gate", name: "文昌院大门", floor: "1F", x: 14, y: 72 },
       { id: "lobby", name: "前厅导览台", floor: "1F", x: 34, y: 72 },
@@ -117,7 +126,7 @@ const INDOOR_BUILDINGS = [
   {
     id: "tsinghua_service",
     name: "清华学生服务中心",
-    source: "课程模拟服务中心室内节点，可替换为公开授权图",
+    source: "示例服务中心室内节点，可替换为公开授权图",
     nodes: [
       { id: "door", name: "南侧入口", floor: "1F", x: 14, y: 68 },
       { id: "desk", name: "咨询台", floor: "1F", x: 34, y: 68 },
@@ -867,6 +876,9 @@ const state = {
   aigc: {
     ready: false,
     configured: false,
+    proxyReady: false,
+    proxyConfigured: false,
+    directConfigured: false,
     storyboard: null,
     videoUrl: ""
   }

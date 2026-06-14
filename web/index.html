@@ -6,7 +6,7 @@
   <title>岚迹 LumaTrail</title>
   <link rel="icon" href="./assets/brand/lumatrail-logo.svg">
   <link rel="stylesheet" href="./vendor/leaflet.css">
-  <link rel="stylesheet" href="./styles.css?v=20260608-mixed-segments">
+  <link rel="stylesheet" href="./styles.css?v=20260613-aigc-indoor">
 </head>
 <body>
   <div class="app-shell">
@@ -129,7 +129,6 @@
               <label class="strategy-select">路线策略<select id="routeStrategySelect">
                 <option value="distance">最短距离</option>
                 <option value="time">最短时间</option>
-                <option value="transport">交通工具最短时间</option>
                 <option value="recommend">推荐路线</option>
               </select></label>
               <button id="routeButton" type="button" class="primary-button full">生成游览路线</button>
@@ -282,7 +281,7 @@
               </select></label>
               <label>检索方式<select id="diarySearchMode">
                 <option value="fulltext">全文检索</option>
-                <option value="title">标题精确</option>
+                <option value="title">标题检索</option>
                 <option value="destination">目的地</option>
               </select></label>
               <label>关键词<input id="diaryKeyword" type="search" placeholder="长廊、夕阳、苏州街"></label>
@@ -327,11 +326,11 @@
           <p>© 2026 岚迹 LumaTrail. 按你的方式探索下一段旅程。</p>
         </div>
         <nav class="footer-links" aria-label="辅助链接">
-          <a href="#recommendView" data-view="recommendView">About Us</a>
-          <a href="#routeView" data-view="routeView">Safety Guide</a>
-          <a href="#diaryView" data-view="diaryView">Terms of Service</a>
-          <a href="#foodView" data-view="foodView">Privacy Policy</a>
-          <a href="#queryView" data-view="queryView">Contact</a>
+          <a href="#recommendView" data-view="recommendView">项目简介</a>
+          <a href="#routeView" data-view="routeView">路线演示</a>
+          <a href="#diaryView" data-view="diaryView">日记生成</a>
+          <a href="#foodView" data-view="foodView">美食推荐</a>
+          <a href="#queryView" data-view="queryView">设施查询</a>
         </nav>
       </div>
     </footer>
@@ -522,7 +521,7 @@
       <article class="app-modal-card compact-modal-card">
         <button class="diary-modal-close" type="button" data-modal-close="statusModal" aria-label="关闭状态面板">×</button>
         <div class="modal-heading">
-          <p class="eyebrow">Status</p>
+          <p class="eyebrow">系统状态</p>
           <h2 id="statusModalTitle">数据状态</h2>
         </div>
         <div id="statusSummary" class="status-grid"></div>
@@ -534,7 +533,7 @@
       <article class="app-modal-card compact-modal-card">
         <button class="diary-modal-close" type="button" data-modal-close="settingsModal" aria-label="关闭设置面板">×</button>
         <div class="modal-heading">
-          <p class="eyebrow">Settings</p>
+          <p class="eyebrow">偏好设置</p>
           <h2 id="settingsModalTitle">应用设置</h2>
         </div>
         <label>视觉模式<select id="themeSelect">
@@ -572,7 +571,7 @@
       <article class="app-modal-card indoor-map-modal-card" tabindex="-1">
         <button class="diary-modal-close" type="button" data-modal-close="indoorMapModal" aria-label="关闭室内路径图">×</button>
         <div class="modal-heading">
-          <p class="eyebrow">Indoor Navigation</p>
+          <p class="eyebrow">室内导航</p>
           <h2 id="indoorMapModalTitle">室内路径图</h2>
         </div>
         <div id="indoorMapModalBody"></div>
@@ -589,12 +588,12 @@
   </div>
 
   <script src="./vendor/leaflet.js"></script>
-  <script src="./scripts/core.js?v=20260608-cart-restore"></script>
+  <script src="./scripts/core.js?v=20260614-demo-polish"></script>
   <script src="./scripts/data.js?v=20260606-remaining"></script>
   <script src="./scripts/map-controller.js?v=20260606-remaining"></script>
-  <script src="./scripts/route-indoor.js?v=20260608-cart-restore"></script>
+  <script src="./scripts/route-indoor.js?v=20260613-aigc-indoor"></script>
   <script src="./scripts/recommend-search.js?v=20260606-remaining"></script>
-  <script src="./scripts/diary-aigc.js?v=20260606-remaining"></script>
+  <script src="./scripts/diary-aigc.js?v=20260614-title-search"></script>
   <script src="./scripts/food.js?v=20260606-remaining"></script>
   <script src="./scripts/startup.js?v=20260606-remaining"></script>
 </body>

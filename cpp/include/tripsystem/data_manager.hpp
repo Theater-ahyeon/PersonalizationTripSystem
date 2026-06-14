@@ -1269,20 +1269,36 @@ private:
             1,
             {{"1F", "web/assets/indoor/wenchang-gallery.png"}},
             {
-                {"wc_entrance", "Entrance", "1F", "entrance", 50, 92},
-                {"wc_general", "General Gallery", "1F", "room", 50, 48},
-                {"wc_bronze", "Bronze Gallery", "1F", "room", 23, 28},
-                {"wc_jade", "Jade Gallery", "1F", "room", 77, 28},
-                {"wc_porcelain", "Porcelain Gallery", "1F", "room", 88, 56},
-                {"wc_study", "Imperial Study", "1F", "room", 73, 67},
-                {"wc_treasures", "Treasure Gallery", "1F", "room", 10, 66},
-                {"wc_exit", "Exit", "1F", "entrance", 50, 4}
+                {"entrance", "Entrance", "1F", "entrance", 48, 91},
+                {"front_hall", "Front Hall", "1F", "hall", 48, 69},
+                {"general_gallery", "General Gallery", "1F", "room", 48, 44},
+                {"upper_center", "Upper Center Node", "1F", "corridor", 49, 23},
+                {"bronze_gallery", "Bronze Gallery", "1F", "room", 20, 23},
+                {"jade_gallery", "Jade Gallery", "1F", "room", 75, 22},
+                {"imperial_study", "Imperial Study", "1F", "room", 75, 67},
+                {"porcelain_gallery", "Porcelain Gallery", "1F", "room", 93, 59},
+                {"misc_gallery", "Misc Gallery", "1F", "room", 6, 59},
+                {"top_left", "Top Left Node", "1F", "corridor", 18, 6},
+                {"top_center", "Top Center Node", "1F", "corridor", 50, 6},
+                {"top_right", "Top Right Node", "1F", "corridor", 84, 7},
+                {"left_upper", "Left Upper Node", "1F", "corridor", 7, 17},
+                {"left_middle", "Left Middle Node", "1F", "corridor", 6, 30},
+                {"left_lower", "Left Lower Node", "1F", "corridor", 7, 42},
+                {"right_upper", "Right Upper Node", "1F", "corridor", 94, 18},
+                {"right_middle", "Right Middle Node", "1F", "corridor", 93, 30},
+                {"right_lower", "Right Lower Node", "1F", "corridor", 93, 43}
             },
             {
-                {"wc_entrance", "wc_general", 32}, {"wc_general", "wc_bronze", 24},
-                {"wc_general", "wc_jade", 24}, {"wc_general", "wc_study", 18},
-                {"wc_study", "wc_porcelain", 16}, {"wc_general", "wc_treasures", 28},
-                {"wc_bronze", "wc_exit", 30}, {"wc_jade", "wc_exit", 30}
+                {"entrance", "front_hall", 20}, {"front_hall", "general_gallery", 22},
+                {"general_gallery", "upper_center", 19}, {"upper_center", "bronze_gallery", 23},
+                {"upper_center", "jade_gallery", 20}, {"front_hall", "imperial_study", 21},
+                {"imperial_study", "porcelain_gallery", 16}, {"porcelain_gallery", "right_lower", 14},
+                {"front_hall", "misc_gallery", 34}, {"misc_gallery", "left_lower", 15},
+                {"bronze_gallery", "left_upper", 11}, {"bronze_gallery", "left_middle", 12},
+                {"bronze_gallery", "top_left", 15}, {"top_left", "top_center", 25},
+                {"top_center", "top_right", 27}, {"top_center", "upper_center", 16},
+                {"top_right", "jade_gallery", 16}, {"jade_gallery", "right_upper", 15},
+                {"jade_gallery", "right_middle", 15}
             }
         });
         indoorBuildings.push_back({
@@ -1311,27 +1327,19 @@ private:
         indoorBuildings.push_back({
             "tsinghua_hospital",
             "Tsinghua University Hospital",
-            4,
-            {{"1F", "web/assets/indoor/清华大学医院F1.jpg"}, {"2F", "web/assets/indoor/清华大学医院F2.jpg"}, {"3F", "web/assets/indoor/清华大学医院F3.jpg"}, {"4F", "web/assets/indoor/清华大学医院F4.jpg"}},
+            2,
+            {{"F1", "web/assets/indoor/医院一层简化导航图.png"}, {"F2", "web/assets/indoor/医院二层简化导航图.png"}},
             {
-                {"hosp_1_entrance", "Entrance", "1F", "entrance", 50, 94},
-                {"hosp_1_info", "Information Desk", "1F", "service", 54, 75},
-                {"hosp_1_registration", "Registration and Cashier", "1F", "service", 59, 62},
-                {"hosp_1_lift", "1F Elevator", "1F", "elevator", 55, 48},
-                {"hosp_2_lift", "2F Elevator", "2F", "elevator", 55, 50},
-                {"hosp_2_clinic", "2F Clinic", "2F", "room", 25, 50},
-                {"hosp_3_lift", "3F Elevator", "3F", "elevator", 55, 54},
-                {"hosp_3_admin", "Administration", "3F", "service", 25, 58},
-                {"hosp_4_lift", "4F Elevator", "4F", "elevator", 55, 62},
-                {"hosp_4_prepare", "Pre-op Area", "4F", "service", 48, 46},
-                {"hosp_4_surgery", "Operating Room", "4F", "room", 63, 30}
+                {"h_entrance", "Entrance", "F1", "entrance", 56, 85},
+                {"h_pharmacy", "Pharmacy", "F1", "room", 90, 79},
+                {"h2_entrance", "Entrance F2", "F2", "entrance", 55, 85},
+                {"h2_pharmacy", "Pharmacy F2", "F2", "room", 89, 76},
+                {"h2_c_nurse_station", "Nurse Station F2", "F2", "service", 61, 42}
             },
             {
-                {"hosp_1_entrance", "hosp_1_info", 12}, {"hosp_1_info", "hosp_1_registration", 10},
-                {"hosp_1_registration", "hosp_1_lift", 12}, {"hosp_1_lift", "hosp_2_lift", 8},
-                {"hosp_2_lift", "hosp_3_lift", 8}, {"hosp_3_lift", "hosp_4_lift", 8},
-                {"hosp_2_lift", "hosp_2_clinic", 22}, {"hosp_3_lift", "hosp_3_admin", 20},
-                {"hosp_4_lift", "hosp_4_prepare", 12}, {"hosp_4_prepare", "hosp_4_surgery", 16}
+                {"h_entrance", "h_pharmacy", 85},
+                {"h2_entrance", "h2_pharmacy", 75},
+                {"h2_entrance", "h2_c_nurse_station", 50}
             }
         });
     }

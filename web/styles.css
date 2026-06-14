@@ -4743,6 +4743,267 @@ textarea {
   margin-bottom: 8px;
 }
 
+/* Indoor display refinement: map-like hierarchy and clearer route semantics. */
+.indoor-route-card {
+  display: grid;
+  gap: 12px;
+  border: 1px solid rgba(123, 139, 161, 0.28);
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(247, 249, 252, 0.94));
+  padding: 14px;
+  box-shadow: 0 14px 34px rgba(17, 28, 45, 0.08);
+}
+
+.indoor-route-card-empty {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.indoor-route-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.indoor-route-card-head span {
+  color: #667085;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.indoor-route-card-head strong {
+  color: #172033;
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+.indoor-route-card .indoor-source {
+  margin-top: -2px;
+}
+
+.indoor-route-meta {
+  gap: 10px;
+}
+
+.indoor-route-meta span {
+  justify-items: start;
+  place-items: initial;
+  min-height: 48px;
+  border-color: rgba(123, 139, 161, 0.22);
+  background: #f7f9fc;
+  padding: 9px 10px;
+}
+
+.indoor-route-meta small {
+  color: #667085;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.indoor-route-meta strong {
+  color: #172033;
+  font-size: 14px;
+}
+
+.indoor-map-shell {
+  overflow: hidden;
+  border: 1px solid rgba(123, 139, 161, 0.28);
+  border-radius: 16px;
+  background: #f4f6f9;
+}
+
+.indoor-map-shell-bar,
+.indoor-map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+}
+
+.indoor-map-shell-bar {
+  border-bottom: 1px solid rgba(123, 139, 161, 0.2);
+  background: #fbfcfe;
+}
+
+.indoor-map-shell-bar span {
+  color: #667085;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.indoor-map-shell-bar strong {
+  min-width: 0;
+  color: #172033;
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.indoor-map-legend {
+  justify-content: flex-start;
+  border-top: 1px solid rgba(123, 139, 161, 0.2);
+  background: rgba(255, 255, 255, 0.78);
+  color: #4b5563;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.indoor-map-legend span {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.88);
+}
+
+.legend-dot.start {
+  background: #0f766e;
+}
+
+.legend-dot.goal {
+  background: #b45309;
+}
+
+.legend-line {
+  width: 28px;
+  height: 4px;
+  border-radius: 999px;
+  background: #c2410c;
+}
+
+.indoor-map-shell .indoor-plan,
+.indoor-map-shell .indoor-floor-stack {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+.indoor-map-shell .indoor-plan {
+  background:
+    linear-gradient(rgba(123, 139, 161, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(123, 139, 161, 0.12) 1px, transparent 1px),
+    #f8fafc;
+  background-size: 32px 32px;
+}
+
+.indoor-map-shell .indoor-plan.has-floor-plan {
+  background: #f3f5f8;
+}
+
+.indoor-map-shell .indoor-plan.has-floor-plan::before {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(15, 23, 42, 0.04));
+}
+
+.indoor-map-shell .indoor-edge {
+  height: 3px;
+  background: rgba(71, 85, 105, 0.36);
+}
+
+.indoor-map-shell .indoor-edge.active {
+  height: 7px;
+  background: #c2410c;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.82), 0 10px 22px rgba(194, 65, 12, 0.28);
+}
+
+.indoor-map-shell .indoor-node {
+  border-color: rgba(100, 116, 139, 0.34);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #1f2937;
+  box-shadow: 0 8px 20px rgba(17, 28, 45, 0.12);
+}
+
+.indoor-map-shell .indoor-node.role-elevator,
+.indoor-map-shell .indoor-node.role-service {
+  border-color: rgba(15, 118, 110, 0.28);
+  background: rgba(240, 253, 250, 0.94);
+}
+
+.indoor-map-shell .indoor-node.role-room {
+  border-color: rgba(180, 83, 9, 0.22);
+  background: rgba(255, 251, 235, 0.94);
+}
+
+.indoor-map-shell .indoor-node.start-node,
+.indoor-map-shell .indoor-node.goal-node {
+  border-radius: 999px;
+  color: #fff;
+  padding-inline: 10px;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.86), 0 12px 24px rgba(17, 28, 45, 0.22);
+}
+
+.indoor-map-shell .indoor-node.start-node {
+  border-color: #0f766e;
+  background: #0f766e;
+}
+
+.indoor-map-shell .indoor-node.goal-node {
+  border-color: #b45309;
+  background: #b45309;
+}
+
+.indoor-map-shell .indoor-node.active:not(.start-node):not(.goal-node) {
+  border-color: #c2410c;
+  background: #c2410c;
+  color: #fff;
+}
+
+.indoor-map-shell .indoor-node.hidden-node.active:not(.start-node):not(.goal-node),
+.indoor-map-shell .indoor-node.role-path.active:not(.start-node):not(.goal-node) {
+  display: inline-flex;
+  width: 14px;
+  height: 14px;
+  max-width: none;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.96);
+  border-radius: 999px;
+  background: #c2410c;
+  color: transparent;
+  padding: 0;
+  box-shadow: 0 0 0 3px rgba(194, 65, 12, 0.18), 0 8px 16px rgba(17, 28, 45, 0.18);
+}
+
+.indoor-map-shell .indoor-node.minor {
+  border-radius: 999px;
+}
+
+.indoor-breakdown section,
+.indoor-step-list li {
+  border-color: rgba(123, 139, 161, 0.24);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.indoor-step-list li {
+  grid-template-columns: 30px minmax(0, 1fr) auto;
+  box-shadow: 0 8px 18px rgba(17, 28, 45, 0.05);
+}
+
+.indoor-step-list span {
+  background: #172033;
+}
+
+.indoor-modal-side {
+  background: #fbfcfe;
+}
+
+.indoor-plan-pannable .indoor-map-shell {
+  min-height: 460px;
+}
+
+.indoor-plan-pannable .indoor-map-shell .indoor-plan {
+  min-height: 460px;
+}
+
 @media (max-width: 640px) {
   .diary-compose-toggle {
     width: 100%;
